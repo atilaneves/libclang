@@ -11,12 +11,13 @@ import clang.c.index;
         import std.array: array;
 
         auto index = clang_createIndex(0, 0);
-        string[] commandLineArgs = [fileName];
+        const(char)*[] commandLineArgs;
         CXUnsavedFile[] unsavedFiles;
+
         auto translUnit = clang_parseTranslationUnit(
             index,
             fileName.toStringz,
-            &commandLineArgs.map!(a => a.toStringz).array[0],
+            commandLineArgs.ptr,
             cast(int)commandLineArgs.length,
             unsavedFiles.ptr,
             cast(uint)unsavedFiles.length,
@@ -25,14 +26,12 @@ import clang.c.index;
         auto cursor = clang_getTranslationUnitCursor(translUnit);
 
         void* clientData = null;
-        clang_visitChildren(cursor, &foo, clientData);
+        clang_visitChildren(cursor, &fooCppVisitor, clientData);
     }
 }
 
-extern(C) CXChildVisitResult foo(CXCursor cursor, CXCursor parent, void* clientData) {
+extern(C) CXChildVisitResult fooCppVisitor(CXCursor cursor, CXCursor parent, void* clientData) {
     static int cursorIndex;
-
-    assert(false);
 
     switch(cursorIndex) {
 
@@ -40,8 +39,7 @@ extern(C) CXChildVisitResult foo(CXCursor cursor, CXCursor parent, void* clientD
         assert(false);
 
     case 0:
-        //clang_getCursorKind(cursor).shouldEqual(CXCursor_StructDecl);
-        clang_getCursorKind(cursor).shouldEqual(42);
+        clang_getCursorKind(cursor).shouldEqual(CXCursor_StructDecl);
         clang_getCursorKind(parent).shouldEqual(CXCursor_TranslationUnit);
         break;
 
@@ -56,5 +54,6 @@ extern(C) CXChildVisitResult foo(CXCursor cursor, CXCursor parent, void* clientD
         break;
     }
 
+    ++cursorIndex;
     return CXChildVisit_Recurse;
 }
