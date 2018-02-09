@@ -1,0 +1,19 @@
+language: d
+sudo: false
+
+matrix:
+    include:
+        - d: dmd-2.078.2
+        - d: ldc-1.7.0
+
+addons:
+  apt:
+    packages:
+    - libclang-dev
+
+
+script:
+  - dub test -c ubuntu-test --build=unittest-cov --compiler=${DC}
+
+after_success:
+ - bash <(curl -s https://codecov.io/bash)

@@ -30,3 +30,14 @@ configuration "utl" {
     dependency "unit-threaded" version="~>0.7.0"
     versions "unitThreadedLight"
 }
+
+configuration "ubuntu-test" {
+    targetType "executable"
+    targetName "ut"
+    targetPath "bin"
+    mainSourceFile "tests/ut.d"
+    sourcePaths "source" "tests"
+    importPaths "source" "tests"
+    dependency "unit-threaded" version="~>0.7.0"
+    lflags "-L/usr/lib/llvm-3.4/lib"
+}
