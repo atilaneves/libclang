@@ -30,7 +30,7 @@ import clang.c.index;
     }
 }
 
-extern(C) CXChildVisitResult fooCppVisitor(CXCursor cursor, CXCursor parent, void* clientData) {
+private extern(C) CXChildVisitResult fooCppVisitor(CXCursor cursor, CXCursor parent, void* clientData) {
     static int cursorIndex;
 
     switch(cursorIndex) {
@@ -56,4 +56,37 @@ extern(C) CXChildVisitResult fooCppVisitor(CXCursor cursor, CXCursor parent, voi
 
     ++cursorIndex;
     return CXChildVisit_Recurse;
+}
+
+@("C++ file with one simple struct and throwing visitor")
+@system unittest {
+    with(newTranslationUnit("foo.cpp",
+                            q{ struct { int int_; double double_; }; }))
+    {
+        import std.string: toStringz;
+        import std.algorithm: map;
+        import std.array: array;
+
+        auto index = clang_createIndex(0, 0);
+        const(char)*[] commandLineArgs;
+        CXUnsavedFile[] unsavedFiles;
+
+        auto translUnit = clang_parseTranslationUnit(
+            index,
+            fileName.toStringz,
+            commandLineArgs.ptr,
+            cast(int)commandLineArgs.length,
+            unsavedFiles.ptr,
+            cast(uint)unsavedFiles.length,
+            CXTranslationUnit_None,
+        );
+        auto cursor = clang_getTranslationUnitCursor(translUnit);
+
+        void* clientData = null;
+        clang_visitChildren(cursor, &throwingVisitor, clientData).shouldThrow;
+    }
+}
+
+private extern(C) CXChildVisitResult throwingVisitor(CXCursor cursor, CXCursor parent, void* clientData) {
+    throw new Exception("oops");
 }
