@@ -12,12 +12,41 @@ module clang.c.util;
  */
 mixin template EnumC(T) if(is(T == enum)) {
 
-    string enumMixinStr(U)(U member) {
+    private string _enumMixinStr(string member) {
         import std.conv: text;
         return text(`enum `, member, ` = `, T.stringof, `.`, member, `;`);
     }
 
     static foreach(member; __traits(allMembers, T)) {
-        mixin(enumMixinStr(member));
+        mixin(_enumMixinStr(member));
     }
+}
+
+
+mixin template EnumD(string name, T, string prefix) if(is(T == enum)) {
+
+    private static string _memberMixinStr(string member) {
+        import std.conv: text;
+        import std.array: replace;
+        return text(`    `, member.replace(prefix, ""), ` = `, T.stringof, `.`, member, `,`);
+    }
+
+    private static string _enumMixinStr() {
+        import std.array: join;
+
+        string[] ret;
+
+        ret ~= "enum " ~ name ~ "{";
+
+        static foreach(member; __traits(allMembers, T)) {
+            ret ~= _memberMixinStr(member);
+        }
+
+        ret ~= "}";
+
+        return ret.join("\n");
+    }
+
+    //pragma(msg, _enumMixinStr);
+    mixin(_enumMixinStr());
 }
