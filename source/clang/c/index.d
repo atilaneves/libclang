@@ -14,11 +14,14 @@
 \*===----------------------------------------------------------------------===*/
 module clang.c.index;
 
-import core.stdc.config;
-import core.stdc.time;
+import clang.c.util: EnumC;
 
 public import clang.c.CXErrorCode;
 public import clang.c.CXString;
+
+import core.stdc.config;
+import core.stdc.time;
+
 
 extern (C):
 
@@ -120,27 +123,28 @@ struct CXUnsavedFile
  * whether the use of this entity will result in a warning or error due to
  * it being deprecated or unavailable.
  */
-enum CXAvailabilityKind
-{
-    /**
-     * \brief The entity is available.
-     */
-    available = 0,
-    /**
-     * \brief The entity is available, but has been deprecated (and its use is
-     * not recommended).
-     */
-    deprecated_ = 1,
-    /**
-     * \brief The entity is not available; any use of it will be an error.
-     */
-    notAvailable = 2,
-    /**
-     * \brief The entity is available, but not accessible; any use of it will be
-     * an error.
-     */
-    notAccessible = 3
-}
+enum CXAvailabilityKind {
+  /**
+   * \brief The entity is available.
+   */
+  CXAvailability_Available,
+  /**
+   * \brief The entity is available, but has been deprecated (and its use is
+   * not recommended).
+   */
+  CXAvailability_Deprecated,
+  /**
+   * \brief The entity is not available; any use of it will be an error.
+   */
+  CXAvailability_NotAvailable,
+  /**
+   * \brief The entity is available, but not accessible; any use of it will be
+   * an error.
+   */
+  CXAvailability_NotAccessible
+};
+
+mixin EnumC!CXAvailabilityKind;
 
 /**
  * \brief Describes a version number of the form major.minor.subminor.
