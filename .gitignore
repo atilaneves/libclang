@@ -13,3 +13,4 @@ libclang-test-*
 *.obj
 *.lst
 bin
+tmp
