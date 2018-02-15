@@ -786,31 +786,32 @@ CXDiagnostic clang_getDiagnosticInSet(CXDiagnosticSet Diags, uint Index);
  * \brief Describes the kind of error that occurred (if any) in a call to
  * \c clang_loadDiagnostics.
  */
-enum CXLoadDiag_Error
-{
-    /**
-     * \brief Indicates that no error occurred.
-     */
-    none = 0,
+enum CXLoadDiag_Error {
+  /**
+   * \brief Indicates that no error occurred.
+   */
+  CXLoadDiag_None = 0,
 
-    /**
-     * \brief Indicates that an unknown error occurred while attempting to
-     * deserialize diagnostics.
-     */
-    unknown = 1,
+  /**
+   * \brief Indicates that an unknown error occurred while attempting to
+   * deserialize diagnostics.
+   */
+  CXLoadDiag_Unknown = 1,
 
-    /**
-     * \brief Indicates that the file containing the serialized diagnostics
-     * could not be opened.
-     */
-    cannotLoad = 2,
+  /**
+   * \brief Indicates that the file containing the serialized diagnostics
+   * could not be opened.
+   */
+  CXLoadDiag_CannotLoad = 2,
 
-    /**
-     * \brief Indicates that the serialized diagnostics file is invalid or
-     * corrupt.
-     */
-    invalidFile = 3
+  /**
+   * \brief Indicates that the serialized diagnostics file is invalid or
+   * corrupt.
+   */
+  CXLoadDiag_InvalidFile = 3
 }
+
+mixin EnumC!CXLoadDiag_Error;
 
 /**
  * \brief Deserialize a set of diagnostics from a Clang diagnostics bitcode
@@ -879,68 +880,69 @@ void clang_disposeDiagnostic(CXDiagnostic Diagnostic);
  * The values in this enum are meant to be combined to customize the
  * behavior of \c clang_formatDiagnostic().
  */
-enum CXDiagnosticDisplayOptions
-{
-    /**
-     * \brief Display the source-location information where the
-     * diagnostic was located.
-     *
-     * When set, diagnostics will be prefixed by the file, line, and
-     * (optionally) column to which the diagnostic refers. For example,
-     *
-     * \code
-     * test.c:28: warning: extra tokens at end of #endif directive
-     * \endcode
-     *
-     * This option corresponds to the clang flag \c -fshow-source-location.
-     */
-    displaySourceLocation = 1,
+enum CXDiagnosticDisplayOptions {
+  /**
+   * \brief Display the source-location information where the
+   * diagnostic was located.
+   *
+   * When set, diagnostics will be prefixed by the file, line, and
+   * (optionally) column to which the diagnostic refers. For example,
+   *
+   * \code
+   * test.c:28: warning: extra tokens at end of #endif directive
+   * \endcode
+   *
+   * This option corresponds to the clang flag \c -fshow-source-location.
+   */
+  CXDiagnostic_DisplaySourceLocation = 0x01,
 
-    /**
-     * \brief If displaying the source-location information of the
-     * diagnostic, also include the column number.
-     *
-     * This option corresponds to the clang flag \c -fshow-column.
-     */
-    displayColumn = 2,
+  /**
+   * \brief If displaying the source-location information of the
+   * diagnostic, also include the column number.
+   *
+   * This option corresponds to the clang flag \c -fshow-column.
+   */
+  CXDiagnostic_DisplayColumn = 0x02,
 
-    /**
-     * \brief If displaying the source-location information of the
-     * diagnostic, also include information about source ranges in a
-     * machine-parsable format.
-     *
-     * This option corresponds to the clang flag
-     * \c -fdiagnostics-print-source-range-info.
-     */
-    displaySourceRanges = 4,
+  /**
+   * \brief If displaying the source-location information of the
+   * diagnostic, also include information about source ranges in a
+   * machine-parsable format.
+   *
+   * This option corresponds to the clang flag
+   * \c -fdiagnostics-print-source-range-info.
+   */
+  CXDiagnostic_DisplaySourceRanges = 0x04,
 
-    /**
-     * \brief Display the option name associated with this diagnostic, if any.
-     *
-     * The option name displayed (e.g., -Wconversion) will be placed in brackets
-     * after the diagnostic text. This option corresponds to the clang flag
-     * \c -fdiagnostics-show-option.
-     */
-    displayOption = 8,
+  /**
+   * \brief Display the option name associated with this diagnostic, if any.
+   *
+   * The option name displayed (e.g., -Wconversion) will be placed in brackets
+   * after the diagnostic text. This option corresponds to the clang flag
+   * \c -fdiagnostics-show-option.
+   */
+  CXDiagnostic_DisplayOption = 0x08,
 
-    /**
-     * \brief Display the category number associated with this diagnostic, if any.
-     *
-     * The category number is displayed within brackets after the diagnostic text.
-     * This option corresponds to the clang flag
-     * \c -fdiagnostics-show-category=id.
-     */
-    displayCategoryId = 16,
+  /**
+   * \brief Display the category number associated with this diagnostic, if any.
+   *
+   * The category number is displayed within brackets after the diagnostic text.
+   * This option corresponds to the clang flag
+   * \c -fdiagnostics-show-category=id.
+   */
+  CXDiagnostic_DisplayCategoryId = 0x10,
 
-    /**
-     * \brief Display the category name associated with this diagnostic, if any.
-     *
-     * The category name is displayed within brackets after the diagnostic text.
-     * This option corresponds to the clang flag
-     * \c -fdiagnostics-show-category=name.
-     */
-    displayCategoryName = 32
+  /**
+   * \brief Display the category name associated with this diagnostic, if any.
+   *
+   * The category name is displayed within brackets after the diagnostic text.
+   * This option corresponds to the clang flag
+   * \c -fdiagnostics-show-category=name.
+   */
+  CXDiagnostic_DisplayCategoryName = 0x20
 }
+
+mixin EnumC!CXDiagnosticDisplayOptions;
 
 /**
  * \brief Format the given diagnostic in a manner that is suitable for display.
@@ -1178,6 +1180,7 @@ CXErrorCode clang_createTranslationUnit2(
     const(char)* ast_filename,
     CXTranslationUnit* out_TU);
 
+
 /**
  * \brief Flags that control the creation of translation units.
  *
@@ -1185,9 +1188,7 @@ CXErrorCode clang_createTranslationUnit2(
  * ORed together to specify which options should be used when
  * constructing the translation unit.
  */
-alias CXTranslationUnit_Flags = int;
-
-enum {
+enum CXTranslationUnit_Flags {
   /**
    * \brief Used to indicate that no special translation-unit options are
    * needed.
@@ -1301,7 +1302,9 @@ enum {
    * \brief Sets the preprocessor in a mode for parsing a single file only.
    */
   CXTranslationUnit_SingleFileParse = 0x400
-};
+}
+
+mixin EnumC!CXTranslationUnit_Flags;
 
 /**
  * \brief Returns the set of flags that is suitable for parsing a translation
@@ -1408,13 +1411,14 @@ CXErrorCode clang_parseTranslationUnit2FullArgv(
  * ORed together to specify which options should be used when
  * saving the translation unit.
  */
-enum CXSaveTranslationUnit_Flags
-{
-    /**
-     * \brief Used to indicate that no special saving options are needed.
-     */
-    none = 0
+enum CXSaveTranslationUnit_Flags {
+  /**
+   * \brief Used to indicate that no special saving options are needed.
+   */
+  CXSaveTranslationUnit_None = 0x0
 }
+
+mixin EnumC!CXSaveTranslationUnit_Flags;
 
 /**
  * \brief Returns the set of flags that is suitable for saving a translation
@@ -1427,41 +1431,43 @@ enum CXSaveTranslationUnit_Flags
  */
 uint clang_defaultSaveOptions(CXTranslationUnit TU);
 
+
 /**
  * \brief Describes the kind of error that occurred (if any) in a call to
  * \c clang_saveTranslationUnit().
  */
-enum CXSaveError
-{
-    /**
-     * \brief Indicates that no error occurred while saving a translation unit.
-     */
-    none = 0,
+enum CXSaveError {
+  /**
+   * \brief Indicates that no error occurred while saving a translation unit.
+   */
+  CXSaveError_None = 0,
 
-    /**
-     * \brief Indicates that an unknown error occurred while attempting to save
-     * the file.
-     *
-     * This error typically indicates that file I/O failed when attempting to
-     * write the file.
-     */
-    unknown = 1,
+  /**
+   * \brief Indicates that an unknown error occurred while attempting to save
+   * the file.
+   *
+   * This error typically indicates that file I/O failed when attempting to
+   * write the file.
+   */
+  CXSaveError_Unknown = 1,
 
-    /**
-     * \brief Indicates that errors during translation prevented this attempt
-     * to save the translation unit.
-     *
-     * Errors that prevent the translation unit from being saved can be
-     * extracted using \c clang_getNumDiagnostics() and \c clang_getDiagnostic().
-     */
-    translationErrors = 2,
+  /**
+   * \brief Indicates that errors during translation prevented this attempt
+   * to save the translation unit.
+   *
+   * Errors that prevent the translation unit from being saved can be
+   * extracted using \c clang_getNumDiagnostics() and \c clang_getDiagnostic().
+   */
+  CXSaveError_TranslationErrors = 2,
 
-    /**
-     * \brief Indicates that the translation unit to be saved was somehow
-     * invalid (e.g., NULL).
-     */
-    invalidTU = 3
+  /**
+   * \brief Indicates that the translation unit to be saved was somehow
+   * invalid (e.g., NULL).
+   */
+  CXSaveError_InvalidTU = 3
 }
+
+mixin EnumC!CXSaveError;
 
 /**
  * \brief Saves a translation unit into a serialized representation of
@@ -1495,7 +1501,6 @@ int clang_saveTranslationUnit(
  * \brief Destroy the specified CXTranslationUnit object.
  */
 void clang_disposeTranslationUnit(CXTranslationUnit);
-
 /**
  * \brief Flags that control the reparsing of translation units.
  *
@@ -1503,13 +1508,14 @@ void clang_disposeTranslationUnit(CXTranslationUnit);
  * ORed together to specify which options should be used when
  * reparsing the translation unit.
  */
-enum CXReparse_Flags
-{
-    /**
-     * \brief Used to indicate that no special reparsing options are needed.
-     */
-    none = 0
+enum CXReparse_Flags {
+  /**
+   * \brief Used to indicate that no special reparsing options are needed.
+   */
+  CXReparse_None = 0x0
 }
+
+mixin EnumC!CXReparse_Flags;
 
 /**
  * \brief Returns the set of flags that is suitable for reparsing a translation
@@ -1568,31 +1574,52 @@ int clang_reparseTranslationUnit(
     CXUnsavedFile* unsaved_files,
     uint options);
 
+
 /**
   * \brief Categorizes how memory is being used by a translation unit.
   */
-enum CXTUResourceUsageKind
-{
-    ast = 1,
-    identifiers = 2,
-    selectors = 3,
-    globalCompletionResults = 4,
-    sourceManagerContentCache = 5,
-    astSideTables = 6,
-    sourceManagerMembufferMalloc = 7,
-    sourceManagerMembufferMMap = 8,
-    externalASTSourceMembufferMalloc = 9,
-    externalASTSourceMembufferMMap = 10,
-    preprocessor = 11,
-    preprocessingRecord = 12,
-    sourceManagerDataStructures = 13,
-    preprocessorHeaderSearch = 14,
-    memoryInBytesBegin = 1,
-    memoryInBytesEnd = 14,
+enum CXTUResourceUsageKind {
+  CXTUResourceUsage_AST = 1,
+  CXTUResourceUsage_Identifiers = 2,
+  CXTUResourceUsage_Selectors = 3,
+  CXTUResourceUsage_GlobalCompletionResults = 4,
+  CXTUResourceUsage_SourceManagerContentCache = 5,
+  CXTUResourceUsage_AST_SideTables = 6,
+  CXTUResourceUsage_SourceManager_Membuffer_Malloc = 7,
+  CXTUResourceUsage_SourceManager_Membuffer_MMap = 8,
+  CXTUResourceUsage_ExternalASTSource_Membuffer_Malloc = 9,
+  CXTUResourceUsage_ExternalASTSource_Membuffer_MMap = 10,
+  CXTUResourceUsage_Preprocessor = 11,
+  CXTUResourceUsage_PreprocessingRecord = 12,
+  CXTUResourceUsage_SourceManager_DataStructures = 13,
+  CXTUResourceUsage_Preprocessor_HeaderSearch = 14,
+  CXTUResourceUsage_MEMORY_IN_BYTES_BEGIN = CXTUResourceUsage_AST,
+  CXTUResourceUsage_MEMORY_IN_BYTES_END =
+    CXTUResourceUsage_Preprocessor_HeaderSearch,
 
-    first = 1,
-    last = 14
+  CXTUResourceUsage_First = CXTUResourceUsage_AST,
+  CXTUResourceUsage_Last = CXTUResourceUsage_Preprocessor_HeaderSearch
 }
+
+enum CXTUResourceUsage_AST = 1;
+enum CXTUResourceUsage_Identifiers = 2;
+enum CXTUResourceUsage_Selectors = 3;
+enum CXTUResourceUsage_GlobalCompletionResults = 4;
+enum CXTUResourceUsage_SourceManagerContentCache = 5;
+enum CXTUResourceUsage_AST_SideTables = 6;
+enum CXTUResourceUsage_SourceManager_Membuffer_Malloc = 7;
+enum CXTUResourceUsage_SourceManager_Membuffer_MMap = 8;
+enum CXTUResourceUsage_ExternalASTSource_Membuffer_Malloc = 9;
+enum CXTUResourceUsage_ExternalASTSource_Membuffer_MMap = 10;
+enum CXTUResourceUsage_Preprocessor = 11;
+enum CXTUResourceUsage_PreprocessingRecord = 12;
+enum CXTUResourceUsage_SourceManager_DataStructures = 13;
+enum CXTUResourceUsage_Preprocessor_HeaderSearch = 14;
+enum CXTUResourceUsage_MEMORY_IN_BYTES_BEGIN = CXTUResourceUsage_AST;
+enum CXTUResourceUsage_MEMORY_IN_BYTES_END = CXTUResourceUsage_Preprocessor_HeaderSearch;
+enum CXTUResourceUsage_First = CXTUResourceUsage_AST;
+enum CXTUResourceUsage_Last = CXTUResourceUsage_Preprocessor_HeaderSearch;
+
 
 /**
   * \brief Returns the human-readable null-terminated C string that represents
@@ -1640,9 +1667,7 @@ void clang_disposeCXTUResourceUsage(CXTUResourceUsage usage);
 /**
  * \brief Describes the kind of entity that a cursor refers to.
  */
-alias CXCursorKind = int;
-enum
-{
+enum CXCursorKind {
   /* Declarations */
   /**
    * \brief A declaration whose specific kind is not exposed via this
@@ -2528,6 +2553,8 @@ enum
   CXCursor_OverloadCandidate             = 700
 }
 
+mixin EnumC!CXCursorKind;
+
 /**
  * \brief A cursor representing some element in the abstract syntax tree for
  * a translation unit.
@@ -2651,46 +2678,50 @@ uint clang_isPreprocessing(CXCursorKind);
  */
 uint clang_isUnexposed(CXCursorKind);
 
+
 /**
  * \brief Describe the linkage of the entity referred to by a cursor.
  */
-enum CXLinkageKind
-{
-    /** \brief This value indicates that no linkage information is available
-     * for a provided CXCursor. */
-    invalid = 0,
-    /**
-     * \brief This is the linkage for variables, parameters, and so on that
-     *  have automatic storage.  This covers normal (non-extern) local variables.
-     */
-    noLinkage = 1,
-    /** \brief This is the linkage for static variables and static functions. */
-    internal = 2,
-    /** \brief This is the linkage for entities with external linkage that live
-     * in C++ anonymous namespaces.*/
-    uniqueExternal = 3,
-    /** \brief This is the linkage for entities with true, external linkage. */
-    external = 4
+enum CXLinkageKind {
+  /** \brief This value indicates that no linkage information is available
+   * for a provided CXCursor. */
+  CXLinkage_Invalid,
+  /**
+   * \brief This is the linkage for variables, parameters, and so on that
+   *  have automatic storage.  This covers normal (non-extern) local variables.
+   */
+  CXLinkage_NoLinkage,
+  /** \brief This is the linkage for static variables and static functions. */
+  CXLinkage_Internal,
+  /** \brief This is the linkage for entities with external linkage that live
+   * in C++ anonymous namespaces.*/
+  CXLinkage_UniqueExternal,
+  /** \brief This is the linkage for entities with true, external linkage. */
+  CXLinkage_External
 }
+
+mixin EnumC!CXLinkageKind;
 
 /**
  * \brief Determine the linkage of the entity referred to by a given cursor.
  */
 CXLinkageKind clang_getCursorLinkage(CXCursor cursor);
 
-enum CXVisibilityKind
-{
-    /** \brief This value indicates that no visibility information is available
-     * for a provided CXCursor. */
-    invalid = 0,
+enum CXVisibilityKind {
+  /** \brief This value indicates that no visibility information is available
+   * for a provided CXCursor. */
+  CXVisibility_Invalid,
 
-    /** \brief Symbol not seen by the linker. */
-    hidden = 1,
-    /** \brief Symbol seen by the linker but resolves to a symbol inside this object. */
-    protected_ = 2,
-    /** \brief Symbol seen by the linker and acts like a normal symbol. */
-    default_ = 3
+  /** \brief Symbol not seen by the linker. */
+  CXVisibility_Hidden,
+  /** \brief Symbol seen by the linker but resolves to a symbol inside this object. */
+  CXVisibility_Protected,
+  /** \brief Symbol seen by the linker and acts like a normal symbol. */
+  CXVisibility_Default
 }
+
+mixin EnumC!CXVisibilityKind;
+
 
 /**
  * \brief Describe the visibility of the entity referred to by a cursor.
@@ -2806,13 +2837,14 @@ void clang_disposeCXPlatformAvailability(CXPlatformAvailability* availability);
 /**
  * \brief Describe the "language" of the entity referred to by a cursor.
  */
-enum CXLanguageKind
-{
-    invalid = 0,
-    c = 1,
-    objC = 2,
-    cPlusPlus = 3
+enum CXLanguageKind {
+  CXLanguage_Invalid = 0,
+  CXLanguage_C,
+  CXLanguage_ObjC,
+  CXLanguage_CPlusPlus
 }
+
+mixin EnumC!CXLanguageKind;
 
 /**
  * \brief Determine the "language" of the entity referred to by a given cursor.
@@ -3052,108 +3084,155 @@ CXSourceRange clang_getCursorExtent(CXCursor);
  * @{
  */
 
-/**
- * \brief Describes the kind of type
- */
-enum CXTypeKind
-{
-    /**
-     * \brief Represents an invalid type (e.g., where no type is available).
-     */
-    invalid = 0,
+enum CXTypeKind {
+  /**
+   * \brief Represents an invalid type (e.g., where no type is available).
+   */
+  CXType_Invalid = 0,
 
-    /**
-     * \brief A type whose specific kind is not exposed via this
-     * interface.
-     */
-    unexposed = 1,
+  /**
+   * \brief A type whose specific kind is not exposed via this
+   * interface.
+   */
+  CXType_Unexposed = 1,
 
-    /* Builtin types */
-    void_ = 2,
-    bool_ = 3,
-    charU = 4,
-    uChar = 5,
-    char16 = 6,
-    char32 = 7,
-    uShort = 8,
-    uInt = 9,
-    uLong = 10,
-    uLongLong = 11,
-    uInt128 = 12,
-    charS = 13,
-    sChar = 14,
-    wChar = 15,
-    short_ = 16,
-    int_ = 17,
-    long_ = 18,
-    longLong = 19,
-    int128 = 20,
-    float_ = 21,
-    double_ = 22,
-    longDouble = 23,
-    nullPtr = 24,
-    overload = 25,
-    dependent = 26,
-    objCId = 27,
-    objCClass = 28,
-    objCSel = 29,
-    float128 = 30,
-    firstBuiltin = 2,
-    lastBuiltin = 29,
+  /* Builtin types */
+  CXType_Void = 2,
+  CXType_Bool = 3,
+  CXType_Char_U = 4,
+  CXType_UChar = 5,
+  CXType_Char16 = 6,
+  CXType_Char32 = 7,
+  CXType_UShort = 8,
+  CXType_UInt = 9,
+  CXType_ULong = 10,
+  CXType_ULongLong = 11,
+  CXType_UInt128 = 12,
+  CXType_Char_S = 13,
+  CXType_SChar = 14,
+  CXType_WChar = 15,
+  CXType_Short = 16,
+  CXType_Int = 17,
+  CXType_Long = 18,
+  CXType_LongLong = 19,
+  CXType_Int128 = 20,
+  CXType_Float = 21,
+  CXType_Double = 22,
+  CXType_LongDouble = 23,
+  CXType_NullPtr = 24,
+  CXType_Overload = 25,
+  CXType_Dependent = 26,
+  CXType_ObjCId = 27,
+  CXType_ObjCClass = 28,
+  CXType_ObjCSel = 29,
+  CXType_Float128 = 30,
+  CXType_Half = 31,
+  CXType_FirstBuiltin = CXType_Void,
+  CXType_LastBuiltin  = CXType_Half,
 
-    complex = 100,
-    pointer = 101,
-    blockPointer = 102,
-    lValueReference = 103,
-    rValueReference = 104,
-    record = 105,
-    enum_ = 106,
-    typedef_ = 107,
-    objCInterface = 108,
-    objCObjectPointer = 109,
-    functionNoProto = 110,
-    functionProto = 111,
-    constantArray = 112,
-    vector = 113,
-    incompleteArray = 114,
-    variableArray = 115,
-    dependentSizedArray = 116,
-    memberPointer = 117,
-    auto_ = 118,
+  CXType_Complex = 100,
+  CXType_Pointer = 101,
+  CXType_BlockPointer = 102,
+  CXType_LValueReference = 103,
+  CXType_RValueReference = 104,
+  CXType_Record = 105,
+  CXType_Enum = 106,
+  CXType_Typedef = 107,
+  CXType_ObjCInterface = 108,
+  CXType_ObjCObjectPointer = 109,
+  CXType_FunctionNoProto = 110,
+  CXType_FunctionProto = 111,
+  CXType_ConstantArray = 112,
+  CXType_Vector = 113,
+  CXType_IncompleteArray = 114,
+  CXType_VariableArray = 115,
+  CXType_DependentSizedArray = 116,
+  CXType_MemberPointer = 117,
+  CXType_Auto = 118,
 
-    /**
-     * \brief Represents a type that was referred to using an elaborated type keyword.
-     *
-     * E.g., struct S, or via a qualified name, e.g., N::M::type, or both.
-     */
-    elaborated = 119
+  /**
+   * \brief Represents a type that was referred to using an elaborated type keyword.
+   *
+   * E.g., struct S, or via a qualified name, e.g., N::M::type, or both.
+   */
+  CXType_Elaborated = 119,
+
+  /* OpenCL PipeType. */
+  CXType_Pipe = 120,
+
+  /* OpenCL builtin types. */
+  CXType_OCLImage1dRO = 121,
+  CXType_OCLImage1dArrayRO = 122,
+  CXType_OCLImage1dBufferRO = 123,
+  CXType_OCLImage2dRO = 124,
+  CXType_OCLImage2dArrayRO = 125,
+  CXType_OCLImage2dDepthRO = 126,
+  CXType_OCLImage2dArrayDepthRO = 127,
+  CXType_OCLImage2dMSAARO = 128,
+  CXType_OCLImage2dArrayMSAARO = 129,
+  CXType_OCLImage2dMSAADepthRO = 130,
+  CXType_OCLImage2dArrayMSAADepthRO = 131,
+  CXType_OCLImage3dRO = 132,
+  CXType_OCLImage1dWO = 133,
+  CXType_OCLImage1dArrayWO = 134,
+  CXType_OCLImage1dBufferWO = 135,
+  CXType_OCLImage2dWO = 136,
+  CXType_OCLImage2dArrayWO = 137,
+  CXType_OCLImage2dDepthWO = 138,
+  CXType_OCLImage2dArrayDepthWO = 139,
+  CXType_OCLImage2dMSAAWO = 140,
+  CXType_OCLImage2dArrayMSAAWO = 141,
+  CXType_OCLImage2dMSAADepthWO = 142,
+  CXType_OCLImage2dArrayMSAADepthWO = 143,
+  CXType_OCLImage3dWO = 144,
+  CXType_OCLImage1dRW = 145,
+  CXType_OCLImage1dArrayRW = 146,
+  CXType_OCLImage1dBufferRW = 147,
+  CXType_OCLImage2dRW = 148,
+  CXType_OCLImage2dArrayRW = 149,
+  CXType_OCLImage2dDepthRW = 150,
+  CXType_OCLImage2dArrayDepthRW = 151,
+  CXType_OCLImage2dMSAARW = 152,
+  CXType_OCLImage2dArrayMSAARW = 153,
+  CXType_OCLImage2dMSAADepthRW = 154,
+  CXType_OCLImage2dArrayMSAADepthRW = 155,
+  CXType_OCLImage3dRW = 156,
+  CXType_OCLSampler = 157,
+  CXType_OCLEvent = 158,
+  CXType_OCLQueue = 159,
+  CXType_OCLReserveID = 160
 }
+
+mixin EnumC!CXTypeKind;
 
 /**
  * \brief Describes the calling convention of a function type
  */
-enum CXCallingConv
-{
-    default_ = 0,
-    c = 1,
-    x86StdCall = 2,
-    x86FastCall = 3,
-    x86ThisCall = 4,
-    x86Pascal = 5,
-    aapcs = 6,
-    aapcsVfp = 7,
-    x86RegCall = 8,
-    intelOclBicc = 9,
-    x8664Win64 = 10,
-    x8664SysV = 11,
-    x86VectorCall = 12,
-    swift = 13,
-    preserveMost = 14,
-    preserveAll = 15,
+enum CXCallingConv {
+  CXCallingConv_Default = 0,
+  CXCallingConv_C = 1,
+  CXCallingConv_X86StdCall = 2,
+  CXCallingConv_X86FastCall = 3,
+  CXCallingConv_X86ThisCall = 4,
+  CXCallingConv_X86Pascal = 5,
+  CXCallingConv_AAPCS = 6,
+  CXCallingConv_AAPCS_VFP = 7,
+  CXCallingConv_X86RegCall = 8,
+  CXCallingConv_IntelOclBicc = 9,
+  CXCallingConv_Win64 = 10,
+  /* Alias for compatibility with older versions of API. */
+  CXCallingConv_X86_64Win64 = CXCallingConv_Win64,
+  CXCallingConv_X86_64SysV = 11,
+  CXCallingConv_X86VectorCall = 12,
+  CXCallingConv_Swift = 13,
+  CXCallingConv_PreserveMost = 14,
+  CXCallingConv_PreserveAll = 15,
 
-    invalid = 100,
-    unexposed = 200
+  CXCallingConv_Invalid = 100,
+  CXCallingConv_Unexposed = 200
 }
+
+mixin EnumC!CXCallingConv;
 
 /**
  * \brief The type of an element in the abstract syntax tree.
@@ -3245,20 +3324,21 @@ CXCursor clang_Cursor_getArgument(CXCursor C, uint i);
  * See the definition of llvm::clang::TemplateArgument::ArgKind for full
  * element descriptions.
  */
-enum CXTemplateArgumentKind
-{
-    null_ = 0,
-    type = 1,
-    declaration = 2,
-    nullPtr = 3,
-    integral = 4,
-    template_ = 5,
-    templateExpansion = 6,
-    expression = 7,
-    pack = 8,
-    /* Indicates an error case, preventing the kind from being deduced. */
-    invalid = 9
+enum CXTemplateArgumentKind {
+  CXTemplateArgumentKind_Null,
+  CXTemplateArgumentKind_Type,
+  CXTemplateArgumentKind_Declaration,
+  CXTemplateArgumentKind_NullPtr,
+  CXTemplateArgumentKind_Integral,
+  CXTemplateArgumentKind_Template,
+  CXTemplateArgumentKind_TemplateExpansion,
+  CXTemplateArgumentKind_Expression,
+  CXTemplateArgumentKind_Pack,
+  /* Indicates an error case, preventing the kind from being deduced. */
+  CXTemplateArgumentKind_Invalid
 }
+
+mixin EnumC!CXTemplateArgumentKind;
 
 /**
  *\brief Returns the number of template args of a function decl representing a
@@ -3529,29 +3609,30 @@ CXType clang_Type_getNamedType(CXType T);
  * A value of this enumeration type can be returned if the target type is not
  * a valid argument to sizeof, alignof or offsetof.
  */
-enum CXTypeLayoutError
-{
-    /**
-     * \brief Type is of kind CXType_Invalid.
-     */
-    invalid = -1,
-    /**
-     * \brief The type is an incomplete Type.
-     */
-    incomplete = -2,
-    /**
-     * \brief The type is a dependent Type.
-     */
-    dependent = -3,
-    /**
-     * \brief The type is not a constant size type.
-     */
-    notConstantSize = -4,
-    /**
-     * \brief The Field name is not valid for this record.
-     */
-    invalidFieldName = -5
+enum CXTypeLayoutError {
+  /**
+   * \brief Type is of kind CXType_Invalid.
+   */
+  CXTypeLayoutError_Invalid = -1,
+  /**
+   * \brief The type is an incomplete Type.
+   */
+  CXTypeLayoutError_Incomplete = -2,
+  /**
+   * \brief The type is a dependent Type.
+   */
+  CXTypeLayoutError_Dependent = -3,
+  /**
+   * \brief The type is not a constant size type.
+   */
+  CXTypeLayoutError_NotConstantSize = -4,
+  /**
+   * \brief The Field name is not valid for this record.
+   */
+  CXTypeLayoutError_InvalidFieldName = -5
 }
+
+mixin EnumC!CXTypeLayoutError;
 
 /**
  * \brief Return the alignment of a type in bytes as per C++[expr.alignof]
@@ -3621,8 +3702,7 @@ long clang_Cursor_getOffsetOfField(CXCursor C);
  */
 uint clang_Cursor_isAnonymous(CXCursor C);
 
-alias CXRefQualifierKind = int;
-enum {
+enum CXRefQualifierKind {
   /** \brief No ref-qualifier was provided. */
   CXRefQualifier_None = 0,
   /** \brief An lvalue ref-qualifier was provided (\c &). */
@@ -3630,6 +3710,8 @@ enum {
   /** \brief An rvalue ref-qualifier was provided (\c &&). */
   CXRefQualifier_RValue
 }
+
+mixin EnumC!CXRefQualifierKind;
 
 /**
  * \brief Returns the number of template arguments for given template
@@ -3670,13 +3752,14 @@ uint clang_isVirtualBase(CXCursor);
  * \brief Represents the C++ access control level to a base class for a
  * cursor with kind CX_CXXBaseSpecifier.
  */
-enum CX_CXXAccessSpecifier
-{
-    cxxInvalidAccessSpecifier = 0,
-    cxxPublic = 1,
-    cxxProtected = 2,
-    cxxPrivate = 3
+enum CX_CXXAccessSpecifier {
+  CX_CXXInvalidAccessSpecifier,
+  CX_CXXPublic,
+  CX_CXXProtected,
+  CX_CXXPrivate
 }
+
+mixin EnumC!CX_CXXAccessSpecifier;
 
 /**
  * \brief Returns the access control level for the referenced object.
@@ -3687,21 +3770,24 @@ enum CX_CXXAccessSpecifier
  */
 CX_CXXAccessSpecifier clang_getCXXAccessSpecifier(CXCursor);
 
+
 /**
  * \brief Represents the storage classes as declared in the source. CX_SC_Invalid
  * was added for the case that the passed cursor in not a declaration.
  */
-enum CX_StorageClass
-{
-    invalid = 0,
-    none = 1,
-    extern_ = 2,
-    static_ = 3,
-    privateExtern = 4,
-    openCLWorkGroupLocal = 5,
-    auto_ = 6,
-    register = 7
+enum CX_StorageClass {
+  CX_SC_Invalid,
+  CX_SC_None,
+  CX_SC_Extern,
+  CX_SC_Static,
+  CX_SC_PrivateExtern,
+  CX_SC_OpenCLWorkGroupLocal,
+  CX_SC_Auto,
+  CX_SC_Register
 }
+
+mixin EnumC!CX_StorageClass;
+
 
 /**
  * \brief Returns the storage class for a function or variable declaration.
@@ -3775,8 +3861,7 @@ CXType clang_getIBOutletCollectionType(CXCursor);
  * A value of this enumeration type should be returned by each
  * \c CXCursorVisitor to indicate how clang_visitChildren() proceed.
  */
-alias CXChildVisitResult = int;
-enum {
+enum CXChildVisitResult {
   /**
    * \brief Terminates the cursor traversal.
    */
@@ -3791,7 +3876,9 @@ enum {
    * the same visitor and client data.
    */
   CXChildVisit_Recurse
-};
+}
+
+mixin EnumC!CXChildVisitResult;
 
 /**
  * \brief Visitor invoked for each cursor found by a traversal.
@@ -4052,26 +4139,28 @@ int clang_Cursor_isDynamicCall(CXCursor C);
  */
 CXType clang_Cursor_getReceiverType(CXCursor C);
 
+
 /**
  * \brief Property attributes for a \c CXCursor_ObjCPropertyDecl.
  */
-enum CXObjCPropertyAttrKind
-{
-    noattr = 0,
-    readonly = 1,
-    getter = 2,
-    assign = 4,
-    readwrite = 8,
-    retain = 16,
-    copy = 32,
-    nonatomic = 64,
-    setter = 128,
-    atomic = 256,
-    weak = 512,
-    strong = 1024,
-    unsafeUnretained = 2048,
-    class_ = 4096
+enum CXObjCPropertyAttrKind {
+  CXObjCPropertyAttr_noattr    = 0x00,
+  CXObjCPropertyAttr_readonly  = 0x01,
+  CXObjCPropertyAttr_getter    = 0x02,
+  CXObjCPropertyAttr_assign    = 0x04,
+  CXObjCPropertyAttr_readwrite = 0x08,
+  CXObjCPropertyAttr_retain    = 0x10,
+  CXObjCPropertyAttr_copy      = 0x20,
+  CXObjCPropertyAttr_nonatomic = 0x40,
+  CXObjCPropertyAttr_setter    = 0x80,
+  CXObjCPropertyAttr_atomic    = 0x100,
+  CXObjCPropertyAttr_weak      = 0x200,
+  CXObjCPropertyAttr_strong    = 0x400,
+  CXObjCPropertyAttr_unsafe_unretained = 0x800,
+  CXObjCPropertyAttr_class = 0x1000
 }
+
+mixin EnumC!CXObjCPropertyAttrKind;
 
 /**
  * \brief Given a cursor that represents a property declaration, return the
@@ -4086,16 +4175,17 @@ uint clang_Cursor_getObjCPropertyAttributes(CXCursor C, uint reserved);
  * \brief 'Qualifiers' written next to the return and parameter types in
  * Objective-C method declarations.
  */
-enum CXObjCDeclQualifierKind
-{
-    none = 0,
-    in_ = 1,
-    inout_ = 2,
-    out_ = 4,
-    bycopy = 8,
-    byref = 16,
-    oneway = 32
+enum CXObjCDeclQualifierKind {
+  CXObjCDeclQualifier_None = 0x0,
+  CXObjCDeclQualifier_In = 0x1,
+  CXObjCDeclQualifier_Inout = 0x2,
+  CXObjCDeclQualifier_Out = 0x4,
+  CXObjCDeclQualifier_Bycopy = 0x8,
+  CXObjCDeclQualifier_Byref = 0x10,
+  CXObjCDeclQualifier_Oneway = 0x20
 }
+
+mixin EnumC!CXObjCDeclQualifierKind;
 
 /**
  * \brief Given a cursor that represents an Objective-C method or parameter
@@ -4378,32 +4468,34 @@ CXSourceRange clang_getCursorReferenceNameRange(
     uint NameFlags,
     uint PieceIndex);
 
-enum CXNameRefFlags
-{
-    /**
-     * \brief Include the nested-name-specifier, e.g. Foo:: in x.Foo::y, in the
-     * range.
-     */
-    wantQualifier = 1,
 
-    /**
-     * \brief Include the explicit template arguments, e.g. \<int> in x.f<int>,
-     * in the range.
-     */
-    wantTemplateArgs = 2,
+enum CXNameRefFlags {
+  /**
+   * \brief Include the nested-name-specifier, e.g. Foo:: in x.Foo::y, in the
+   * range.
+   */
+  CXNameRange_WantQualifier = 0x1,
 
-    /**
-     * \brief If the name is non-contiguous, return the full spanning range.
-     *
-     * Non-contiguous names occur in Objective-C when a selector with two or more
-     * parameters is used, or in C++ when using an operator:
-     * \code
-     * [object doSomething:here withValue:there]; // Objective-C
-     * return some_vector[1]; // C++
-     * \endcode
-     */
-    wantSinglePiece = 4
+  /**
+   * \brief Include the explicit template arguments, e.g. \<int> in x.f<int>,
+   * in the range.
+   */
+  CXNameRange_WantTemplateArgs = 0x2,
+
+  /**
+   * \brief If the name is non-contiguous, return the full spanning range.
+   *
+   * Non-contiguous names occur in Objective-C when a selector with two or more
+   * parameters is used, or in C++ when using an operator:
+   * \code
+   * [object doSomething:here withValue:there]; // Objective-C
+   * return some_vector[1]; // C++
+   * \endcode
+   */
+  CXNameRange_WantSinglePiece = 0x4
 }
+
+mixin EnumC!CXNameRefFlags;
 
 /**
  * @}
@@ -4422,33 +4514,34 @@ enum CXNameRefFlags
 /**
  * \brief Describes a kind of token.
  */
-enum CXTokenKind
-{
-    /**
-     * \brief A token that contains some kind of punctuation.
-     */
-    punctuation = 0,
+enum CXTokenKind {
+  /**
+   * \brief A token that contains some kind of punctuation.
+   */
+  CXToken_Punctuation,
 
-    /**
-     * \brief A language keyword.
-     */
-    keyword = 1,
+  /**
+   * \brief A language keyword.
+   */
+  CXToken_Keyword,
 
-    /**
-     * \brief An identifier (that is not a keyword).
-     */
-    identifier = 2,
+  /**
+   * \brief An identifier (that is not a keyword).
+   */
+  CXToken_Identifier,
 
-    /**
-     * \brief A numeric, string, or character literal.
-     */
-    literal = 3,
+  /**
+   * \brief A numeric, string, or character literal.
+   */
+  CXToken_Literal,
 
-    /**
-     * \brief A comment.
-     */
-    comment = 4
+  /**
+   * \brief A comment.
+   */
+  CXToken_Comment
 }
+
+mixin EnumC!CXTokenKind;
 
 /**
  * \brief Describes a single preprocessing token.
@@ -4637,170 +4730,171 @@ struct CXCompletionResult
  * either a piece of text with a specific "kind" that describes how that text
  * should be interpreted by the client or is another completion string.
  */
-enum CXCompletionChunkKind
-{
-    /**
-     * \brief A code-completion string that describes "optional" text that
-     * could be a part of the template (but is not required).
-     *
-     * The Optional chunk is the only kind of chunk that has a code-completion
-     * string for its representation, which is accessible via
-     * \c clang_getCompletionChunkCompletionString(). The code-completion string
-     * describes an additional part of the template that is completely optional.
-     * For example, optional chunks can be used to describe the placeholders for
-     * arguments that match up with defaulted function parameters, e.g. given:
-     *
-     * \code
-     * void f(int x, float y = 3.14, double z = 2.71828);
-     * \endcode
-     *
-     * The code-completion string for this function would contain:
-     *   - a TypedText chunk for "f".
-     *   - a LeftParen chunk for "(".
-     *   - a Placeholder chunk for "int x"
-     *   - an Optional chunk containing the remaining defaulted arguments, e.g.,
-     *       - a Comma chunk for ","
-     *       - a Placeholder chunk for "float y"
-     *       - an Optional chunk containing the last defaulted argument:
-     *           - a Comma chunk for ","
-     *           - a Placeholder chunk for "double z"
-     *   - a RightParen chunk for ")"
-     *
-     * There are many ways to handle Optional chunks. Two simple approaches are:
-     *   - Completely ignore optional chunks, in which case the template for the
-     *     function "f" would only include the first parameter ("int x").
-     *   - Fully expand all optional chunks, in which case the template for the
-     *     function "f" would have all of the parameters.
-     */
-    optional = 0,
-    /**
-     * \brief Text that a user would be expected to type to get this
-     * code-completion result.
-     *
-     * There will be exactly one "typed text" chunk in a semantic string, which
-     * will typically provide the spelling of a keyword or the name of a
-     * declaration that could be used at the current code point. Clients are
-     * expected to filter the code-completion results based on the text in this
-     * chunk.
-     */
-    typedText = 1,
-    /**
-     * \brief Text that should be inserted as part of a code-completion result.
-     *
-     * A "text" chunk represents text that is part of the template to be
-     * inserted into user code should this particular code-completion result
-     * be selected.
-     */
-    text = 2,
-    /**
-     * \brief Placeholder text that should be replaced by the user.
-     *
-     * A "placeholder" chunk marks a place where the user should insert text
-     * into the code-completion template. For example, placeholders might mark
-     * the function parameters for a function declaration, to indicate that the
-     * user should provide arguments for each of those parameters. The actual
-     * text in a placeholder is a suggestion for the text to display before
-     * the user replaces the placeholder with real code.
-     */
-    placeholder = 3,
-    /**
-     * \brief Informative text that should be displayed but never inserted as
-     * part of the template.
-     *
-     * An "informative" chunk contains annotations that can be displayed to
-     * help the user decide whether a particular code-completion result is the
-     * right option, but which is not part of the actual template to be inserted
-     * by code completion.
-     */
-    informative = 4,
-    /**
-     * \brief Text that describes the current parameter when code-completion is
-     * referring to function call, message send, or template specialization.
-     *
-     * A "current parameter" chunk occurs when code-completion is providing
-     * information about a parameter corresponding to the argument at the
-     * code-completion point. For example, given a function
-     *
-     * \code
-     * int add(int x, int y);
-     * \endcode
-     *
-     * and the source code \c add(, where the code-completion point is after the
-     * "(", the code-completion string will contain a "current parameter" chunk
-     * for "int x", indicating that the current argument will initialize that
-     * parameter. After typing further, to \c add(17, (where the code-completion
-     * point is after the ","), the code-completion string will contain a
-     * "current paremeter" chunk to "int y".
-     */
-    currentParameter = 5,
-    /**
-     * \brief A left parenthesis ('('), used to initiate a function call or
-     * signal the beginning of a function parameter list.
-     */
-    leftParen = 6,
-    /**
-     * \brief A right parenthesis (')'), used to finish a function call or
-     * signal the end of a function parameter list.
-     */
-    rightParen = 7,
-    /**
-     * \brief A left bracket ('[').
-     */
-    leftBracket = 8,
-    /**
-     * \brief A right bracket (']').
-     */
-    rightBracket = 9,
-    /**
-     * \brief A left brace ('{').
-     */
-    leftBrace = 10,
-    /**
-     * \brief A right brace ('}').
-     */
-    rightBrace = 11,
-    /**
-     * \brief A left angle bracket ('<').
-     */
-    leftAngle = 12,
-    /**
-     * \brief A right angle bracket ('>').
-     */
-    rightAngle = 13,
-    /**
-     * \brief A comma separator (',').
-     */
-    comma = 14,
-    /**
-     * \brief Text that specifies the result type of a given result.
-     *
-     * This special kind of informative chunk is not meant to be inserted into
-     * the text buffer. Rather, it is meant to illustrate the type that an
-     * expression using the given completion string would have.
-     */
-    resultType = 15,
-    /**
-     * \brief A colon (':').
-     */
-    colon = 16,
-    /**
-     * \brief A semicolon (';').
-     */
-    semiColon = 17,
-    /**
-     * \brief An '=' sign.
-     */
-    equal = 18,
-    /**
-     * Horizontal space (' ').
-     */
-    horizontalSpace = 19,
-    /**
-     * Vertical space ('\n'), after which it is generally a good idea to
-     * perform indentation.
-     */
-    verticalSpace = 20
+enum CXCompletionChunkKind {
+  /**
+   * \brief A code-completion string that describes "optional" text that
+   * could be a part of the template (but is not required).
+   *
+   * The Optional chunk is the only kind of chunk that has a code-completion
+   * string for its representation, which is accessible via
+   * \c clang_getCompletionChunkCompletionString(). The code-completion string
+   * describes an additional part of the template that is completely optional.
+   * For example, optional chunks can be used to describe the placeholders for
+   * arguments that match up with defaulted function parameters, e.g. given:
+   *
+   * \code
+   * void f(int x, float y = 3.14, double z = 2.71828);
+   * \endcode
+   *
+   * The code-completion string for this function would contain:
+   *   - a TypedText chunk for "f".
+   *   - a LeftParen chunk for "(".
+   *   - a Placeholder chunk for "int x"
+   *   - an Optional chunk containing the remaining defaulted arguments, e.g.,
+   *       - a Comma chunk for ","
+   *       - a Placeholder chunk for "float y"
+   *       - an Optional chunk containing the last defaulted argument:
+   *           - a Comma chunk for ","
+   *           - a Placeholder chunk for "double z"
+   *   - a RightParen chunk for ")"
+   *
+   * There are many ways to handle Optional chunks. Two simple approaches are:
+   *   - Completely ignore optional chunks, in which case the template for the
+   *     function "f" would only include the first parameter ("int x").
+   *   - Fully expand all optional chunks, in which case the template for the
+   *     function "f" would have all of the parameters.
+   */
+  CXCompletionChunk_Optional,
+  /**
+   * \brief Text that a user would be expected to type to get this
+   * code-completion result.
+   *
+   * There will be exactly one "typed text" chunk in a semantic string, which
+   * will typically provide the spelling of a keyword or the name of a
+   * declaration that could be used at the current code point. Clients are
+   * expected to filter the code-completion results based on the text in this
+   * chunk.
+   */
+  CXCompletionChunk_TypedText,
+  /**
+   * \brief Text that should be inserted as part of a code-completion result.
+   *
+   * A "text" chunk represents text that is part of the template to be
+   * inserted into user code should this particular code-completion result
+   * be selected.
+   */
+  CXCompletionChunk_Text,
+  /**
+   * \brief Placeholder text that should be replaced by the user.
+   *
+   * A "placeholder" chunk marks a place where the user should insert text
+   * into the code-completion template. For example, placeholders might mark
+   * the function parameters for a function declaration, to indicate that the
+   * user should provide arguments for each of those parameters. The actual
+   * text in a placeholder is a suggestion for the text to display before
+   * the user replaces the placeholder with real code.
+   */
+  CXCompletionChunk_Placeholder,
+  /**
+   * \brief Informative text that should be displayed but never inserted as
+   * part of the template.
+   *
+   * An "informative" chunk contains annotations that can be displayed to
+   * help the user decide whether a particular code-completion result is the
+   * right option, but which is not part of the actual template to be inserted
+   * by code completion.
+   */
+  CXCompletionChunk_Informative,
+  /**
+   * \brief Text that describes the current parameter when code-completion is
+   * referring to function call, message send, or template specialization.
+   *
+   * A "current parameter" chunk occurs when code-completion is providing
+   * information about a parameter corresponding to the argument at the
+   * code-completion point. For example, given a function
+   *
+   * \code
+   * int add(int x, int y);
+   * \endcode
+   *
+   * and the source code \c add(, where the code-completion point is after the
+   * "(", the code-completion string will contain a "current parameter" chunk
+   * for "int x", indicating that the current argument will initialize that
+   * parameter. After typing further, to \c add(17, (where the code-completion
+   * point is after the ","), the code-completion string will contain a
+   * "current paremeter" chunk to "int y".
+   */
+  CXCompletionChunk_CurrentParameter,
+  /**
+   * \brief A left parenthesis ('('), used to initiate a function call or
+   * signal the beginning of a function parameter list.
+   */
+  CXCompletionChunk_LeftParen,
+  /**
+   * \brief A right parenthesis (')'), used to finish a function call or
+   * signal the end of a function parameter list.
+   */
+  CXCompletionChunk_RightParen,
+  /**
+   * \brief A left bracket ('[').
+   */
+  CXCompletionChunk_LeftBracket,
+  /**
+   * \brief A right bracket (']').
+   */
+  CXCompletionChunk_RightBracket,
+  /**
+   * \brief A left brace ('{').
+   */
+  CXCompletionChunk_LeftBrace,
+  /**
+   * \brief A right brace ('}').
+   */
+  CXCompletionChunk_RightBrace,
+  /**
+   * \brief A left angle bracket ('<').
+   */
+  CXCompletionChunk_LeftAngle,
+  /**
+   * \brief A right angle bracket ('>').
+   */
+  CXCompletionChunk_RightAngle,
+  /**
+   * \brief A comma separator (',').
+   */
+  CXCompletionChunk_Comma,
+  /**
+   * \brief Text that specifies the result type of a given result.
+   *
+   * This special kind of informative chunk is not meant to be inserted into
+   * the text buffer. Rather, it is meant to illustrate the type that an
+   * expression using the given completion string would have.
+   */
+  CXCompletionChunk_ResultType,
+  /**
+   * \brief A colon (':').
+   */
+  CXCompletionChunk_Colon,
+  /**
+   * \brief A semicolon (';').
+   */
+  CXCompletionChunk_SemiColon,
+  /**
+   * \brief An '=' sign.
+   */
+  CXCompletionChunk_Equal,
+  /**
+   * Horizontal space (' ').
+   */
+  CXCompletionChunk_HorizontalSpace,
+  /**
+   * Vertical space ('\\n'), after which it is generally a good idea to
+   * perform indentation.
+   */
+  CXCompletionChunk_VerticalSpace
 }
+
+mixin EnumC!CXCompletionChunkKind;
 
 /**
  * \brief Determine the kind of a particular chunk within a completion string.
@@ -4965,26 +5059,27 @@ struct CXCodeCompleteResults
  * The enumerators in this enumeration can be bitwise-OR'd together to
  * provide multiple options to \c clang_codeCompleteAt().
  */
-enum CXCodeComplete_Flags
-{
-    /**
-     * \brief Whether to include macros within the set of code
-     * completions returned.
-     */
-    includeMacros = 1,
+enum CXCodeComplete_Flags {
+  /**
+   * \brief Whether to include macros within the set of code
+   * completions returned.
+   */
+  CXCodeComplete_IncludeMacros = 0x01,
 
-    /**
-     * \brief Whether to include code patterns for language constructs
-     * within the set of code completions, e.g., for loops.
-     */
-    includeCodePatterns = 2,
+  /**
+   * \brief Whether to include code patterns for language constructs
+   * within the set of code completions, e.g., for loops.
+   */
+  CXCodeComplete_IncludeCodePatterns = 0x02,
 
-    /**
-     * \brief Whether to include brief documentation within the set of code
-     * completions returned.
-     */
-    includeBriefComments = 4
+  /**
+   * \brief Whether to include brief documentation within the set of code
+   * completions returned.
+   */
+  CXCodeComplete_IncludeBriefComments = 0x04
 }
+
+mixin EnumC!CXCodeComplete_Flags;
 
 /**
  * \brief Bits that represent the context under which completion is occurring.
@@ -4992,131 +5087,133 @@ enum CXCodeComplete_Flags
  * The enumerators in this enumeration may be bitwise-OR'd together if multiple
  * contexts are occurring simultaneously.
  */
-enum CXCompletionContext
-{
-    /**
-     * \brief The context for completions is unexposed, as only Clang results
-     * should be included. (This is equivalent to having no context bits set.)
-     */
-    unexposed = 0,
 
-    /**
-     * \brief Completions for any possible type should be included in the results.
-     */
-    anyType = 1,
+enum CXCompletionContext {
+  /**
+   * \brief The context for completions is unexposed, as only Clang results
+   * should be included. (This is equivalent to having no context bits set.)
+   */
+  CXCompletionContext_Unexposed = 0,
 
-    /**
-     * \brief Completions for any possible value (variables, function calls, etc.)
-     * should be included in the results.
-     */
-    anyValue = 2,
-    /**
-     * \brief Completions for values that resolve to an Objective-C object should
-     * be included in the results.
-     */
-    objCObjectValue = 4,
-    /**
-     * \brief Completions for values that resolve to an Objective-C selector
-     * should be included in the results.
-     */
-    objCSelectorValue = 8,
-    /**
-     * \brief Completions for values that resolve to a C++ class type should be
-     * included in the results.
-     */
-    cxxClassTypeValue = 16,
+  /**
+   * \brief Completions for any possible type should be included in the results.
+   */
+  CXCompletionContext_AnyType = 1 << 0,
 
-    /**
-     * \brief Completions for fields of the member being accessed using the dot
-     * operator should be included in the results.
-     */
-    dotMemberAccess = 32,
-    /**
-     * \brief Completions for fields of the member being accessed using the arrow
-     * operator should be included in the results.
-     */
-    arrowMemberAccess = 64,
-    /**
-     * \brief Completions for properties of the Objective-C object being accessed
-     * using the dot operator should be included in the results.
-     */
-    objCPropertyAccess = 128,
+  /**
+   * \brief Completions for any possible value (variables, function calls, etc.)
+   * should be included in the results.
+   */
+  CXCompletionContext_AnyValue = 1 << 1,
+  /**
+   * \brief Completions for values that resolve to an Objective-C object should
+   * be included in the results.
+   */
+  CXCompletionContext_ObjCObjectValue = 1 << 2,
+  /**
+   * \brief Completions for values that resolve to an Objective-C selector
+   * should be included in the results.
+   */
+  CXCompletionContext_ObjCSelectorValue = 1 << 3,
+  /**
+   * \brief Completions for values that resolve to a C++ class type should be
+   * included in the results.
+   */
+  CXCompletionContext_CXXClassTypeValue = 1 << 4,
 
-    /**
-     * \brief Completions for enum tags should be included in the results.
-     */
-    enumTag = 256,
-    /**
-     * \brief Completions for union tags should be included in the results.
-     */
-    unionTag = 512,
-    /**
-     * \brief Completions for struct tags should be included in the results.
-     */
-    structTag = 1024,
+  /**
+   * \brief Completions for fields of the member being accessed using the dot
+   * operator should be included in the results.
+   */
+  CXCompletionContext_DotMemberAccess = 1 << 5,
+  /**
+   * \brief Completions for fields of the member being accessed using the arrow
+   * operator should be included in the results.
+   */
+  CXCompletionContext_ArrowMemberAccess = 1 << 6,
+  /**
+   * \brief Completions for properties of the Objective-C object being accessed
+   * using the dot operator should be included in the results.
+   */
+  CXCompletionContext_ObjCPropertyAccess = 1 << 7,
 
-    /**
-     * \brief Completions for C++ class names should be included in the results.
-     */
-    classTag = 2048,
-    /**
-     * \brief Completions for C++ namespaces and namespace aliases should be
-     * included in the results.
-     */
-    namespace = 4096,
-    /**
-     * \brief Completions for C++ nested name specifiers should be included in
-     * the results.
-     */
-    nestedNameSpecifier = 8192,
+  /**
+   * \brief Completions for enum tags should be included in the results.
+   */
+  CXCompletionContext_EnumTag = 1 << 8,
+  /**
+   * \brief Completions for union tags should be included in the results.
+   */
+  CXCompletionContext_UnionTag = 1 << 9,
+  /**
+   * \brief Completions for struct tags should be included in the results.
+   */
+  CXCompletionContext_StructTag = 1 << 10,
 
-    /**
-     * \brief Completions for Objective-C interfaces (classes) should be included
-     * in the results.
-     */
-    objCInterface = 16384,
-    /**
-     * \brief Completions for Objective-C protocols should be included in
-     * the results.
-     */
-    objCProtocol = 32768,
-    /**
-     * \brief Completions for Objective-C categories should be included in
-     * the results.
-     */
-    objCCategory = 65536,
-    /**
-     * \brief Completions for Objective-C instance messages should be included
-     * in the results.
-     */
-    objCInstanceMessage = 131072,
-    /**
-     * \brief Completions for Objective-C class messages should be included in
-     * the results.
-     */
-    objCClassMessage = 262144,
-    /**
-     * \brief Completions for Objective-C selector names should be included in
-     * the results.
-     */
-    objCSelectorName = 524288,
+  /**
+   * \brief Completions for C++ class names should be included in the results.
+   */
+  CXCompletionContext_ClassTag = 1 << 11,
+  /**
+   * \brief Completions for C++ namespaces and namespace aliases should be
+   * included in the results.
+   */
+  CXCompletionContext_Namespace = 1 << 12,
+  /**
+   * \brief Completions for C++ nested name specifiers should be included in
+   * the results.
+   */
+  CXCompletionContext_NestedNameSpecifier = 1 << 13,
 
-    /**
-     * \brief Completions for preprocessor macro names should be included in
-     * the results.
-     */
-    macroName = 1048576,
+  /**
+   * \brief Completions for Objective-C interfaces (classes) should be included
+   * in the results.
+   */
+  CXCompletionContext_ObjCInterface = 1 << 14,
+  /**
+   * \brief Completions for Objective-C protocols should be included in
+   * the results.
+   */
+  CXCompletionContext_ObjCProtocol = 1 << 15,
+  /**
+   * \brief Completions for Objective-C categories should be included in
+   * the results.
+   */
+  CXCompletionContext_ObjCCategory = 1 << 16,
+  /**
+   * \brief Completions for Objective-C instance messages should be included
+   * in the results.
+   */
+  CXCompletionContext_ObjCInstanceMessage = 1 << 17,
+  /**
+   * \brief Completions for Objective-C class messages should be included in
+   * the results.
+   */
+  CXCompletionContext_ObjCClassMessage = 1 << 18,
+  /**
+   * \brief Completions for Objective-C selector names should be included in
+   * the results.
+   */
+  CXCompletionContext_ObjCSelectorName = 1 << 19,
 
-    /**
-     * \brief Natural language completions should be included in the results.
-     */
-    naturalLanguage = 2097152,
+  /**
+   * \brief Completions for preprocessor macro names should be included in
+   * the results.
+   */
+  CXCompletionContext_MacroName = 1 << 20,
 
-    /**
-     * \brief The current context is unknown, so set all contexts.
-     */
-    unknown = 4194303
+  /**
+   * \brief Natural language completions should be included in the results.
+   */
+  CXCompletionContext_NaturalLanguage = 1 << 21,
+
+  /**
+   * \brief The current context is unknown, so set all contexts.
+   */
+  CXCompletionContext_Unknown = ((1 << 22) - 1)
 }
+
+mixin EnumC!CXCompletionContext;
 
 /**
  * \brief Returns a default set of code-completion options that can be
@@ -5339,17 +5436,18 @@ void clang_getInclusions(
     CXInclusionVisitor visitor,
     CXClientData client_data);
 
-enum CXEvalResultKind
-{
-    int_ = 1,
-    float_ = 2,
-    objCStrLiteral = 3,
-    strLiteral = 4,
-    cfStr = 5,
-    other = 6,
-
-    unExposed = 0
+enum CXEvalResultKind {
+  CXEval_Int = 1 ,
+  CXEval_Float = 2,
+  CXEval_ObjCStrLiteral = 3,
+  CXEval_StrLiteral = 4,
+  CXEval_CFStr = 5,
+  CXEval_Other = 6,
+  CXEval_UnExposed = 0
 }
+
+
+mixin EnumC!CXEvalResultKind;
 
 /**
  * \brief Evaluation result of a cursor
@@ -5481,12 +5579,12 @@ void clang_remap_dispose(CXRemapping);
  *
  * @{
  */
-
-enum CXVisitorResult
-{
-    break_ = 0,
-    continue_ = 1
+enum CXVisitorResult {
+  CXVisit_Break,
+  CXVisit_Continue
 }
+
+mixin EnumC!CXVisitorResult;
 
 struct CXCursorAndRangeVisitor
 {
@@ -5496,20 +5594,22 @@ struct CXCursorAndRangeVisitor
 
 enum CXResult
 {
-    /**
-     * \brief Function returned successfully.
-     */
-    success = 0,
-    /**
-     * \brief One of the parameters was invalid for the function.
-     */
-    invalid = 1,
-    /**
-     * \brief The function was terminated by a callback (e.g. it returned
-     * CXVisit_Break)
-     */
-    visitBreak = 2
+  /**
+   * \brief Function returned successfully.
+   */
+  CXResult_Success = 0,
+  /**
+   * \brief One of the parameters was invalid for the function.
+   */
+  CXResult_Invalid = 1,
+  /**
+   * \brief The function was terminated by a callback (e.g. it returned
+   * CXVisit_Break)
+   */
+  CXResult_VisitBreak = 2
 }
+
+mixin EnumC!CXResult;
 
 /**
  * \brief Find references of a declaration in a specific file.
@@ -5630,46 +5730,51 @@ struct CXIdxImportedASTFileInfo
 
 enum CXIdxEntityKind
 {
-    unexposed = 0,
-    typedef_ = 1,
-    function_ = 2,
-    variable = 3,
-    field = 4,
-    enumConstant = 5,
+  CXIdxEntity_Unexposed     = 0,
+  CXIdxEntity_Typedef       = 1,
+  CXIdxEntity_Function      = 2,
+  CXIdxEntity_Variable      = 3,
+  CXIdxEntity_Field         = 4,
+  CXIdxEntity_EnumConstant  = 5,
 
-    objCClass = 6,
-    objCProtocol = 7,
-    objCCategory = 8,
+  CXIdxEntity_ObjCClass     = 6,
+  CXIdxEntity_ObjCProtocol  = 7,
+  CXIdxEntity_ObjCCategory  = 8,
 
-    objCInstanceMethod = 9,
-    objCClassMethod = 10,
-    objCProperty = 11,
-    objCIvar = 12,
+  CXIdxEntity_ObjCInstanceMethod = 9,
+  CXIdxEntity_ObjCClassMethod    = 10,
+  CXIdxEntity_ObjCProperty  = 11,
+  CXIdxEntity_ObjCIvar      = 12,
 
-    enum_ = 13,
-    struct_ = 14,
-    union_ = 15,
+  CXIdxEntity_Enum          = 13,
+  CXIdxEntity_Struct        = 14,
+  CXIdxEntity_Union         = 15,
 
-    cxxClass = 16,
-    cxxNamespace = 17,
-    cxxNamespaceAlias = 18,
-    cxxStaticVariable = 19,
-    cxxStaticMethod = 20,
-    cxxInstanceMethod = 21,
-    cxxConstructor = 22,
-    cxxDestructor = 23,
-    cxxConversionFunction = 24,
-    cxxTypeAlias = 25,
-    cxxInterface = 26
+  CXIdxEntity_CXXClass              = 16,
+  CXIdxEntity_CXXNamespace          = 17,
+  CXIdxEntity_CXXNamespaceAlias     = 18,
+  CXIdxEntity_CXXStaticVariable     = 19,
+  CXIdxEntity_CXXStaticMethod       = 20,
+  CXIdxEntity_CXXInstanceMethod     = 21,
+  CXIdxEntity_CXXConstructor        = 22,
+  CXIdxEntity_CXXDestructor         = 23,
+  CXIdxEntity_CXXConversionFunction = 24,
+  CXIdxEntity_CXXTypeAlias          = 25,
+  CXIdxEntity_CXXInterface          = 26
 }
+
+mixin EnumC!CXIdxEntityKind;
 
 enum CXIdxEntityLanguage
 {
-    none = 0,
-    c = 1,
-    objC = 2,
-    cxx = 3
+  CXIdxEntityLang_None = 0,
+  CXIdxEntityLang_C    = 1,
+  CXIdxEntityLang_ObjC = 2,
+  CXIdxEntityLang_CXX  = 3,
+  CXIdxEntityLang_Swift  = 4
 }
+
+mixin EnumC!CXIdxEntityLanguage;
 
 /**
  * \brief Extra C++ template information for an entity. This can apply to:
@@ -5683,19 +5788,23 @@ enum CXIdxEntityLanguage
  */
 enum CXIdxEntityCXXTemplateKind
 {
-    nonTemplate = 0,
-    template_ = 1,
-    templatePartialSpecialization = 2,
-    templateSpecialization = 3
+  CXIdxEntity_NonTemplate   = 0,
+  CXIdxEntity_Template      = 1,
+  CXIdxEntity_TemplatePartialSpecialization = 2,
+  CXIdxEntity_TemplateSpecialization = 3
 }
+
+mixin EnumC!CXIdxEntityCXXTemplateKind;
 
 enum CXIdxAttrKind
 {
-    unexposed = 0,
-    ibAction = 1,
-    ibOutlet = 2,
-    ibOutletCollection = 3
+  CXIdxAttr_Unexposed     = 0,
+  CXIdxAttr_IBAction      = 1,
+  CXIdxAttr_IBOutlet      = 2,
+  CXIdxAttr_IBOutletCollection = 3
 }
+
+mixin EnumC!CXIdxAttrKind;
 
 struct CXIdxAttrInfo
 {
@@ -5731,8 +5840,10 @@ struct CXIdxIBOutletCollectionAttrInfo
 
 enum CXIdxDeclInfoFlags
 {
-    skipped = 1
+    CXIdxDeclFlag_Skipped = 0x1
 }
+
+mixin EnumC!CXIdxDeclInfoFlags;
 
 struct CXIdxDeclInfo
 {
@@ -5762,10 +5873,12 @@ struct CXIdxDeclInfo
 
 enum CXIdxObjCContainerKind
 {
-    forwardRef = 0,
-    interface_ = 1,
-    implementation = 2
+  CXIdxObjCContainer_ForwardRef = 0,
+  CXIdxObjCContainer_Interface = 1,
+  CXIdxObjCContainer_Implementation = 2
 }
+
+mixin EnumC!CXIdxObjCContainerKind;
 
 struct CXIdxObjCContainerDeclInfo
 {
@@ -5828,16 +5941,18 @@ struct CXIdxCXXClassDeclInfo
  */
 enum CXIdxEntityRefKind
 {
-    /**
-     * \brief The entity is referenced directly in user's code.
-     */
-    direct = 1,
-    /**
-     * \brief An implicit reference, e.g. a reference of an Objective-C method
-     * via the dot syntax.
-     */
-    implicit = 2
+  /**
+   * \brief The entity is referenced directly in user's code.
+   */
+  CXIdxEntityRef_Direct = 1,
+  /**
+   * \brief An implicit reference, e.g. a reference of an Objective-C method
+   * via the dot syntax.
+   */
+  CXIdxEntityRef_Implicit = 2
 }
+
+mixin EnumC!CXIdxEntityRefKind;
 
 /**
  * \brief Data for IndexerCallbacks#indexEntityReference.
@@ -5989,42 +6104,44 @@ void clang_IndexAction_dispose(CXIndexAction);
 
 enum CXIndexOptFlags
 {
-    /**
-     * \brief Used to indicate that no special indexing options are needed.
-     */
-    none = 0,
+  /**
+   * \brief Used to indicate that no special indexing options are needed.
+   */
+  CXIndexOpt_None = 0x0,
 
-    /**
-     * \brief Used to indicate that IndexerCallbacks#indexEntityReference should
-     * be invoked for only one reference of an entity per source file that does
-     * not also include a declaration/definition of the entity.
-     */
-    suppressRedundantRefs = 1,
+  /**
+   * \brief Used to indicate that IndexerCallbacks#indexEntityReference should
+   * be invoked for only one reference of an entity per source file that does
+   * not also include a declaration/definition of the entity.
+   */
+  CXIndexOpt_SuppressRedundantRefs = 0x1,
 
-    /**
-     * \brief Function-local symbols should be indexed. If this is not set
-     * function-local symbols will be ignored.
-     */
-    indexFunctionLocalSymbols = 2,
+  /**
+   * \brief Function-local symbols should be indexed. If this is not set
+   * function-local symbols will be ignored.
+   */
+  CXIndexOpt_IndexFunctionLocalSymbols = 0x2,
 
-    /**
-     * \brief Implicit function/class template instantiations should be indexed.
-     * If this is not set, implicit instantiations will be ignored.
-     */
-    indexImplicitTemplateInstantiations = 4,
+  /**
+   * \brief Implicit function/class template instantiations should be indexed.
+   * If this is not set, implicit instantiations will be ignored.
+   */
+  CXIndexOpt_IndexImplicitTemplateInstantiations = 0x4,
 
-    /**
-     * \brief Suppress all compiler warnings when parsing for indexing.
-     */
-    suppressWarnings = 8,
+  /**
+   * \brief Suppress all compiler warnings when parsing for indexing.
+   */
+  CXIndexOpt_SuppressWarnings = 0x8,
 
-    /**
-     * \brief Skip a function/method body that was already parsed during an
-     * indexing session associated with a \c CXIndexAction object.
-     * Bodies in system headers are always skipped.
-     */
-    skipParsedBodiesInSession = 16
+  /**
+   * \brief Skip a function/method body that was already parsed during an
+   * indexing session associated with a \c CXIndexAction object.
+   * Bodies in system headers are always skipped.
+   */
+  CXIndexOpt_SkipParsedBodiesInSession = 0x10
 }
+
+mixin EnumC!CXIndexOptFlags;
 
 /**
  * \brief Index the given source file and the translation unit corresponding

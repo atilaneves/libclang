@@ -11,10 +11,13 @@ module clang.c.util;
    Enum.foo and Enum.bar
  */
 mixin template EnumC(T) if(is(T == enum)) {
-    import std.traits: EnumMembers;
-    import std.conv: text;
 
-    static foreach(member; EnumMembers!T) {
-        mixin(text(`enum `, member, ` = `, T.stringof, `.`, member, `;`));
+    string enumMixinStr(U)(U member) {
+        import std.conv: text;
+        return text(`enum `, member, ` = `, T.stringof, `.`, member, `;`);
+    }
+
+    static foreach(member; __traits(allMembers, T)) {
+        mixin(enumMixinStr(member));
     }
 }
