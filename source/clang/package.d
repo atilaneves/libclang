@@ -25,8 +25,7 @@ TranslationUnit parse(in string fileName, in string[] commandLineArgs, in Transl
         unsavedFiles.ptr,
         cast(uint)unsavedFiles.length,
         CXTranslationUnit_None,
-        );
-
+    );
 
     return TranslationUnit(cx);
 }
