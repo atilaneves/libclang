@@ -5,6 +5,11 @@ import unit_threaded;
 
 
 @("CXAvailabilityKind")
-unittest {
+@safe pure unittest {
     CXAvailabilityKind.CXAvailability_Deprecated.shouldEqual(CXAvailability_Deprecated);
+}
+
+@("CXCursor_ExceptionSpecificationKind")
+@safe pure unittest {
+    CXCursor_ExceptionSpecificationKind.CXCursor_ExceptionSpecificationKind_Uninstantiated.shouldEqual(CXCursor_ExceptionSpecificationKind_Uninstantiated);
 }

@@ -171,6 +171,61 @@ struct CXVersion
 }
 
 /**
+ * \brief Describes the exception specification of a cursor.
+ *
+ * A negative value indicates that the cursor is not a function declaration.
+ */
+enum CXCursor_ExceptionSpecificationKind {
+
+  /**
+   * \brief The cursor has no exception specification.
+   */
+  CXCursor_ExceptionSpecificationKind_None,
+
+  /**
+   * \brief The cursor has exception specification throw()
+   */
+  CXCursor_ExceptionSpecificationKind_DynamicNone,
+
+  /**
+   * \brief The cursor has exception specification throw(T1, T2)
+   */
+  CXCursor_ExceptionSpecificationKind_Dynamic,
+
+  /**
+   * \brief The cursor has exception specification throw(...).
+   */
+  CXCursor_ExceptionSpecificationKind_MSAny,
+
+  /**
+   * \brief The cursor has exception specification basic noexcept.
+   */
+  CXCursor_ExceptionSpecificationKind_BasicNoexcept,
+
+  /**
+   * \brief The cursor has exception specification computed noexcept.
+   */
+  CXCursor_ExceptionSpecificationKind_ComputedNoexcept,
+
+  /**
+   * \brief The exception specification has not yet been evaluated.
+   */
+  CXCursor_ExceptionSpecificationKind_Unevaluated,
+
+  /**
+   * \brief The exception specification has not yet been instantiated.
+   */
+  CXCursor_ExceptionSpecificationKind_Uninstantiated,
+
+  /**
+   * \brief The exception specification has not been parsed yet.
+   */
+  CXCursor_ExceptionSpecificationKind_Unparsed
+};
+
+mixin EnumC!CXCursor_ExceptionSpecificationKind;
+
+/**
  * \brief Provides a shared context for creating translation units.
  *
  * It provides two options:
