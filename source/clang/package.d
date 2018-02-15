@@ -56,11 +56,16 @@ struct Cursor {
     }
 
     void visitChildren(void* context, CursorVisitor visitor) @trusted {
-        clang_visitChildren(_cx, &_visitor, context);
+        clang_visitChildren(_cx, &cvisitor, new ClientData(context, visitor));
     }
 }
 
-extern(C) CXChildVisitResult _visitor(CXCursor cursor, CXCursor parent, void* clientData) {
-    //return CXChildVisit_Recurse;]
-    throw new Exception("oops");
+private struct ClientData {
+    void *context;
+    CursorVisitor dvisitor;
+}
+
+private extern(C) CXChildVisitResult cvisitor(CXCursor cursor, CXCursor parent, void* clientData_) {
+    auto clientData = cast(ClientData*)clientData_;
+    return cast(CXChildVisitResult)clientData.dvisitor(Cursor(cursor), Cursor(parent), clientData.context);
 }
