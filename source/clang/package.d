@@ -43,7 +43,7 @@ struct TranslationUnit {
 
 mixin EnumD!("ChildVisitResult", CXChildVisitResult, "CXChildVisit_");
 
-alias CursorVisitor = ChildVisitResult delegate(Cursor cursor, Cursor parent, void* context);
+alias CursorVisitor = ChildVisitResult delegate(Cursor cursor, Cursor parent);
 
 struct Cursor {
 
@@ -55,17 +55,16 @@ struct Cursor {
         return cast(Kind)clang_getCursorKind(_cx);
     }
 
-    void visitChildren(void* context, CursorVisitor visitor) @trusted {
-        clang_visitChildren(_cx, &cvisitor, new ClientData(context, visitor));
+    void visitChildren(CursorVisitor visitor) @trusted {
+        clang_visitChildren(_cx, &cvisitor, new ClientData(visitor));
     }
 }
 
 private struct ClientData {
-    void *context;
     CursorVisitor dvisitor;
 }
 
 private extern(C) CXChildVisitResult cvisitor(CXCursor cursor, CXCursor parent, void* clientData_) {
     auto clientData = cast(ClientData*)clientData_;
-    return cast(CXChildVisitResult)clientData.dvisitor(Cursor(cursor), Cursor(parent), clientData.context);
+    return cast(CXChildVisitResult)clientData.dvisitor(Cursor(cursor), Cursor(parent));
 }

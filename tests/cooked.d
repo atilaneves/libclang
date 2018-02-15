@@ -13,39 +13,39 @@ import clang;
             TranslationUnitFlags.None,
         );
         auto cursor = translUnit.cursor;
-        void* context = null;
 
-        cursor.visitChildren(context,
-                             (cursor, parent, context) {
+        translUnit.cursor.visitChildren(
+            (cursor, parent) {
 
-                                 static int cursorIndex;
+                static int cursorIndex;
 
-                                 switch(cursorIndex) {
+                switch(cursorIndex) {
 
-                                 default:
-                                     assert(false);
+                default:
+                    assert(false);
 
-                                 case 0:
-                                     cursor.kind.shouldEqual(Cursor.Kind.StructDecl);
-                                     parent.kind.shouldEqual(Cursor.Kind.TranslationUnit);
-                                     break;
+                case 0:
+                    cursor.kind.shouldEqual(Cursor.Kind.StructDecl);
+                    parent.kind.shouldEqual(Cursor.Kind.TranslationUnit);
+                    break;
 
-                                 case 1:
-                                     cursor.kind.shouldEqual(Cursor.Kind.FieldDecl);
-                                     parent.kind.shouldEqual(Cursor.Kind.StructDecl);
-                                     break;
+                case 1:
+                    cursor.kind.shouldEqual(Cursor.Kind.FieldDecl);
+                    parent.kind.shouldEqual(Cursor.Kind.StructDecl);
+                    break;
 
-                                 case 2:
-                                     cursor.kind.shouldEqual(Cursor.Kind.FieldDecl);
-                                     parent.kind.shouldEqual(Cursor.Kind.StructDecl);
-                                     break;
-                                 }
+                case 2:
+                    cursor.kind.shouldEqual(Cursor.Kind.FieldDecl);
+                    parent.kind.shouldEqual(Cursor.Kind.StructDecl);
+                    break;
+                }
 
-                                 ++cursorIndex;
+                ++cursorIndex;
 
 
-                                 return ChildVisitResult.Recurse;
-                             });
+                return ChildVisitResult.Recurse;
+            }
+        );
     }
 }
 
@@ -61,17 +61,15 @@ import clang;
             commandLineArgs,
             TranslationUnitFlags.None,
         );
-        auto cursor = translUnit.cursor;
-        void* context = null;
 
-        cursor.visitChildren(context,
-                             (cursor, parent, context) {
-                                 int i;
-                                 if(i % 2 == 0)
-                                     throw new Exception("oops");
-                                 return ChildVisitResult.Recurse;
-                             })
-            .shouldThrowWithMessage("oops");
+        translUnit.cursor.visitChildren(
+            (cursor, parent) {
+                int i;
+                if(i % 2 == 0)
+                    throw new Exception("oops");
+                return ChildVisitResult.Recurse;
+            }
+        ).shouldThrowWithMessage("oops");
     }
 
 }
