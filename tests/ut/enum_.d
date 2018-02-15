@@ -13,3 +13,8 @@ import unit_threaded;
 @safe pure unittest {
     CXCursor_ExceptionSpecificationKind.CXCursor_ExceptionSpecificationKind_Uninstantiated.shouldEqual(CXCursor_ExceptionSpecificationKind_Uninstantiated);
 }
+
+@("CXGlobalOptFlags")
+@safe pure unittest {
+    CXGlobalOptFlags.CXGlobalOpt_ThreadBackgroundPriorityForEditing.shouldEqual(CXGlobalOpt_ThreadBackgroundPriorityForEditing);
+}

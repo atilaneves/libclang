@@ -277,37 +277,41 @@ CXIndex clang_createIndex(
  */
 void clang_disposeIndex(CXIndex index);
 
-enum CXGlobalOptFlags
-{
-    /**
-     * \brief Used to indicate that no special CXIndex options are needed.
-     */
-    none = 0,
+enum CXGlobalOptFlags {
+  /**
+   * \brief Used to indicate that no special CXIndex options are needed.
+   */
+  CXGlobalOpt_None = 0x0,
 
-    /**
-     * \brief Used to indicate that threads that libclang creates for indexing
-     * purposes should use background priority.
-     *
-     * Affects #clang_indexSourceFile, #clang_indexTranslationUnit,
-     * #clang_parseTranslationUnit, #clang_saveTranslationUnit.
-     */
-    threadBackgroundPriorityForIndexing = 1,
+  /**
+   * \brief Used to indicate that threads that libclang creates for indexing
+   * purposes should use background priority.
+   *
+   * Affects #clang_indexSourceFile, #clang_indexTranslationUnit,
+   * #clang_parseTranslationUnit, #clang_saveTranslationUnit.
+   */
+  CXGlobalOpt_ThreadBackgroundPriorityForIndexing = 0x1,
 
-    /**
-     * \brief Used to indicate that threads that libclang creates for editing
-     * purposes should use background priority.
-     *
-     * Affects #clang_reparseTranslationUnit, #clang_codeCompleteAt,
-     * #clang_annotateTokens
-     */
-    threadBackgroundPriorityForEditing = 2,
+  /**
+   * \brief Used to indicate that threads that libclang creates for editing
+   * purposes should use background priority.
+   *
+   * Affects #clang_reparseTranslationUnit, #clang_codeCompleteAt,
+   * #clang_annotateTokens
+   */
+  CXGlobalOpt_ThreadBackgroundPriorityForEditing = 0x2,
 
-    /**
-     * \brief Used to indicate that all threads that libclang creates should use
-     * background priority.
-     */
-    threadBackgroundPriorityForAll = 3
+  /**
+   * \brief Used to indicate that all threads that libclang creates should use
+   * background priority.
+   */
+  CXGlobalOpt_ThreadBackgroundPriorityForAll =
+      CXGlobalOpt_ThreadBackgroundPriorityForIndexing |
+      CXGlobalOpt_ThreadBackgroundPriorityForEditing
+
 }
+
+mixin EnumC!CXGlobalOptFlags;
 
 /**
  * \brief Sets general options associated with a CXIndex.
