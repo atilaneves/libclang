@@ -1,14 +1,13 @@
 import test.infra;
 import clang.c.index;
 
+
 @("C++ file with one simple struct")
 @system unittest {
     with(newTranslationUnit("foo.cpp",
                             q{ struct { int int_; double double_; }; }))
     {
         import std.string: toStringz;
-        import std.algorithm: map;
-        import std.array: array;
 
         auto index = clang_createIndex(0, 0);
         const(char)*[] commandLineArgs;
@@ -31,6 +30,7 @@ import clang.c.index;
 }
 
 private extern(C) CXChildVisitResult fooCppVisitor(CXCursor cursor, CXCursor parent, void* clientData) {
+
     static int cursorIndex;
 
     switch(cursorIndex) {

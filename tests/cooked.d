@@ -1,6 +1,7 @@
 import test.infra;
 import clang;
 
+@ShouldFail
 @("C++ file with one simple struct")
 @safe unittest {
     with(newTranslationUnit("foo.cpp",
@@ -50,7 +51,6 @@ import clang;
 }
 
 
-@ShouldFail
 @("C++ file with one simple struct and throwing visitor")
 @safe unittest {
     with(newTranslationUnit("foo.cpp",

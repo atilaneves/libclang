@@ -2617,7 +2617,7 @@ uint clang_hashCursor(CXCursor);
 /**
  * \brief Retrieve the kind of the given cursor.
  */
-CXCursorKind clang_getCursorKind(CXCursor);
+CXCursorKind clang_getCursorKind(CXCursor) @nogc nothrow;
 
 /**
  * \brief Determine whether the given cursor kind represents a declaration.
@@ -3919,7 +3919,7 @@ alias CXCursorVisitor = CXChildVisitResult function(CXCursor cursor, CXCursor pa
 uint clang_visitChildren(
     CXCursor parent,
     CXCursorVisitor visitor,
-    CXClientData client_data);
+    CXClientData client_data) nothrow;
 
 /**
  * \brief Visitor invoked for each cursor found by a traversal.
