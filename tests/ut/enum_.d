@@ -18,3 +18,8 @@ import unit_threaded;
 @safe pure unittest {
     CXGlobalOptFlags.CXGlobalOpt_ThreadBackgroundPriorityForEditing.shouldEqual(CXGlobalOpt_ThreadBackgroundPriorityForEditing);
 }
+
+@("CXDiagnosticSeverity")
+@safe pure unittest {
+    CXDiagnosticSeverity.CXDiagnostic_Warning.shouldEqual(CXDiagnostic_Warning);
+}

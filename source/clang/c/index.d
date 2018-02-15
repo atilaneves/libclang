@@ -142,7 +142,7 @@ enum CXAvailabilityKind {
    * an error.
    */
   CXAvailability_NotAccessible
-};
+}
 
 mixin EnumC!CXAvailabilityKind;
 
@@ -221,7 +221,7 @@ enum CXCursor_ExceptionSpecificationKind {
    * \brief The exception specification has not been parsed yet.
    */
   CXCursor_ExceptionSpecificationKind_Unparsed
-};
+}
 
 mixin EnumC!CXCursor_ExceptionSpecificationKind;
 
@@ -721,38 +721,39 @@ void clang_disposeSourceRangeList(CXSourceRangeList* ranges);
 /**
  * \brief Describes the severity of a particular diagnostic.
  */
-enum CXDiagnosticSeverity
-{
-    /**
-     * \brief A diagnostic that has been suppressed, e.g., by a command-line
-     * option.
-     */
-    ignored = 0,
+enum CXDiagnosticSeverity {
+  /**
+   * \brief A diagnostic that has been suppressed, e.g., by a command-line
+   * option.
+   */
+  CXDiagnostic_Ignored = 0,
 
-    /**
-     * \brief This diagnostic is a note that should be attached to the
-     * previous (non-note) diagnostic.
-     */
-    note = 1,
+  /**
+   * \brief This diagnostic is a note that should be attached to the
+   * previous (non-note) diagnostic.
+   */
+  CXDiagnostic_Note    = 1,
 
-    /**
-     * \brief This diagnostic indicates suspicious code that may not be
-     * wrong.
-     */
-    warning = 2,
+  /**
+   * \brief This diagnostic indicates suspicious code that may not be
+   * wrong.
+   */
+  CXDiagnostic_Warning = 2,
 
-    /**
-     * \brief This diagnostic indicates that the code is ill-formed.
-     */
-    error = 3,
+  /**
+   * \brief This diagnostic indicates that the code is ill-formed.
+   */
+  CXDiagnostic_Error   = 3,
 
-    /**
-     * \brief This diagnostic indicates that the code is ill-formed such
-     * that future parser recovery is unlikely to produce useful
-     * results.
-     */
-    fatal = 4
+  /**
+   * \brief This diagnostic indicates that the code is ill-formed such
+   * that future parser recovery is unlikely to produce useful
+   * results.
+   */
+  CXDiagnostic_Fatal   = 4
 }
+
+mixin EnumC!CXDiagnosticSeverity;
 
 /**
  * \brief A single diagnostic, containing the diagnostic's severity,
