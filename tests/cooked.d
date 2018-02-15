@@ -12,9 +12,8 @@ import clang;
             commandLineArgs,
             TranslationUnitFlags.None,
         );
-        auto cursor = translUnit.cursor;
 
-        translUnit.cursor.visitChildren(
+        translUnit.visitChildren(
             (cursor, parent) {
 
                 static int cursorIndex;
@@ -62,7 +61,7 @@ import clang;
             TranslationUnitFlags.None,
         );
 
-        translUnit.cursor.visitChildren(
+        translUnit.visitChildren(
             (cursor, parent) {
                 int i;
                 if(i % 2 == 0)

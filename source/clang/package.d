@@ -31,6 +31,10 @@ TranslationUnit parse(in string fileName, in string[] commandLineArgs, in Transl
     return TranslationUnit(cx);
 }
 
+mixin EnumD!("ChildVisitResult", CXChildVisitResult, "CXChildVisit_");
+
+alias CursorVisitor = ChildVisitResult delegate(Cursor cursor, Cursor parent);
+
 struct TranslationUnit {
 
     CXTranslationUnit _cx;
@@ -38,12 +42,12 @@ struct TranslationUnit {
     Cursor cursor() @trusted {
         return Cursor(clang_getTranslationUnitCursor(_cx));
     }
+
+    void visitChildren(CursorVisitor visitor) @safe {
+        cursor.visitChildren(visitor);
+    }
 }
 
-
-mixin EnumD!("ChildVisitResult", CXChildVisitResult, "CXChildVisit_");
-
-alias CursorVisitor = ChildVisitResult delegate(Cursor cursor, Cursor parent);
 
 struct Cursor {
 
