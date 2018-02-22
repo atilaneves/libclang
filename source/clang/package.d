@@ -47,23 +47,25 @@ struct TranslationUnit {
     }
 
     int opApply(scope int delegate(Cursor cursor, Cursor parent) block) @safe {
-        int stop = 0;
-
-        visitChildren((cursor, parent) {
-            stop = block(cursor, parent);
-            return stop
-                ? ChildVisitResult.Break
-                : ChildVisitResult.Recurse;
-        });
-
-        return stop;
+        return opApplyN(block);
     }
 
     int opApply(scope int delegate(Cursor cursor) block) @safe {
+        return opApplyN(block);
+    }
+
+    private int opApplyN(T...)(int delegate(T args) block) {
         int stop = 0;
 
         visitChildren((cursor, parent) {
-            stop = block(cursor);
+
+            static if(T.length == 2)
+                stop = block(cursor, parent);
+            else static if(T.length == 1)
+                stop = block(cursor);
+            else
+                static assert(false);
+
             return stop
                 ? ChildVisitResult.Break
                 : ChildVisitResult.Recurse;
