@@ -4006,7 +4006,7 @@ CXString clang_constructUSR_ObjCProperty(
 /**
  * \brief Retrieve a name for the entity referenced by this cursor.
  */
-CXString clang_getCursorSpelling(CXCursor);
+CXString clang_getCursorSpelling(CXCursor) @nogc;
 
 /**
  * \brief Retrieve a range for a piece that forms the cursors spelling name.

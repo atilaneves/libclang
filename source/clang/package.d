@@ -63,15 +63,26 @@ struct TranslationUnit {
     }
 }
 
+string toString(CXString cxString) @trusted {
+    import std.conv: to;
+    auto cstr = clang_getCString(cxString);
+    auto str = cstr.to!string;
+    clang_disposeString(cxString);
+    return str;
+}
 
 struct Cursor {
 
     mixin EnumD!("Kind", CXCursorKind, "CXCursor_");
 
-    CXCursor _cx;
+    private CXCursor _cx;
+    Kind kind;
+    string spelling;
 
-    Kind kind() @trusted @nogc nothrow const {
-        return cast(Kind)clang_getCursorKind(_cx);
+    this(CXCursor cx) @trusted {
+        _cx = cx;
+        kind = cast(Kind)clang_getCursorKind(_cx);
+        spelling = clang_getCursorSpelling(_cx).toString;
     }
 
     void visitChildren(CursorVisitor visitor) @trusted {
@@ -84,10 +95,6 @@ struct Cursor {
 
     bool isPredefined() @safe @nogc pure nothrow const {
         return false;
-    }
-
-    string spelling() @safe pure nothrow const {
-        return "foobarbaz";
     }
 
     int opApply(scope int delegate(Cursor cursor, Cursor parent) block) @safe {
