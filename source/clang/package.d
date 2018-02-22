@@ -45,6 +45,32 @@ struct TranslationUnit {
     void visitChildren(CursorVisitor visitor) @safe {
         cursor.visitChildren(visitor);
     }
+
+    int opApply(scope int delegate(Cursor cursor, Cursor parent) block) @safe {
+        int stop = 0;
+
+        visitChildren((cursor, parent) {
+            stop = block(cursor, parent);
+            return stop
+                ? ChildVisitResult.Break
+                : ChildVisitResult.Recurse;
+        });
+
+        return stop;
+    }
+
+    int opApply(scope int delegate(Cursor cursor) block) @safe {
+        int stop = 0;
+
+        visitChildren((cursor, parent) {
+            stop = block(cursor);
+            return stop
+                ? ChildVisitResult.Break
+                : ChildVisitResult.Recurse;
+        });
+
+        return stop;
+    }
 }
 
 
