@@ -5,6 +5,14 @@ import clang.c.util: EnumD;
 
 mixin EnumD!("TranslationUnitFlags", CXTranslationUnit_Flags, "CXTranslationUnit_");
 
+
+TranslationUnit parse(in string fileName, in TranslationUnitFlags translUnitflags)
+    @safe
+{
+    return parse(fileName, [], translUnitflags);
+}
+
+
 TranslationUnit parse(in string fileName, in string[] commandLineArgs, in TranslationUnitFlags translUnitflags)
     @trusted
 {
