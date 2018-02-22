@@ -55,31 +55,11 @@ struct TranslationUnit {
     }
 
     int opApply(scope int delegate(Cursor cursor, Cursor parent) block) @safe {
-        return opApplyN(block);
+        return cursor.opApply(block);
     }
 
     int opApply(scope int delegate(Cursor cursor) block) @safe {
-        return opApplyN(block);
-    }
-
-    private int opApplyN(T...)(int delegate(T args) block) {
-        int stop = 0;
-
-        visitChildren((cursor, parent) {
-
-            static if(T.length == 2)
-                stop = block(cursor, parent);
-            else static if(T.length == 1)
-                stop = block(cursor);
-            else
-                static assert(false);
-
-            return stop
-                ? ChildVisitResult.Break
-                : ChildVisitResult.Recurse;
-        });
-
-        return stop;
+        return cursor.opApply(block);
     }
 }
 
@@ -108,6 +88,34 @@ struct Cursor {
 
     string spelling() @safe pure nothrow const {
         return "foobarbaz";
+    }
+
+    int opApply(scope int delegate(Cursor cursor, Cursor parent) block) @safe {
+        return opApplyN(block);
+    }
+
+    int opApply(scope int delegate(Cursor cursor) block) @safe {
+        return opApplyN(block);
+    }
+
+    private int opApplyN(T...)(int delegate(T args) block) {
+        int stop = 0;
+
+        visitChildren((cursor, parent) {
+
+            static if(T.length == 2)
+                stop = block(cursor, parent);
+            else static if(T.length == 1)
+                stop = block(cursor);
+            else
+                static assert(false);
+
+            return stop
+                ? ChildVisitResult.Break
+                : ChildVisitResult.Recurse;
+        });
+
+        return stop;
     }
 }
 
