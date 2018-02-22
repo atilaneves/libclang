@@ -97,6 +97,28 @@ struct Cursor {
     void visitChildren(CursorVisitor visitor) @trusted {
         clang_visitChildren(_cx, &cvisitor, new ClientData(visitor));
     }
+
+    SourceRange sourceRange() @safe nothrow const {
+        return typeof(return).init;
+    }
+
+    bool isPredefined() @safe @nogc pure nothrow const {
+        return false;
+    }
+
+    string spelling() @safe pure nothrow const {
+        return "foobarbaz";
+    }
+}
+
+struct SourceRange {
+    string path;
+    SourceLocation start;
+    SourceLocation end;
+}
+
+struct SourceLocation {
+    uint offset;
 }
 
 private struct ClientData {
