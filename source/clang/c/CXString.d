@@ -1,16 +1,3 @@
-/*===-- clang-c/CXString.h - C Index strings  --------------------*- C -*-===*\
-|*                                                                            *|
-|*                     The LLVM Compiler Infrastructure                       *|
-|*                                                                            *|
-|* This file is distributed under the University of Illinois Open Source      *|
-|* License. See LICENSE.TXT for details.                                      *|
-|*                                                                            *|
-|*===----------------------------------------------------------------------===*|
-|*                                                                            *|
-|* This header provides the interface to C Index strings.                     *|
-|*                                                                            *|
-\*===----------------------------------------------------------------------===*/
-
 module clang.c.CXString;
 
 extern (C):
@@ -45,17 +32,17 @@ struct CXStringSet
 /**
  * \brief Retrieve the character data associated with the given string.
  */
-const(char)* clang_getCString(CXString string);
+const(char)* clang_getCString(CXString string) @safe @nogc pure nothrow;
 
 /**
  * \brief Free the given string.
  */
-void clang_disposeString(CXString string);
+void clang_disposeString(CXString string) @safe @nogc pure nothrow;
 
 /**
  * \brief Free the given string set.
  */
-void clang_disposeStringSet(CXStringSet* set);
+void clang_disposeStringSet(CXStringSet* set) @safe @nogc pure nothrow;
 
 /**
  * @}

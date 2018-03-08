@@ -54,19 +54,19 @@ struct TranslationUnit {
         cursor.visitChildren(visitor);
     }
 
-    int opApply(scope int delegate(Cursor cursor, Cursor parent) block) @safe const {
+    int opApply(scope int delegate(Cursor cursor, Cursor parent) @safe block) @safe const {
         return cursor.opApply(block);
     }
 
-    int opApply(scope int delegate(Cursor cursor) block) @safe const {
+    int opApply(scope int delegate(Cursor cursor) @safe block) @safe const {
         return cursor.opApply(block);
     }
 }
 
-string toString(CXString cxString) @trusted {
+string toString(CXString cxString) @safe pure {
     import std.conv: to;
     auto cstr = clang_getCString(cxString);
-    auto str = cstr.to!string;
+    auto str = () @trusted { return cstr.to!string; }();
     clang_disposeString(cxString);
     return str;
 }
@@ -79,12 +79,16 @@ struct Cursor {
     Kind kind;
     string spelling;
     Type type;
+    Type returnType;
 
-    this(CXCursor cx) @trusted {
+    this(CXCursor cx) @safe pure {
         _cx = cx;
-        kind = cast(Kind)clang_getCursorKind(_cx);
+        kind = cast(Kind) clang_getCursorKind(_cx);
         spelling = clang_getCursorSpelling(_cx).toString;
         type = Type(clang_getCursorType(_cx));
+
+        if(kind == Kind.FunctionDecl)
+            returnType = Type(clang_getCursorResultType(_cx));
     }
 
     this(in Kind kind, in string spelling) @safe @nogc pure nothrow {
@@ -92,13 +96,19 @@ struct Cursor {
     }
 
     this(in Kind kind, in string spelling, Type type) @safe @nogc pure nothrow {
+        this(kind, spelling, type, Type());
+    }
+
+    this(in Kind kind, in string spelling, Type type, Type returnType) @safe @nogc pure nothrow {
         this.kind = kind;
         this.spelling = spelling;
         this.type = type;
+        this.returnType = returnType;
     }
 
-    void visitChildren(CursorVisitor visitor) @trusted const {
-        clang_visitChildren(_cx, &cvisitor, new ClientData(visitor));
+    string toString() @safe pure const {
+        import std.conv: text;
+        return text("Cursor(", kind, `, "`, spelling, `", `, type, ", ", returnType, ")");
     }
 
     SourceRange sourceRange() @safe nothrow const {
@@ -106,18 +116,23 @@ struct Cursor {
     }
 
     bool isPredefined() @safe @nogc pure nothrow const {
+        // FIXME
         return false;
     }
 
-    int opApply(scope int delegate(Cursor cursor, Cursor parent) block) @safe const {
+    void visitChildren(CursorVisitor visitor) @trusted const {
+        clang_visitChildren(_cx, &cvisitor, new ClientData(visitor));
+    }
+
+    int opApply(scope int delegate(Cursor cursor, Cursor parent) @safe block) @safe const {
         return opApplyN(block);
     }
 
-    int opApply(scope int delegate(Cursor cursor) block) @safe const {
+    int opApply(scope int delegate(Cursor cursor) @safe block) @safe const {
         return opApplyN(block);
     }
 
-    private int opApplyN(T...)(int delegate(T args) block) const {
+    private int opApplyN(T...)(int delegate(T args) @safe block) const {
         int stop = 0;
 
         visitChildren((cursor, parent) {
@@ -167,9 +182,9 @@ struct Type {
     Kind kind;
     string spelling;
 
-    this(CXType _cx) @trusted {
+    this(CXType _cx) @safe pure {
         this.kind = cast(Kind) _cx.kind;
-        //this.spelling = Cursor(clang_getTypeDeclaration(_cx)).spelling;
+        spelling = clang_getTypeSpelling(_cx).toString;
     }
 
     this(in Kind kind) @safe @nogc pure nothrow {
@@ -179,5 +194,10 @@ struct Type {
     this(in Kind kind, in string spelling) @safe @nogc pure nothrow {
         this.kind = kind;
         this.spelling = spelling;
+    }
+
+    string toString() @safe pure const {
+        import std.conv: text;
+        return text("Type(", kind, `, "`, spelling, `")`);
     }
 }

@@ -1,17 +1,3 @@
-/*===-- clang-c/Index.h - Indexing Public C Interface -------------*- C -*-===*\
-|*                                                                            *|
-|*                     The LLVM Compiler Infrastructure                       *|
-|*                                                                            *|
-|* This file is distributed under the University of Illinois Open Source      *|
-|* License. See LICENSE.TXT for details.                                      *|
-|*                                                                            *|
-|*===----------------------------------------------------------------------===*|
-|*                                                                            *|
-|* This header provides a public inferface to a Clang library for extracting  *|
-|* high-level symbol information from source files without exposing the full  *|
-|* Clang C++ API.                                                             *|
-|*                                                                            *|
-\*===----------------------------------------------------------------------===*/
 module clang.c.index;
 
 import clang.c.util: EnumC;
@@ -2617,7 +2603,7 @@ uint clang_hashCursor(CXCursor);
 /**
  * \brief Retrieve the kind of the given cursor.
  */
-CXCursorKind clang_getCursorKind(CXCursor) @nogc nothrow;
+CXCursorKind clang_getCursorKind(in CXCursor) @safe @nogc pure nothrow;
 
 /**
  * \brief Determine whether the given cursor kind represents a declaration.
@@ -3247,7 +3233,7 @@ struct CXType
 /**
  * \brief Retrieve the type of a CXCursor (if any).
  */
-CXType clang_getCursorType(CXCursor C) @nogc nothrow;
+CXType clang_getCursorType(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Pretty-print the underlying type using the rules of the
@@ -3255,7 +3241,7 @@ CXType clang_getCursorType(CXCursor C) @nogc nothrow;
  *
  * If the type is invalid, an empty string is returned.
  */
-CXString clang_getTypeSpelling(CXType CT);
+CXString clang_getTypeSpelling(CXType CT) @safe @nogc pure nothrow;
 
 /**
  * \brief Retrieve the underlying type of a typedef declaration.
@@ -3528,7 +3514,7 @@ CXCallingConv clang_getFunctionTypeCallingConv(CXType T);
  *
  * If a non-function type is passed in, an invalid type is returned.
  */
-CXType clang_getResultType(CXType T);
+CXType clang_getResultType(CXType T) @safe @nogc nothrow pure;
 
 /**
  * \brief Retrieve the number of non-variadic parameters associated with a
@@ -3556,7 +3542,7 @@ uint clang_isFunctionTypeVariadic(CXType T);
  *
  * This only returns a valid type if the cursor refers to a function or method.
  */
-CXType clang_getCursorResultType(CXCursor C);
+CXType clang_getCursorResultType(in CXCursor C) @safe @nogc nothrow pure;
 
 /**
  * \brief Return 1 if the CXType is a POD (plain old data) type, and 0
@@ -4006,7 +3992,7 @@ CXString clang_constructUSR_ObjCProperty(
 /**
  * \brief Retrieve a name for the entity referenced by this cursor.
  */
-CXString clang_getCursorSpelling(CXCursor) @nogc nothrow;
+CXString clang_getCursorSpelling(in CXCursor) @safe @nogc pure nothrow;
 
 /**
  * \brief Retrieve a range for a piece that forms the cursors spelling name.
