@@ -2597,7 +2597,7 @@ CXCursor clang_getNullCursor();
  * The translation unit cursor can be used to start traversing the
  * various declarations within the given translation unit.
  */
-CXCursor clang_getTranslationUnitCursor(CXTranslationUnit);
+CXCursor clang_getTranslationUnitCursor(const CXTranslationUnit);
 
 /**
  * \brief Determine whether two cursors are equivalent.
@@ -3247,7 +3247,7 @@ struct CXType
 /**
  * \brief Retrieve the type of a CXCursor (if any).
  */
-CXType clang_getCursorType(CXCursor C);
+CXType clang_getCursorType(CXCursor C) @nogc nothrow;
 
 /**
  * \brief Pretty-print the underlying type using the rules of the
@@ -3499,7 +3499,7 @@ CXType clang_getPointeeType(CXType T);
 /**
  * \brief Return the cursor for the declaration of the given type.
  */
-CXCursor clang_getTypeDeclaration(CXType T);
+CXCursor clang_getTypeDeclaration(CXType T) @nogc nothrow;
 
 /**
  * Returns the Objective-C type encoding for the specified declaration.
@@ -4006,7 +4006,7 @@ CXString clang_constructUSR_ObjCProperty(
 /**
  * \brief Retrieve a name for the entity referenced by this cursor.
  */
-CXString clang_getCursorSpelling(CXCursor) @nogc;
+CXString clang_getCursorSpelling(CXCursor) @nogc nothrow;
 
 /**
  * \brief Retrieve a range for a piece that forms the cursors spelling name.

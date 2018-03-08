@@ -46,7 +46,7 @@ struct TranslationUnit {
 
     CXTranslationUnit _cx;
 
-    Cursor cursor() @trusted {
+    Cursor cursor() @trusted const {
         return Cursor(clang_getTranslationUnitCursor(_cx));
     }
 
@@ -54,11 +54,11 @@ struct TranslationUnit {
         cursor.visitChildren(visitor);
     }
 
-    int opApply(scope int delegate(Cursor cursor, Cursor parent) block) @safe {
+    int opApply(scope int delegate(Cursor cursor, Cursor parent) block) @safe const {
         return cursor.opApply(block);
     }
 
-    int opApply(scope int delegate(Cursor cursor) block) @safe {
+    int opApply(scope int delegate(Cursor cursor) block) @safe const {
         return cursor.opApply(block);
     }
 }
@@ -78,14 +78,26 @@ struct Cursor {
     private CXCursor _cx;
     Kind kind;
     string spelling;
+    Type type;
 
     this(CXCursor cx) @trusted {
         _cx = cx;
         kind = cast(Kind)clang_getCursorKind(_cx);
         spelling = clang_getCursorSpelling(_cx).toString;
+        type = Type(clang_getCursorType(_cx));
     }
 
-    void visitChildren(CursorVisitor visitor) @trusted {
+    this(in Kind kind, in string spelling) @safe @nogc pure nothrow {
+        this(kind, spelling, Type());
+    }
+
+    this(in Kind kind, in string spelling, Type type) @safe @nogc pure nothrow {
+        this.kind = kind;
+        this.spelling = spelling;
+        this.type = type;
+    }
+
+    void visitChildren(CursorVisitor visitor) @trusted const {
         clang_visitChildren(_cx, &cvisitor, new ClientData(visitor));
     }
 
@@ -97,15 +109,15 @@ struct Cursor {
         return false;
     }
 
-    int opApply(scope int delegate(Cursor cursor, Cursor parent) block) @safe {
+    int opApply(scope int delegate(Cursor cursor, Cursor parent) block) @safe const {
         return opApplyN(block);
     }
 
-    int opApply(scope int delegate(Cursor cursor) block) @safe {
+    int opApply(scope int delegate(Cursor cursor) block) @safe const {
         return opApplyN(block);
     }
 
-    private int opApplyN(T...)(int delegate(T args) block) {
+    private int opApplyN(T...)(int delegate(T args) block) const {
         int stop = 0;
 
         visitChildren((cursor, parent) {
@@ -119,7 +131,7 @@ struct Cursor {
 
             return stop
                 ? ChildVisitResult.Break
-                : ChildVisitResult.Recurse;
+                : ChildVisitResult.Continue;
         });
 
         return stop;
@@ -143,4 +155,29 @@ private struct ClientData {
 private extern(C) CXChildVisitResult cvisitor(CXCursor cursor, CXCursor parent, void* clientData_) {
     auto clientData = cast(ClientData*)clientData_;
     return cast(CXChildVisitResult)clientData.dvisitor(Cursor(cursor), Cursor(parent));
+}
+
+
+struct Type {
+
+    mixin EnumD!("Kind", CXTypeKind, "CXType_");
+
+    private CXType _cx;
+
+    Kind kind;
+    string spelling;
+
+    this(CXType _cx) @trusted {
+        this.kind = cast(Kind) _cx.kind;
+        //this.spelling = Cursor(clang_getTypeDeclaration(_cx)).spelling;
+    }
+
+    this(in Kind kind) @safe @nogc pure nothrow {
+        this(kind, "");
+    }
+
+    this(in Kind kind, in string spelling) @safe @nogc pure nothrow {
+        this.kind = kind;
+        this.spelling = spelling;
+    }
 }
