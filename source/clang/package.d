@@ -75,20 +75,20 @@ struct Cursor {
 
     mixin EnumD!("Kind", CXCursorKind, "CXCursor_");
 
-    private CXCursor _cx;
+    CXCursor cx;
     Kind kind;
     string spelling;
     Type type;
     Type returnType;
 
     this(CXCursor cx) @safe pure {
-        _cx = cx;
-        kind = cast(Kind) clang_getCursorKind(_cx);
-        spelling = clang_getCursorSpelling(_cx).toString;
-        type = Type(clang_getCursorType(_cx));
+        this.cx = cx;
+        kind = cast(Kind) clang_getCursorKind(cx);
+        spelling = clang_getCursorSpelling(cx).toString;
+        type = Type(clang_getCursorType(cx));
 
         if(kind == Kind.FunctionDecl)
-            returnType = Type(clang_getCursorResultType(_cx));
+            returnType = Type(clang_getCursorResultType(cx));
     }
 
     this(in Kind kind, in string spelling) @safe @nogc pure nothrow {
@@ -121,7 +121,7 @@ struct Cursor {
     }
 
     void visitChildren(CursorVisitor visitor) @trusted const {
-        clang_visitChildren(_cx, &cvisitor, new ClientData(visitor));
+        clang_visitChildren(cx, &cvisitor, new ClientData(visitor));
     }
 
     int opApply(scope int delegate(Cursor cursor, Cursor parent) @safe block) @safe const {
@@ -177,14 +177,13 @@ struct Type {
 
     mixin EnumD!("Kind", CXTypeKind, "CXType_");
 
-    private CXType _cx;
-
+    CXType cx;
     Kind kind;
     string spelling;
 
-    this(CXType _cx) @safe pure {
-        this.kind = cast(Kind) _cx.kind;
-        spelling = clang_getTypeSpelling(_cx).toString;
+    this(CXType cx) @safe pure {
+        this.kind = cast(Kind) cx.kind;
+        spelling = clang_getTypeSpelling(cx).toString;
     }
 
     this(in Kind kind) @safe @nogc pure nothrow {
