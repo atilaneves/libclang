@@ -32,7 +32,7 @@ TranslationUnit parse(in string fileName, in string[] commandLineArgs, in Transl
         cast(int)commandLineArgz.length,
         unsavedFiles.ptr,
         cast(uint)unsavedFiles.length,
-        CXTranslationUnit_None,
+        translUnitflags,
     );
 
     return TranslationUnit(cx);
