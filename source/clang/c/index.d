@@ -336,7 +336,7 @@ alias CXFile = void*;
 /**
  * \brief Retrieve the complete file and path name of the given file.
  */
-CXString clang_getFileName(CXFile SFile);
+CXString clang_getFileName(CXFile SFile) @safe @nogc pure nothrow;
 
 /**
  * \brief Retrieve the last modification time of the given file.
@@ -525,7 +525,7 @@ void clang_getExpansionLocation(
     CXFile* file,
     uint* line,
     uint* column,
-    uint* offset);
+    uint* offset) @safe @nogc pure nothrow;
 
 /**
  * \brief Retrieve the file, line, column, and offset represented by
@@ -615,7 +615,7 @@ void clang_getSpellingLocation(
     CXFile* file,
     uint* line,
     uint* column,
-    uint* offset);
+    uint* offset) @safe @nogc pure nothrow;
 
 /**
  * \brief Retrieve the file, line, column, and offset represented by
@@ -651,13 +651,13 @@ void clang_getFileLocation(
  * \brief Retrieve a source location representing the first character within a
  * source range.
  */
-CXSourceLocation clang_getRangeStart(CXSourceRange range);
+CXSourceLocation clang_getRangeStart(CXSourceRange range) @safe @nogc pure nothrow;
 
 /**
  * \brief Retrieve a source location representing the last character within a
  * source range.
  */
-CXSourceLocation clang_getRangeEnd(CXSourceRange range);
+CXSourceLocation clang_getRangeEnd(CXSourceRange range) @safe @nogc pure nothrow;
 
 /**
  * \brief Identifies an array of ranges.
@@ -3058,7 +3058,7 @@ CXSourceLocation clang_getCursorLocation(CXCursor);
  * the extent covers the location of the reference (e.g., where the referenced
  * entity was actually used).
  */
-CXSourceRange clang_getCursorExtent(CXCursor);
+CXSourceRange clang_getCursorExtent(CXCursor) @safe @nogc pure nothrow;
 
 /**
  * @}

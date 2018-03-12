@@ -80,12 +80,14 @@ struct Cursor {
     string spelling;
     Type type;
     Type returnType;
+    SourceRange sourceRange;
 
     this(CXCursor cx) @safe pure {
         this.cx = cx;
         kind = cast(Kind) clang_getCursorKind(cx);
         spelling = clang_getCursorSpelling(cx).toString;
         type = Type(clang_getCursorType(cx));
+        sourceRange = SourceRange(clang_getCursorExtent(cx));
 
         if(kind == Kind.FunctionDecl)
             returnType = Type(clang_getCursorResultType(cx));
@@ -109,10 +111,6 @@ struct Cursor {
     string toString() @safe pure const {
         import std.conv: text;
         return text("Cursor(", kind, `, "`, spelling, `", `, type, ", ", returnType, ")");
-    }
-
-    SourceRange sourceRange() @safe nothrow const {
-        return typeof(return).init;
     }
 
     bool isPredefined() @safe @nogc pure nothrow const {
@@ -154,13 +152,35 @@ struct Cursor {
 }
 
 struct SourceRange {
+    CXSourceRange cx;
     string path;
     SourceLocation start;
     SourceLocation end;
+
+    this(CXSourceRange cx) @safe pure {
+        this.cx = cx;
+        this.start = clang_getRangeStart(cx);
+        this.end = clang_getRangeEnd(cx);
+        this.path = start.path;
+    }
 }
 
 struct SourceLocation {
+    CXSourceLocation cx;
+    string path;
+    uint line;
+    uint column;
     uint offset;
+
+    this(CXSourceLocation cx) @safe pure {
+        this.cx = cx;
+
+        CXFile file;
+        () @trusted { clang_getExpansionLocation(cx, &file, null, null, null); }();
+        this.path = clang_getFileName(file).toString;
+
+        () @trusted { clang_getSpellingLocation(cx, &file, &line, &column, &offset); }();
+    }
 }
 
 private struct ClientData {
