@@ -133,7 +133,7 @@ struct Cursor {
     private int opApplyN(T...)(int delegate(T args) @safe block) const {
         int stop = 0;
 
-        visitChildren((cursor, parent) {
+        cx.visitChildren!((cursor, parent) {
 
             static if(T.length == 2)
                 stop = block(cursor, parent);
@@ -150,6 +150,11 @@ struct Cursor {
         return stop;
     }
 }
+
+void visitChildren(alias F)(CXCursor cx) @trusted const {
+    clang_visitChildren(cx, &cvisitor, new ClientData((c, p) { return F(c, p); }));
+}
+
 
 struct SourceRange {
     CXSourceRange cx;
