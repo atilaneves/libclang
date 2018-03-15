@@ -140,6 +140,14 @@ struct Cursor {
         return Type(clang_getTypedefDeclUnderlyingType(cx));
     }
 
+    /**
+       For EnumConstantDecl cursors, return the numeric value
+     */
+    auto enumConstantValue() @safe @nogc pure nothrow const {
+        assert(kind == Cursor.Kind.EnumConstantDecl);
+        return clang_getEnumConstantDeclValue(cx);
+    }
+
     string toString() @safe pure nothrow const {
         import std.conv: text;
         try {

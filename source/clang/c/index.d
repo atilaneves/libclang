@@ -3267,7 +3267,7 @@ CXType clang_getEnumDeclIntegerType(CXCursor C);
  * Since this is also potentially a valid constant value, the kind of the cursor
  * must be verified before calling this function.
  */
-long clang_getEnumConstantDeclValue(CXCursor C);
+long clang_getEnumConstantDeclValue(CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Retrieve the integer value of an enum constant declaration as an unsigned
