@@ -6,7 +6,7 @@ import clang;
     with(NewTranslationUnit("foo.cpp",
                             q{ struct { int int_; double double_; }; }))
     {
-        translUnit.visitChildren(
+        translUnit.cursor.visitChildren(
             (cursor, parent) {
 
                 static int cursorIndex;
@@ -47,7 +47,7 @@ import clang;
     with(NewTranslationUnit("foo.cpp",
                             q{ struct { int int_; double double_; }; }))
     {
-        translUnit.visitChildren(
+        translUnit.cursor.visitChildren(
             (cursor, parent) {
                 int i;
                 if(i % 2 == 0)
@@ -64,7 +64,7 @@ import clang;
     with(NewTranslationUnit("foo.cpp",
                             q{ struct { int int_; double double_; }; }))
     {
-        foreach(cursor, parent; translUnit) {
+        foreach(cursor, parent; translUnit.cursor) {
 
             static int cursorIndex;
 
@@ -99,7 +99,7 @@ import clang;
     with(NewTranslationUnit("foo.cpp",
                             q{ struct { int int_; double double_; }; }))
     {
-        foreach(cursor; translUnit) {
+        foreach(cursor; translUnit.cursor) {
 
             static int cursorIndex;
 

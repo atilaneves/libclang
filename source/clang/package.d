@@ -51,18 +51,6 @@ struct TranslationUnit {
         this.cx = cx;
         this.cursor = Cursor(clang_getTranslationUnitCursor(cx));
     }
-
-    void visitChildren(CursorVisitor visitor) @safe nothrow {
-        cursor.visitChildren(visitor);
-    }
-
-    int opApply(scope int delegate(Cursor cursor, Cursor parent) @safe block) @safe nothrow const {
-        return cursor.opApply(block);
-    }
-
-    int opApply(scope int delegate(Cursor cursor) @safe block) @safe nothrow const {
-        return cursor.opApply(block);
-    }
 }
 
 string toString(CXString cxString) @safe pure nothrow {
