@@ -3436,14 +3436,14 @@ uint clang_equalTypes(CXType A, CXType B);
  * type with all the "sugar" removed.  For example, if 'T' is a typedef
  * for 'int', the canonical type for 'T' would be 'int'.
  */
-CXType clang_getCanonicalType(CXType T);
+CXType clang_getCanonicalType(in CXType T) @safe @nogc pure nothrow;
 
 /**
  * \brief Determine whether a CXType has the "const" qualifier set,
  * without looking through typedefs that may have added "const" at a
  * different level.
  */
-uint clang_isConstQualifiedType(CXType T);
+uint clang_isConstQualifiedType(in CXType T) @safe @nogc pure nothrow;
 
 /**
  * \brief Determine whether a  CXCursor that is a macro, is
@@ -3480,7 +3480,7 @@ uint clang_isRestrictQualifiedType(CXType T);
 /**
  * \brief For pointer types, returns the type of the pointee.
  */
-CXType clang_getPointeeType(CXType T);
+CXType clang_getPointeeType(in CXType T) @safe @nogc pure nothrow;
 
 /**
  * \brief Return the cursor for the declaration of the given type.
