@@ -5,6 +5,7 @@ copyright "Copyright © 2018, Atila Neves"
 license "BSD 3-clause"
 targetType "library"
 libs "clang"
+lflags "-L/usr/lib/llvm-3.9/lib"  # travis
 
 configuration "library" {
 
@@ -18,26 +19,4 @@ configuration "unittest" {
     sourcePaths "source" "tests"
     importPaths "source" "tests"
     dependency "unit-threaded" version="~>0.7.0"
-}
-
-configuration "utl" {
-    targetType "executable"
-    targetName "utl"
-    targetPath "bin"
-    mainSourceFile "tests/ut.d"
-    sourcePaths "source" "tests"
-    importPaths "source" "tests"
-    dependency "unit-threaded" version="~>0.7.0"
-    versions "unitThreadedLight"
-}
-
-configuration "ubuntu-test" {
-    targetType "executable"
-    targetName "ut"
-    targetPath "bin"
-    mainSourceFile "tests/ut.d"
-    sourcePaths "source" "tests"
-    importPaths "source" "tests"
-    dependency "unit-threaded" version="~>0.7.0"
-    lflags "-L/usr/lib/llvm-3.4/lib"
 }
