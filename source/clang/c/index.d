@@ -2583,7 +2583,7 @@ CXCursor clang_getNullCursor();
  * The translation unit cursor can be used to start traversing the
  * various declarations within the given translation unit.
  */
-CXCursor clang_getTranslationUnitCursor(const CXTranslationUnit);
+CXCursor clang_getTranslationUnitCursor(const CXTranslationUnit) @safe @nogc pure nothrow;
 
 /**
  * \brief Determine whether two cursors are equivalent.

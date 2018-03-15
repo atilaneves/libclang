@@ -44,10 +44,12 @@ alias CursorVisitor = ChildVisitResult delegate(Cursor cursor, Cursor parent);
 
 struct TranslationUnit {
 
-    CXTranslationUnit _cx;
+    CXTranslationUnit cx;
+    Cursor cursor;
 
-    Cursor cursor() @trusted const {
-        return Cursor(clang_getTranslationUnitCursor(_cx));
+    this(CXTranslationUnit cx) @safe {
+        this.cx = cx;
+        this.cursor = Cursor(clang_getTranslationUnitCursor(cx));
     }
 
     void visitChildren(CursorVisitor visitor) @safe {
