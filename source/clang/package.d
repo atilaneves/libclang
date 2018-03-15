@@ -76,13 +76,14 @@ struct Cursor {
     mixin EnumD!("Kind", CXCursorKind, "CXCursor_");
 
     CXCursor cx;
+    Cursor[] children;
     Kind kind;
     string spelling;
     Type type;
-    Type returnType;
+    Type returnType; // only if the cursor is a function
     SourceRange sourceRange;
 
-    this(CXCursor cx) @safe pure {
+    this(CXCursor cx) @safe {
         this.cx = cx;
         kind = cast(Kind) clang_getCursorKind(cx);
         spelling = clang_getCursorSpelling(cx).toString;
@@ -91,6 +92,19 @@ struct Cursor {
 
         if(kind == Kind.FunctionDecl)
             returnType = Type(clang_getCursorResultType(cx));
+
+        // calling Cursor.visitChildren here would cause infinite recursion
+        // because cvisitor constructs a Cursor out of the parent
+        clang_visitChildren(cx, &ctorVisitor, &this);
+    }
+
+    private static extern(C) CXChildVisitResult ctorVisitor(CXCursor cursor,
+                                                            CXCursor parent,
+                                                            void* clientData_)
+    {
+        auto self = cast(typeof(&this)) clientData_;
+        self.children ~= Cursor(cursor);
+        return CXChildVisit_Continue;
     }
 
     this(in Kind kind, in string spelling) @safe @nogc pure nothrow {
@@ -98,14 +112,9 @@ struct Cursor {
     }
 
     this(in Kind kind, in string spelling, Type type) @safe @nogc pure nothrow {
-        this(kind, spelling, type, Type());
-    }
-
-    this(in Kind kind, in string spelling, Type type, Type returnType) @safe @nogc pure nothrow {
         this.kind = kind;
         this.spelling = spelling;
         this.type = type;
-        this.returnType = returnType;
     }
 
     string toString() @safe pure const {
@@ -185,12 +194,18 @@ struct SourceLocation {
 }
 
 private struct ClientData {
+    /**
+       The D visitor delegate
+     */
     CursorVisitor dvisitor;
 }
 
+// This is the C function actually passed to libclang's clang_visitChildren
+// The context (clientData) contains the D delegate that's then called on the
+// (cursor, parent) pair
 private extern(C) CXChildVisitResult cvisitor(CXCursor cursor, CXCursor parent, void* clientData_) {
-    auto clientData = cast(ClientData*)clientData_;
-    return cast(CXChildVisitResult)clientData.dvisitor(Cursor(cursor), Cursor(parent));
+    auto clientData = cast(ClientData*) clientData_;
+    return cast(CXChildVisitResult) clientData.dvisitor(Cursor(cursor), Cursor(parent));
 }
 
 

@@ -153,3 +153,52 @@ import clang;
         }
     }
 }
+
+@("cursor.children C++ file with one simple struct")
+@safe unittest {
+    import std.algorithm: map;
+
+    with(newTranslationUnit("foo.cpp",
+                            q{ struct { int int_; double double_; }; }))
+    {
+        string[] commandLineArgs;
+        auto translUnit = parse(
+            fileName,
+            commandLineArgs,
+            TranslationUnitFlags.None,
+        );
+
+        const cursor = translUnit.cursor;
+        with(Cursor.Kind) {
+            cursor.children.map!(a => a.kind).shouldEqual([StructDecl]);
+            cursor.children[0].children.map!(a => a.kind).shouldEqual(
+                [FieldDecl, FieldDecl]
+            );
+        }
+
+        foreach(cursor; translUnit) {
+
+            static int cursorIndex;
+
+            switch(cursorIndex) {
+
+            default:
+                assert(false);
+
+            case 0:
+                cursor.kind.shouldEqual(Cursor.Kind.StructDecl);
+                break;
+
+            case 1:
+                cursor.kind.shouldEqual(Cursor.Kind.FieldDecl);
+                break;
+
+            case 2:
+                cursor.kind.shouldEqual(Cursor.Kind.FieldDecl);
+                break;
+            }
+
+            ++cursorIndex;
+        }
+    }
+}
