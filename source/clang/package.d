@@ -7,14 +7,14 @@ mixin EnumD!("TranslationUnitFlags", CXTranslationUnit_Flags, "CXTranslationUnit
 
 
 TranslationUnit parse(in string fileName, in TranslationUnitFlags translUnitflags)
-    @safe
+    @safe nothrow
 {
     return parse(fileName, [], translUnitflags);
 }
 
 
 TranslationUnit parse(in string fileName, in string[] commandLineArgs, in TranslationUnitFlags translUnitflags)
-    @safe
+    @safe nothrow
 {
 
     import std.string: toStringz;
@@ -47,25 +47,25 @@ struct TranslationUnit {
     CXTranslationUnit cx;
     Cursor cursor;
 
-    this(CXTranslationUnit cx) @safe {
+    this(CXTranslationUnit cx) @safe nothrow {
         this.cx = cx;
         this.cursor = Cursor(clang_getTranslationUnitCursor(cx));
     }
 
-    void visitChildren(CursorVisitor visitor) @safe {
+    void visitChildren(CursorVisitor visitor) @safe nothrow {
         cursor.visitChildren(visitor);
     }
 
-    int opApply(scope int delegate(Cursor cursor, Cursor parent) @safe block) @safe const {
+    int opApply(scope int delegate(Cursor cursor, Cursor parent) @safe block) @safe nothrow const {
         return cursor.opApply(block);
     }
 
-    int opApply(scope int delegate(Cursor cursor) @safe block) @safe const {
+    int opApply(scope int delegate(Cursor cursor) @safe block) @safe nothrow const {
         return cursor.opApply(block);
     }
 }
 
-string toString(CXString cxString) @safe pure {
+string toString(CXString cxString) @safe pure nothrow {
     import std.conv: to;
     auto cstr = clang_getCString(cxString);
     scope(exit) clang_disposeString(cxString);
@@ -84,7 +84,7 @@ struct Cursor {
     Type returnType; // only if the cursor is a function
     SourceRange sourceRange;
 
-    this(CXCursor cx) @safe {
+    this(CXCursor cx) @safe nothrow {
         this.cx = cx;
         kind = cast(Kind) clang_getCursorKind(cx);
         spelling = clang_getCursorSpelling(cx).toString;
@@ -102,8 +102,9 @@ struct Cursor {
     private static extern(C) CXChildVisitResult ctorVisitor(CXCursor cursor,
                                                             CXCursor parent,
                                                             void* clientData_)
+        @safe nothrow
     {
-        auto self = cast(typeof(&this)) clientData_;
+        auto self = () @trusted { return cast(typeof(&this)) clientData_; }();
         self.children ~= Cursor(cursor);
         return CXChildVisit_Continue;
     }
@@ -118,9 +119,12 @@ struct Cursor {
         this.type = type;
     }
 
-    string toString() @safe pure const {
+    string toString() @safe pure nothrow const {
         import std.conv: text;
-        return text("Cursor(", kind, `, "`, spelling, `", `, type, ", ", returnType, ")");
+        try
+            return text("Cursor(", kind, `, "`, spelling, `", `, type, ", ", returnType, ")");
+        catch(Exception e)
+            assert(false, "Fatal error in Cursor.toString: " ~ e.msg);
     }
 
     bool isPredefined() @safe @nogc pure nothrow const {
@@ -128,15 +132,15 @@ struct Cursor {
         return false;
     }
 
-    void visitChildren(CursorVisitor visitor) @safe const {
+    void visitChildren(CursorVisitor visitor) @safe nothrow const {
         clang_visitChildren(cx, &cvisitor, new ClientData(visitor));
     }
 
-    int opApply(scope int delegate(Cursor cursor, Cursor parent) @safe block) @safe const {
+    int opApply(scope int delegate(Cursor cursor, Cursor parent) @safe block) @safe nothrow const {
         return opApplyN(block);
     }
 
-    int opApply(scope int delegate(Cursor cursor) @safe block) @safe const {
+    int opApply(scope int delegate(Cursor cursor) @safe block) @safe nothrow const {
         return opApplyN(block);
     }
 
@@ -168,7 +172,7 @@ struct SourceRange {
     SourceLocation start;
     SourceLocation end;
 
-    this(CXSourceRange cx) @safe pure {
+    this(CXSourceRange cx) @safe pure nothrow {
         this.cx = cx;
         this.start = clang_getRangeStart(cx);
         this.end = clang_getRangeEnd(cx);
@@ -183,7 +187,7 @@ struct SourceLocation {
     uint column;
     uint offset;
 
-    this(CXSourceLocation cx) @safe pure {
+    this(CXSourceLocation cx) @safe pure nothrow {
         this.cx = cx;
 
         CXFile file;
@@ -218,7 +222,7 @@ struct Type {
     Kind kind;
     string spelling;
 
-    this(CXType cx) @safe pure {
+    this(CXType cx) @safe pure nothrow {
         this.kind = cast(Kind) cx.kind;
         spelling = clang_getTypeSpelling(cx).toString;
     }
@@ -232,8 +236,11 @@ struct Type {
         this.spelling = spelling;
     }
 
-    string toString() @safe pure const {
+    string toString() @safe pure const nothrow {
         import std.conv: text;
-        return text("Type(", kind, `, "`, spelling, `")`);
+        try
+            return text("Type(", kind, `, "`, spelling, `")`);
+        catch(Exception e)
+            assert(false, "Fatal error in Type.toString: " ~ e.msg);
     }
 }
