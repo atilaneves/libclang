@@ -13,7 +13,7 @@ addons:
 
 
 script:
-  - dub test -c ubuntu-test --build=unittest-cov --compiler=${DC}
+  - dub test --build=unittest-cov --compiler=${DC}
 
 after_success:
  - bash <(curl -s https://codecov.io/bash)
