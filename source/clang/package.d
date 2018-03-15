@@ -119,11 +119,36 @@ struct Cursor {
         this.type = type;
     }
 
+    /**
+       Constructs a function declaration cursor.
+     */
+    static Cursor functionDecl(in string spelling, in string proto, Type returnType)
+        @safe pure nothrow
+    {
+        auto cursor = Cursor(Kind.FunctionDecl,
+                             spelling,
+                             Type(Type.Kind.FunctionProto, proto));
+        cursor.returnType = returnType;
+        return cursor;
+    }
+
+    /**
+       For TypedefDecl cursors, return the underlying type
+     */
+    Type underlyingType() @safe pure nothrow const {
+        assert(kind == Cursor.Kind.TypedefDecl, "Not a TypedefDecl cursor");
+        return Type(clang_getTypedefDeclUnderlyingType(cx));
+    }
+
     string toString() @safe pure nothrow const {
         import std.conv: text;
-        try
-            return text("Cursor(", kind, `, "`, spelling, `", `, type, ", ", returnType, ")");
-        catch(Exception e)
+        try {
+            const returnTypeStr = kind == Kind.FunctionDecl
+                ? text(", ", returnType)
+                : "";
+
+            return text("Cursor(", kind, `, "`, spelling, `", `, type, returnTypeStr, ")");
+        } catch(Exception e)
             assert(false, "Fatal error in Cursor.toString: " ~ e.msg);
     }
 

@@ -3249,7 +3249,7 @@ CXString clang_getTypeSpelling(CXType CT) @safe @nogc pure nothrow;
  * If the cursor does not reference a typedef declaration, an invalid type is
  * returned.
  */
-CXType clang_getTypedefDeclUnderlyingType(CXCursor C);
+CXType clang_getTypedefDeclUnderlyingType(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Retrieve the integer type of an enum declaration.
@@ -3485,7 +3485,7 @@ CXType clang_getPointeeType(CXType T);
 /**
  * \brief Return the cursor for the declaration of the given type.
  */
-CXCursor clang_getTypeDeclaration(CXType T) @nogc nothrow;
+CXCursor clang_getTypeDeclaration(in CXType T) @safe @nogc pure nothrow;
 
 /**
  * Returns the Objective-C type encoding for the specified declaration.
