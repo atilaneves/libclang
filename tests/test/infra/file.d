@@ -19,11 +19,20 @@ struct NewCppFile {
     private string _fileName;
 }
 
-auto newCppFile(in string fileName, in string fileContents) @safe {
-    import unit_threaded.integration: Sandbox;
-    return immutable NewCppFile(fileName, fileContents);
-}
+struct NewTranslationUnit {
+    import clang: TranslationUnit;
 
-auto newTranslationUnit(in string fileName, in string fileContents) @safe {
-    return newCppFile(fileName, fileContents);
+    alias newCppFile this;
+
+    NewCppFile newCppFile;
+    TranslationUnit translUnit;
+
+    this(in string fileName, in string fileContents) @safe {
+        import clang: parse, TranslationUnitFlags;
+
+        newCppFile = NewCppFile(fileName, fileContents);
+
+        string[] commandLineArgs;
+        translUnit = parse(newCppFile.fileName, commandLineArgs, TranslationUnitFlags.None);
+    }
 }

@@ -4,8 +4,8 @@ import clang.c.index;
 
 @("C++ file with one simple struct")
 @system unittest {
-    with(newTranslationUnit("foo.cpp",
-                            q{ struct { int int_; double double_; }; }))
+    with(NewCppFile("foo.cpp",
+                    q{ struct { int int_; double double_; }; }))
     {
         import std.string: toStringz;
 
@@ -60,8 +60,8 @@ private extern(C) CXChildVisitResult fooCppVisitor(CXCursor cursor, CXCursor par
 
 @("C++ file with one simple struct and throwing visitor")
 @system unittest {
-    with(newTranslationUnit("foo.cpp",
-                            q{ struct { int int_; double double_; }; }))
+    with(NewCppFile("foo.cpp",
+                    q{ struct { int int_; double double_; }; }))
     {
         import std.string: toStringz;
         import std.algorithm: map;
