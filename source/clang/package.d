@@ -68,9 +68,8 @@ struct TranslationUnit {
 string toString(CXString cxString) @safe pure {
     import std.conv: to;
     auto cstr = clang_getCString(cxString);
-    auto str = () @trusted { return cstr.to!string; }();
-    clang_disposeString(cxString);
-    return str;
+    scope(exit) clang_disposeString(cxString);
+    return () @trusted { return cstr.to!string; }();
 }
 
 struct Cursor {
