@@ -253,7 +253,7 @@ mixin EnumC!CXCursor_ExceptionSpecificationKind;
  */
 CXIndex clang_createIndex(
     int excludeDeclarationsFromPCH,
-    int displayDiagnostics);
+    int displayDiagnostics) @safe @nogc pure nothrow;
 
 /**
  * \brief Destroy the given index.
@@ -1319,7 +1319,7 @@ CXTranslationUnit clang_parseTranslationUnit(
     int num_command_line_args,
     CXUnsavedFile* unsaved_files,
     uint num_unsaved_files,
-    uint options);
+    uint options) @safe @nogc pure nothrow;
 
 /**
  * \brief Parse the given source file and the translation unit corresponding

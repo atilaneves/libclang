@@ -14,7 +14,7 @@ TranslationUnit parse(in string fileName, in TranslationUnitFlags translUnitflag
 
 
 TranslationUnit parse(in string fileName, in string[] commandLineArgs, in TranslationUnitFlags translUnitflags)
-    @trusted
+    @safe
 {
 
     import std.string: toStringz;
@@ -28,9 +28,9 @@ TranslationUnit parse(in string fileName, in string[] commandLineArgs, in Transl
     auto cx = clang_parseTranslationUnit(
         index,
         fileName.toStringz,
-        commandLineArgz.ptr,
+        () @trusted {  return commandLineArgz.ptr; }(), // .ptr since the length can be 0
         cast(int)commandLineArgz.length,
-        unsavedFiles.ptr,
+        () @trusted { return unsavedFiles.ptr; }(), // .ptr since the length can be 0
         cast(uint)unsavedFiles.length,
         translUnitflags,
     );
@@ -129,7 +129,7 @@ struct Cursor {
         return false;
     }
 
-    void visitChildren(CursorVisitor visitor) @trusted const {
+    void visitChildren(CursorVisitor visitor) @safe const {
         clang_visitChildren(cx, &cvisitor, new ClientData(visitor));
     }
 
