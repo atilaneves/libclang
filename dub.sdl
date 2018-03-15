@@ -5,7 +5,7 @@ copyright "Copyright © 2018, Atila Neves"
 license "BSD 3-clause"
 targetType "library"
 libs "clang"
-lflags "-L/usr/lib/llvm-3.4/lib"  # travis
+lflags "-L/usr/lib/llvm-3.9/lib"  # travis
 
 configuration "library" {
 
