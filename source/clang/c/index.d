@@ -4091,7 +4091,7 @@ uint clang_isCursorDefinition(CXCursor);
  *
  * \returns The canonical cursor for the entity referred to by the given cursor.
  */
-CXCursor clang_getCanonicalCursor(CXCursor);
+CXCursor clang_getCanonicalCursor(in CXCursor) @safe @nogc pure nothrow;
 
 /**
  * \brief If the cursor points to a selector identifier in an Objective-C

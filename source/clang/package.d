@@ -148,6 +148,15 @@ struct Cursor {
         return clang_getEnumConstantDeclValue(cx);
     }
 
+    /**
+       If this is the canonical cursor. Given forward declarations, there may
+       be several cursors for one entity. This returns true if this cursor
+       is the canonical one.
+     */
+    bool isCanonical() @safe @nogc pure nothrow const {
+        return clang_getCanonicalCursor(cx) == cx;
+    }
+
     string toString() @safe pure nothrow const {
         import std.conv: text;
         try {
