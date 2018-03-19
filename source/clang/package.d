@@ -65,7 +65,7 @@ struct Cursor {
     mixin EnumD!("Kind", CXCursorKind, "CXCursor_");
 
     CXCursor cx;
-    Cursor[] children;
+    private Cursor[] _children;
     Kind kind;
     string spelling;
     Type type;
@@ -81,10 +81,6 @@ struct Cursor {
 
         if(kind == Kind.FunctionDecl)
             returnType = Type(clang_getCursorResultType(cx));
-
-        // calling Cursor.visitChildren here would cause infinite recursion
-        // because cvisitor constructs a Cursor out of the parent
-        clang_visitChildren(cx, &ctorVisitor, &this);
     }
 
     private static extern(C) CXChildVisitResult ctorVisitor(CXCursor cursor,
@@ -92,8 +88,8 @@ struct Cursor {
                                                             void* clientData_)
         @safe nothrow
     {
-        auto self = () @trusted { return cast(typeof(&this)) clientData_; }();
-        self.children ~= Cursor(cursor);
+        auto children = () @trusted { return cast(Cursor[]*) clientData_; }();
+        *children ~= Cursor(cursor);
         return CXChildVisit_Continue;
     }
 
@@ -105,6 +101,20 @@ struct Cursor {
         this.kind = kind;
         this.spelling = spelling;
         this.type = type;
+    }
+
+    const(Cursor)[] children() @safe @property nothrow const {
+        if(_children.length) return _children;
+
+        Cursor[] ret;
+        // calling Cursor.visitChildren here would cause infinite recursion
+        // because cvisitor constructs a Cursor out of the parent
+        () @trusted { clang_visitChildren(cx, &ctorVisitor, &ret); }();
+       return ret;
+    }
+
+    void children(Cursor[] cursors) @safe @property pure nothrow {
+        _children = cursors;
     }
 
     /**
@@ -207,6 +217,11 @@ struct SourceRange {
         this.start = clang_getRangeStart(cx);
         this.end = clang_getRangeEnd(cx);
         this.path = start.path;
+    }
+
+    string toString() @safe pure const {
+        import std.conv: text;
+        return text(`SourceRange("`, start.path, `", `, start.line, ":", start.column, ", ", end.line, ":", end.column, ")");
     }
 }
 
