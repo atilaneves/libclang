@@ -266,7 +266,11 @@ struct Type {
         this.spelling = spelling;
     }
 
-    string toString() @safe pure const nothrow {
+    Type canonical() @safe pure nothrow const {
+        return Type(clang_getCanonicalType(cx));
+    }
+
+    string toString() @safe pure nothrow const {
         import std.conv: text;
         try
             return text("Type(", kind, `, "`, spelling, `")`);
