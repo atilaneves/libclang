@@ -4,5 +4,5 @@ import std.typecons;
 enum commonUtFlags = "-g -debug -cov";
 alias ut = dubTestTarget!(CompilerFlags(commonUtFlags),
                           LinkerFlags(),
-                          No.allTogether);
+                          CompilationMode.package_);
 mixin build!(ut);
