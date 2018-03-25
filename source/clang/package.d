@@ -152,7 +152,19 @@ struct Cursor {
        is the canonical one.
      */
     bool isCanonical() @safe @nogc pure nothrow const {
-        return clang_getCanonicalCursor(cx) == cx;
+        return cast(bool) clang_equalCursors(cx, clang_getCanonicalCursor(cx));
+    }
+
+    bool isDefinition() @safe @nogc pure nothrow const {
+        return cast(bool) clang_isCursorDefinition(cx);
+    }
+
+    bool isNull() @safe @nogc pure nothrow const {
+        return cast(bool) clang_Cursor_isNull(cx);
+    }
+
+    Cursor definition() @safe nothrow const {
+        return Cursor(clang_getCursorDefinition(cx));
     }
 
     string toString() @safe pure nothrow const {
@@ -300,6 +312,14 @@ struct Type {
     Type returnType() @safe pure const {
         if(kind != Kind.FunctionProto) throw new Exception("Type not a function");
         return Type(clang_getResultType(cx));
+    }
+
+    Type elementType() @safe pure nothrow const {
+        return Type(clang_getElementType(cx));
+    }
+
+    long numElements() @safe @nogc pure nothrow const {
+        return clang_getNumElements(cx);
     }
 
     bool isConstQualified() @safe @nogc pure nothrow const {

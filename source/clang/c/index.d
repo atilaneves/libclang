@@ -2588,17 +2588,17 @@ CXCursor clang_getTranslationUnitCursor(const CXTranslationUnit) @safe @nogc pur
 /**
  * \brief Determine whether two cursors are equivalent.
  */
-uint clang_equalCursors(CXCursor, CXCursor);
+uint clang_equalCursors(in CXCursor, in CXCursor) @safe @nogc pure nothrow;
 
 /**
  * \brief Returns non-zero if \p cursor is null.
  */
-int clang_Cursor_isNull(CXCursor cursor);
+int clang_Cursor_isNull(in CXCursor cursor) @safe @nogc pure nothrow;
 
 /**
  * \brief Compute a hash value for the given cursor.
  */
-uint clang_hashCursor(CXCursor);
+uint clang_hashCursor(in CXCursor) @safe @nogc pure nothrow;
 
 /**
  * \brief Retrieve the kind of the given cursor.
@@ -2608,7 +2608,7 @@ CXCursorKind clang_getCursorKind(in CXCursor) @safe @nogc pure nothrow;
 /**
  * \brief Determine whether the given cursor kind represents a declaration.
  */
-uint clang_isDeclaration(CXCursorKind);
+uint clang_isDeclaration(in CXCursorKind) @safe @nogc pure nothrow;
 
 /**
  * \brief Determine whether the given cursor kind represents a simple
@@ -4059,13 +4059,13 @@ CXCursor clang_getCursorReferenced(CXCursor);
  *  e.g., because there is no definition of that entity within this
  *  translation unit, returns a NULL cursor.
  */
-CXCursor clang_getCursorDefinition(CXCursor);
+CXCursor clang_getCursorDefinition(in CXCursor) @safe @nogc pure nothrow;
 
 /**
  * \brief Determine whether the declaration pointed to by this cursor
  * is also a definition of that entity.
  */
-uint clang_isCursorDefinition(CXCursor);
+uint clang_isCursorDefinition(in CXCursor) @safe @nogc pure nothrow;
 
 /**
  * \brief Retrieve the canonical cursor corresponding to the given cursor.
