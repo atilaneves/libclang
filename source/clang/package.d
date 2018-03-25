@@ -80,7 +80,7 @@ struct Cursor {
         sourceRange = SourceRange(clang_getCursorExtent(cx));
 
         if(kind == Kind.FunctionDecl)
-            returnType = Type(clang_getCursorResultType(cx));
+             returnType = Type(clang_getCursorResultType(cx));
     }
 
     private static extern(C) CXChildVisitResult ctorVisitor(CXCursor cursor,
@@ -103,14 +103,14 @@ struct Cursor {
         this.type = type;
     }
 
-    const(Cursor)[] children() @safe @property nothrow const {
+    inout(Cursor)[] children() @safe @property nothrow inout {
         if(_children.length) return _children;
 
-        Cursor[] ret;
+        inout(Cursor)[] ret;
         // calling Cursor.visitChildren here would cause infinite recursion
         // because cvisitor constructs a Cursor out of the parent
         () @trusted { clang_visitChildren(cx, &ctorVisitor, &ret); }();
-       return ret;
+        return ret;
     }
 
     void children(Cursor[] cursors) @safe @property pure nothrow {
@@ -268,6 +268,7 @@ struct Type {
     string spelling;
 
     this(CXType cx) @safe pure nothrow {
+        this.cx = cx;
         this.kind = cast(Kind) cx.kind;
         spelling = clang_getTypeSpelling(cx).toString;
     }

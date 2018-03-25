@@ -3241,7 +3241,7 @@ CXType clang_getCursorType(in CXCursor C) @safe @nogc pure nothrow;
  *
  * If the type is invalid, an empty string is returned.
  */
-CXString clang_getTypeSpelling(CXType CT) @safe @nogc pure nothrow;
+CXString clang_getTypeSpelling(in CXType CT) @safe @nogc pure nothrow;
 
 /**
  * \brief Retrieve the underlying type of a typedef declaration.
@@ -3426,7 +3426,7 @@ ulong clang_Cursor_getTemplateArgumentUnsignedValue(CXCursor C, uint I);
  * \returns non-zero if the CXTypes represent the same type and
  *          zero otherwise.
  */
-uint clang_equalTypes(CXType A, CXType B);
+uint clang_equalTypes(in CXType A, in CXType B) @safe @nogc pure nothrow;
 
 /**
  * \brief Return the canonical type for a CXType.
@@ -3468,14 +3468,14 @@ uint clang_Cursor_isFunctionInlined(CXCursor C);
  * without looking through typedefs that may have added "volatile" at
  * a different level.
  */
-uint clang_isVolatileQualifiedType(CXType T);
+uint clang_isVolatileQualifiedType(in CXType T) @safe @nogc pure nothrow;
 
 /**
  * \brief Determine whether a CXType has the "restrict" qualifier set,
  * without looking through typedefs that may have added "restrict" at a
  * different level.
  */
-uint clang_isRestrictQualifiedType(CXType T);
+uint clang_isRestrictQualifiedType(in CXType T) @safe @nogc pure nothrow;
 
 /**
  * \brief For pointer types, returns the type of the pointee.
@@ -3495,7 +3495,7 @@ CXString clang_getDeclObjCTypeEncoding(CXCursor C);
 /**
  * Returns the Objective-C type encoding for the specified CXType.
  */
-CXString clang_Type_getObjCEncoding(CXType type);
+CXString clang_Type_getObjCEncoding(in CXType type) @safe @nogc pure nothrow;
 
 /**
  * \brief Retrieve the spelling of a given CXTypeKind.
@@ -3507,14 +3507,14 @@ CXString clang_getTypeKindSpelling(CXTypeKind K);
  *
  * If a non-function type is passed in, CXCallingConv_Invalid is returned.
  */
-CXCallingConv clang_getFunctionTypeCallingConv(CXType T);
+CXCallingConv clang_getFunctionTypeCallingConv(in CXType T) @safe @nogc pure nothrow;
 
 /**
  * \brief Retrieve the return type associated with a function type.
  *
  * If a non-function type is passed in, an invalid type is returned.
  */
-CXType clang_getResultType(CXType T) @safe @nogc nothrow pure;
+CXType clang_getResultType(in CXType T) @safe @nogc nothrow pure;
 
 /**
  * \brief Retrieve the number of non-variadic parameters associated with a
@@ -3522,7 +3522,7 @@ CXType clang_getResultType(CXType T) @safe @nogc nothrow pure;
  *
  * If a non-function type is passed in, -1 is returned.
  */
-int clang_getNumArgTypes(CXType T);
+int clang_getNumArgTypes(in CXType T) @safe @nogc pure nothrow;
 
 /**
  * \brief Retrieve the type of a parameter of a function type.
@@ -3530,12 +3530,12 @@ int clang_getNumArgTypes(CXType T);
  * If a non-function type is passed in or the function does not have enough
  * parameters, an invalid type is returned.
  */
-CXType clang_getArgType(CXType T, uint i);
+CXType clang_getArgType(in CXType T, in uint i) @safe @nogc pure nothrow;
 
 /**
  * \brief Return 1 if the CXType is a variadic function type, and 0 otherwise.
  */
-uint clang_isFunctionTypeVariadic(CXType T);
+uint clang_isFunctionTypeVariadic(in CXType T) @safe @nogc pure nothrow;
 
 /**
  * \brief Retrieve the return type associated with a given cursor.
@@ -3548,7 +3548,7 @@ CXType clang_getCursorResultType(in CXCursor C) @safe @nogc nothrow pure;
  * \brief Return 1 if the CXType is a POD (plain old data) type, and 0
  *  otherwise.
  */
-uint clang_isPODType(CXType T);
+uint clang_isPODType(in CXType T) @safe @nogc pure nothrow;
 
 /**
  * \brief Return the element type of an array, complex, or vector type.
@@ -3556,7 +3556,7 @@ uint clang_isPODType(CXType T);
  * If a type is passed in that is not an array, complex, or vector type,
  * an invalid type is returned.
  */
-CXType clang_getElementType(CXType T);
+CXType clang_getElementType(in CXType T) @safe @nogc pure nothrow;
 
 /**
  * \brief Return the number of elements of an array or vector type.
@@ -3564,28 +3564,28 @@ CXType clang_getElementType(CXType T);
  * If a type is passed in that is not an array or vector type,
  * -1 is returned.
  */
-long clang_getNumElements(CXType T);
+long clang_getNumElements(in CXType T) @safe @nogc pure nothrow;
 
 /**
  * \brief Return the element type of an array type.
  *
  * If a non-array type is passed in, an invalid type is returned.
  */
-CXType clang_getArrayElementType(CXType T);
+CXType clang_getArrayElementType(in CXType T) @safe @nogc pure nothrow;
 
 /**
  * \brief Return the array size of a constant array.
  *
  * If a non-array type is passed in, -1 is returned.
  */
-long clang_getArraySize(CXType T);
+long clang_getArraySize(in CXType T) @safe @nogc pure nothrow;
 
 /**
  * \brief Retrieve the type named by the qualified-id.
  *
  * If a non-elaborated type is passed in, an invalid type is returned.
  */
-CXType clang_Type_getNamedType(CXType T);
+CXType clang_Type_getNamedType(in CXType T) @safe @nogc pure nothrow;
 
 /**
  * \brief List the possible error codes for \c clang_Type_getSizeOf,

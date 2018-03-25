@@ -142,3 +142,21 @@ import clang;
         }
     }
 }
+
+@("Function return type should have valid cx")
+@safe unittest {
+    import clang.c.index: CXType_Pointer;
+    with(NewTranslationUnit("foo.cpp",
+                            q{
+                                const char* newString();
+                            }))
+    {
+        const cursor = translUnit.cursor;
+        cursor.children.length.shouldEqual(1);
+        const function_ = cursor.children[0];
+        function_.kind.shouldEqual(Cursor.Kind.FunctionDecl);
+        function_.returnType.kind.shouldEqual(Type.Kind.Pointer);
+        function_.returnType.cx.kind.shouldEqual(CXType_Pointer);
+    }
+
+}
