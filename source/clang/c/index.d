@@ -3500,7 +3500,7 @@ CXString clang_Type_getObjCEncoding(in CXType type) @safe @nogc pure nothrow;
 /**
  * \brief Retrieve the spelling of a given CXTypeKind.
  */
-CXString clang_getTypeKindSpelling(CXTypeKind K);
+CXString clang_getTypeKindSpelling(in CXTypeKind K);
 
 /**
  * \brief Retrieve the calling convention associated with a function type.
@@ -3632,14 +3632,14 @@ mixin EnumC!CXTypeLayoutError;
  * If the type declaration is not a constant size type,
  *   CXTypeLayoutError_NotConstantSize is returned.
  */
-long clang_Type_getAlignOf(CXType T);
+long clang_Type_getAlignOf(in CXType T);
 
 /**
  * \brief Return the class type of an member pointer type.
  *
  * If a non-member-pointer type is passed in, an invalid type is returned.
  */
-CXType clang_Type_getClassType(CXType T);
+CXType clang_Type_getClassType(in CXType T);
 
 /**
  * \brief Return the size of a type in bytes as per C++[expr.sizeof] standard.
@@ -3650,7 +3650,7 @@ CXType clang_Type_getClassType(CXType T);
  * If the type declaration is a dependent type, CXTypeLayoutError_Dependent is
  *   returned.
  */
-long clang_Type_getSizeOf(CXType T);
+long clang_Type_getSizeOf(in CXType T);
 
 /**
  * \brief Return the offset of a field named S in a record of type T in bits
@@ -3665,7 +3665,7 @@ long clang_Type_getSizeOf(CXType T);
  * If the field's name S is not found,
  *   CXTypeLayoutError_InvalidFieldName is returned.
  */
-long clang_Type_getOffsetOf(CXType T, const(char)* S);
+long clang_Type_getOffsetOf(in CXType T, const(char)* S);
 
 /**
  * \brief Return the offset of the field represented by the Cursor.
@@ -3703,7 +3703,7 @@ mixin EnumC!CXRefQualifierKind;
  * \brief Returns the number of template arguments for given template
  * specialization, or -1 if type \c T is not a template specialization.
  */
-int clang_Type_getNumTemplateArguments(CXType T);
+int clang_Type_getNumTemplateArguments(in CXType T);
 
 /**
  * \brief Returns the type template argument of a template class specialization
@@ -3712,7 +3712,7 @@ int clang_Type_getNumTemplateArguments(CXType T);
  * This function only returns template type arguments and does not handle
  * template template arguments or variadic packs.
  */
-CXType clang_Type_getTemplateArgumentAsType(CXType T, uint i);
+CXType clang_Type_getTemplateArgumentAsType(in CXType T, uint i);
 
 /**
  * \brief Retrieve the ref-qualifier kind of a function or method.
@@ -3720,7 +3720,7 @@ CXType clang_Type_getTemplateArgumentAsType(CXType T, uint i);
  * The ref-qualifier is returned for C++ functions or methods. For other types
  * or non-C++ declarations, CXRefQualifier_None is returned.
  */
-CXRefQualifierKind clang_Type_getCXXRefQualifier(CXType T);
+CXRefQualifierKind clang_Type_getCXXRefQualifier(in CXType T);
 
 /**
  * \brief Returns non-zero if the cursor specifies a Record member that is a

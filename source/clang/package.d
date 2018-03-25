@@ -266,11 +266,16 @@ struct Type {
     CXType cx;
     Kind kind;
     string spelling;
+    Type* pointee; // only if pointer
 
     this(CXType cx) @safe pure nothrow {
         this.cx = cx;
         this.kind = cast(Kind) cx.kind;
         spelling = clang_getTypeSpelling(cx).toString;
+
+        if(this.kind == Kind.Pointer) {
+            pointee = new Type(clang_getPointeeType(cx));
+        }
     }
 
     this(in Kind kind) @safe @nogc pure nothrow {
@@ -282,15 +287,35 @@ struct Type {
         this.spelling = spelling;
     }
 
+    static Type* pointer(in string spelling, Type* pointee) @safe pure nothrow {
+        auto type = new Type(Kind.Pointer, spelling);
+        type.pointee = pointee;
+        return type;
+    }
+
     Type canonical() @safe pure nothrow const {
         return Type(clang_getCanonicalType(cx));
     }
 
+    Type returnType() @safe pure const {
+        if(kind != Kind.FunctionProto) throw new Exception("Type not a function");
+        return Type(clang_getResultType(cx));
+    }
+
+    bool isConstQualified() @safe @nogc pure nothrow const {
+        return cast(bool)clang_isConstQualifiedType(cx);
+    }
+
+    bool isVolatileQualified() @safe @nogc pure nothrow const {
+        return cast(bool)clang_isVolatileQualifiedType(cx);
+    }
+
     string toString() @safe pure nothrow const {
         import std.conv: text;
-        try
-            return text("Type(", kind, `, "`, spelling, `")`);
-        catch(Exception e)
+        try {
+            const pointeeText = pointee is null ? "" : text(", ", *pointee);
+            return text("Type(", kind, `, "`, spelling, pointeeText, `")`);
+        } catch(Exception e)
             assert(false, "Fatal error in Type.toString: " ~ e.msg);
     }
 }
