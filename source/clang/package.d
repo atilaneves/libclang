@@ -146,6 +146,10 @@ struct Cursor {
         return clang_getEnumConstantDeclValue(cx);
     }
 
+    Cursor canonical() @safe nothrow const {
+        return Cursor(clang_getCanonicalCursor(cx));
+    }
+
     /**
        If this is the canonical cursor. Given forward declarations, there may
        be several cursors for one entity. This returns true if this cursor
@@ -161,6 +165,10 @@ struct Cursor {
 
     bool isNull() @safe @nogc pure nothrow const {
         return cast(bool) clang_Cursor_isNull(cx);
+    }
+
+    static Cursor nullCursor() @safe nothrow {
+        return Cursor(clang_getNullCursor());
     }
 
     Cursor definition() @safe nothrow const {
@@ -182,6 +190,14 @@ struct Cursor {
     bool isPredefined() @safe @nogc pure nothrow const {
         // FIXME
         return false;
+    }
+
+    bool opEquals(ref const(Cursor) other) @safe @nogc pure nothrow const {
+        return cast(bool) clang_equalCursors(cx, other.cx);
+    }
+
+    bool opEquals(in Cursor other) @safe @nogc pure nothrow const {
+        return cast(bool) clang_equalCursors(cx, other.cx);
     }
 
     void visitChildren(CursorVisitor visitor) @safe nothrow const {
@@ -252,6 +268,22 @@ struct SourceLocation {
         this.path = clang_getFileName(file).toString;
 
         () @trusted { clang_getSpellingLocation(cx, &file, &line, &column, &offset); }();
+    }
+
+    int opCmp(ref const(SourceLocation) other) @safe @nogc pure nothrow const {
+        if(path == other.path && line == other.line && column == other.column &&
+           offset == other.offset)
+            return 0;
+
+        if(path < other.path) return -1;
+        if(path > other.path) return 1;
+        if(line < other.line) return -1;
+        if(line > other.line) return 1;
+        if(column < other.column) return -1;
+        if(column > other.column) return 1;
+        if(offset < other.offset) return -1;
+        if(offset > other.offset) return 1;
+        assert(false);
     }
 }
 

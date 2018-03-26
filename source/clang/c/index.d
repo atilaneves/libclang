@@ -2575,7 +2575,7 @@ struct CXCursor
 /**
  * \brief Retrieve the NULL cursor, which represents no entity.
  */
-CXCursor clang_getNullCursor();
+CXCursor clang_getNullCursor() @safe @nogc nothrow;
 
 /**
  * \brief Retrieve the cursor that represents the given translation unit.
