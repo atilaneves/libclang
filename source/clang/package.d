@@ -192,6 +192,18 @@ struct Cursor {
         return false;
     }
 
+    Cursor semanticParent() @safe nothrow const {
+        return Cursor(clang_getCursorSemanticParent(cx));
+    }
+
+    Cursor lexicalParent() @safe nothrow const {
+        return Cursor(clang_getCursorLexicalParent(cx));
+    }
+
+    bool isInvalid() @safe @nogc pure nothrow const {
+        return cast(bool) clang_isInvalid(cx.kind);
+    }
+
     bool opEquals(ref const(Cursor) other) @safe @nogc pure nothrow const {
         return cast(bool) clang_equalCursors(cx, other.cx);
     }
@@ -335,6 +347,10 @@ struct Type {
         auto type = new Type(Kind.Pointer, spelling);
         type.pointee = pointee;
         return type;
+    }
+
+    Type unelaborate() @safe nothrow const {
+        return Type(clang_Type_getNamedType(cx));
     }
 
     Type canonical() @safe pure nothrow const {

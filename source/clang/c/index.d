@@ -2644,7 +2644,7 @@ uint clang_Cursor_hasAttrs(CXCursor C);
  * \brief Determine whether the given cursor kind represents an invalid
  * cursor.
  */
-uint clang_isInvalid(CXCursorKind);
+uint clang_isInvalid(in CXCursorKind) @safe @nogc pure nothrow;
 
 /**
  * \brief Determine whether the given cursor kind represents a translation
@@ -2905,7 +2905,7 @@ uint clang_CXCursorSet_insert(CXCursorSet cset, CXCursor cursor);
  *
  * For global declarations, the semantic parent is the translation unit.
  */
-CXCursor clang_getCursorSemanticParent(CXCursor cursor);
+CXCursor clang_getCursorSemanticParent(in CXCursor cursor) @safe @nogc pure nothrow;
 
 /**
  * \brief Determine the lexical parent of the given cursor.
@@ -2941,7 +2941,7 @@ CXCursor clang_getCursorSemanticParent(CXCursor cursor);
  * For declarations written in the global scope, the lexical parent is
  * the translation unit.
  */
-CXCursor clang_getCursorLexicalParent(CXCursor cursor);
+CXCursor clang_getCursorLexicalParent(in CXCursor cursor) @safe @nogc pure nothrow;
 
 /**
  * \brief Determine the set of methods that are overridden by the given
