@@ -204,6 +204,10 @@ struct Cursor {
         return cast(bool) clang_isInvalid(cx.kind);
     }
 
+    auto hash() @safe @nogc pure nothrow const {
+        return clang_hashCursor(cx);
+    }
+
     bool opEquals(ref const(Cursor) other) @safe @nogc pure nothrow const {
         return cast(bool) clang_equalCursors(cx, other.cx);
     }
