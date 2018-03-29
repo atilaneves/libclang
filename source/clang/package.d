@@ -4,7 +4,7 @@ import clang.c.index;
 import clang.c.util: EnumD;
 
 mixin EnumD!("TranslationUnitFlags", CXTranslationUnit_Flags, "CXTranslationUnit_");
-
+mixin EnumD!("Language", CXLanguageKind, "CXLanguage_");
 
 TranslationUnit parse(in string fileName, in TranslationUnitFlags translUnitflags)
     @safe nothrow
@@ -144,6 +144,10 @@ struct Cursor {
     auto enumConstantValue() @safe @nogc pure nothrow const {
         assert(kind == Cursor.Kind.EnumConstantDecl);
         return clang_getEnumConstantDeclValue(cx);
+    }
+
+    Language language() @safe @nogc pure nothrow const {
+        return cast(Language) clang_getCursorLanguage(cx);
     }
 
     Cursor canonical() @safe nothrow const {

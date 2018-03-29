@@ -2835,7 +2835,7 @@ mixin EnumC!CXLanguageKind;
 /**
  * \brief Determine the "language" of the entity referred to by a given cursor.
  */
-CXLanguageKind clang_getCursorLanguage(CXCursor cursor);
+CXLanguageKind clang_getCursorLanguage(in CXCursor cursor) @safe @nogc pure nothrow;
 
 /**
  * \brief Returns the translation unit that a cursor originated from.
