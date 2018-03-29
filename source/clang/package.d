@@ -301,6 +301,11 @@ struct SourceLocation {
         if(offset > other.offset) return 1;
         assert(false);
     }
+
+    string toString() @safe pure nothrow const {
+        import std.conv: text;
+        return text(`"`, path, `" `, line, ":", column, ":", offset);
+    }
 }
 
 private struct ClientData {
