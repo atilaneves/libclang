@@ -375,6 +375,21 @@ struct Type {
         return Type(clang_getResultType(cx));
     }
 
+    Type[] paramTypes() @safe pure const {
+        const numArgs = clang_getNumArgTypes(cx);
+        auto types = new Type[numArgs];
+
+        foreach(i; 0 .. numArgs) {
+            types[i] = Type(clang_getArgType(cx, i));
+        }
+
+        return types;
+    }
+
+    bool isVariadicFunction() @safe @nogc pure nothrow const {
+        return cast(bool) clang_isFunctionTypeVariadic(cx);
+    }
+
     Type elementType() @safe pure nothrow const {
         return Type(clang_getElementType(cx));
     }
