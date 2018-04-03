@@ -14,6 +14,7 @@ TranslationUnit parse(in string fileName, in TranslationUnitFlags translUnitflag
 
 
 mixin EnumD!("ErrorCode", CXErrorCode, "");
+mixin EnumD!("DiagnosticSeverity", CXDiagnosticSeverity, "CXDiagnostic_");
 
 TranslationUnit parse(in string fileName, in string[] commandLineArgs, in TranslationUnitFlags translUnitflags)
     @safe
@@ -24,7 +25,10 @@ TranslationUnit parse(in string fileName, in string[] commandLineArgs, in Transl
     import std.array: array;
     import std.conv: text;
 
-    auto index = clang_createIndex(0, 0);
+    // faux booleans
+    const excludeDeclarationsFromPCH = 0;
+    const displayDiagnostics = 0;
+    auto index = clang_createIndex(excludeDeclarationsFromPCH, displayDiagnostics);
     CXUnsavedFile[] unsavedFiles;
     const commandLineArgz = commandLineArgs.map!(a => a.toStringz).array;
 
@@ -44,6 +48,16 @@ TranslationUnit parse(in string fileName, in string[] commandLineArgs, in Transl
 
     if(err != ErrorCode.success) {
         throw new Exception(text("Could not parse ", fileName, ": ", err));
+    }
+
+    // throw if there are error diagnostics
+    foreach(i; 0 .. clang_getNumDiagnostics(cx)) {
+        auto diagnostic = clang_getDiagnostic(cx, i);
+        scope(exit) clang_disposeDiagnostic(diagnostic);
+        const severity = cast(DiagnosticSeverity) clang_getDiagnosticSeverity(diagnostic);
+        if(severity == DiagnosticSeverity.Error)
+            throw new Exception(text("Error parsing '", fileName, "': ",
+                                     clang_formatDiagnostic(diagnostic, 0).toString));
     }
 
     return TranslationUnit(cx);

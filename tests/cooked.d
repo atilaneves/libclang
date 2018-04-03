@@ -4,7 +4,7 @@ import clang;
 @("visitChildren C++ file with one simple struct")
 @safe unittest {
     with(NewTranslationUnit("foo.cpp",
-                            q{ struct { int int_; double double_; }; }))
+                            q{ struct Struct { int int_; double double_; }; }))
     {
         translUnit.cursor.visitChildren(
             (cursor, parent) {
@@ -45,7 +45,7 @@ import clang;
 @("visitChildren C++ file with one simple struct and throwing visitor")
 @safe unittest {
     with(NewTranslationUnit("foo.cpp",
-                            q{ struct { int int_; double double_; }; }))
+                            q{ struct Struct { int int_; double double_; }; }))
     {
         translUnit.cursor.visitChildren(
             (cursor, parent) {
@@ -62,7 +62,7 @@ import clang;
 @("foreach(cursor, parent) C++ file with one simple struct")
 @safe unittest {
     with(NewTranslationUnit("foo.cpp",
-                            q{ struct { int int_; double double_; }; }))
+                            q{ struct Struct { int int_; double double_; }; }))
     {
         foreach(cursor, parent; translUnit.cursor) {
 
@@ -97,7 +97,7 @@ import clang;
 @("foreach(cursor) C++ file with one simple struct")
 @safe unittest {
     with(NewTranslationUnit("foo.cpp",
-                            q{ struct { int int_; double double_; }; }))
+                            q{ struct Struct { int int_; double double_; }; }))
     {
         foreach(cursor; translUnit.cursor) {
 
@@ -131,7 +131,7 @@ import clang;
     import std.algorithm: map;
 
     with(NewTranslationUnit("foo.cpp",
-                            q{ struct { int int_; double double_; }; }))
+                            q{ struct Struct { int int_; double double_; }; }))
     {
         const cursor = translUnit.cursor;
         with(Cursor.Kind) {

@@ -834,7 +834,7 @@ CXDiagnosticSet clang_getChildDiagnostics(CXDiagnostic D);
  * \brief Determine the number of diagnostics produced for the given
  * translation unit.
  */
-uint clang_getNumDiagnostics(CXTranslationUnit Unit);
+uint clang_getNumDiagnostics(in CXTranslationUnit Unit) @safe @nogc pure nothrow;
 
 /**
  * \brief Retrieve a diagnostic associated with the given translation unit.
@@ -845,7 +845,7 @@ uint clang_getNumDiagnostics(CXTranslationUnit Unit);
  * \returns the requested diagnostic. This diagnostic must be freed
  * via a call to \c clang_disposeDiagnostic().
  */
-CXDiagnostic clang_getDiagnostic(CXTranslationUnit Unit, uint Index);
+CXDiagnostic clang_getDiagnostic(in CXTranslationUnit Unit, uint Index) @safe @nogc nothrow;
 
 /**
  * \brief Retrieve the complete set of diagnostics associated with a
@@ -858,7 +858,7 @@ CXDiagnosticSet clang_getDiagnosticSetFromTU(CXTranslationUnit Unit);
 /**
  * \brief Destroy a diagnostic.
  */
-void clang_disposeDiagnostic(CXDiagnostic Diagnostic);
+void clang_disposeDiagnostic(in CXDiagnostic Diagnostic) @safe @nogc nothrow;
 
 /**
  * \brief Options to control the display of diagnostics.
@@ -945,7 +945,7 @@ mixin EnumC!CXDiagnosticDisplayOptions;
  *
  * \returns A new string containing for formatted diagnostic.
  */
-CXString clang_formatDiagnostic(CXDiagnostic Diagnostic, uint Options);
+CXString clang_formatDiagnostic(in CXDiagnostic Diagnostic, uint Options) @safe @nogc pure nothrow;
 
 /**
  * \brief Retrieve the set of display options most similar to the
@@ -959,7 +959,7 @@ uint clang_defaultDiagnosticDisplayOptions();
 /**
  * \brief Determine the severity of the given diagnostic.
  */
-CXDiagnosticSeverity clang_getDiagnosticSeverity(CXDiagnostic);
+CXDiagnosticSeverity clang_getDiagnosticSeverity(in CXDiagnostic) @safe @nogc pure nothrow;
 
 /**
  * \brief Retrieve the source location of the given diagnostic.
