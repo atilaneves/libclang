@@ -7,33 +7,44 @@ mixin EnumD!("TranslationUnitFlags", CXTranslationUnit_Flags, "CXTranslationUnit
 mixin EnumD!("Language", CXLanguageKind, "CXLanguage_");
 
 TranslationUnit parse(in string fileName, in TranslationUnitFlags translUnitflags)
-    @safe nothrow
+    @safe
 {
     return parse(fileName, [], translUnitflags);
 }
 
 
+mixin EnumD!("ErrorCode", CXErrorCode, "");
+
 TranslationUnit parse(in string fileName, in string[] commandLineArgs, in TranslationUnitFlags translUnitflags)
-    @safe nothrow
+    @safe
 {
 
     import std.string: toStringz;
     import std.algorithm: map;
     import std.array: array;
+    import std.conv: text;
 
     auto index = clang_createIndex(0, 0);
     CXUnsavedFile[] unsavedFiles;
     const commandLineArgz = commandLineArgs.map!(a => a.toStringz).array;
 
-    auto cx = clang_parseTranslationUnit(
-        index,
-        fileName.toStringz,
-        () @trusted {  return commandLineArgz.ptr; }(), // .ptr since the length can be 0
-        cast(int)commandLineArgz.length,
-        () @trusted { return unsavedFiles.ptr; }(), // .ptr since the length can be 0
-        cast(uint)unsavedFiles.length,
-        translUnitflags,
-    );
+    CXTranslationUnit cx;
+    const err = () @trusted {
+        return cast(ErrorCode)clang_parseTranslationUnit2(
+            index,
+            fileName.toStringz,
+            commandLineArgz.ptr, // .ptr since the length can be 0
+            cast(int)commandLineArgz.length,
+            unsavedFiles.ptr,  // .ptr since the length can be 0
+            cast(uint)unsavedFiles.length,
+            translUnitflags,
+            &cx,
+        );
+    }();
+
+    if(err != ErrorCode.success) {
+        throw new Exception(text("Could not parse ", fileName, ": ", err));
+    }
 
     return TranslationUnit(cx);
 }
