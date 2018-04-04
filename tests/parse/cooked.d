@@ -1,3 +1,5 @@
+module parse.cooked;
+
 import test.infra;
 import clang;
 
