@@ -15,7 +15,7 @@ configuration "unittest" {
     targetType "executable"
     targetName "ut"
     targetPath "bin"
-    mainSourceFile "tests/ut.d"
+    mainSourceFile "tests/ut_main.d"
     sourcePaths "source" "tests"
     importPaths "source" "tests"
     dependency "unit-threaded" version="~>0.7.0"
