@@ -24,13 +24,18 @@ TranslationUnit parse(in string fileName, in string[] commandLineArgs, in Transl
     import std.algorithm: map;
     import std.array: array;
     import std.conv: text;
+    import std.range: chain;
 
     // faux booleans
     const excludeDeclarationsFromPCH = 0;
     const displayDiagnostics = 0;
     auto index = clang_createIndex(excludeDeclarationsFromPCH, displayDiagnostics);
     CXUnsavedFile[] unsavedFiles;
-    const commandLineArgz = commandLineArgs.map!(a => a.toStringz).array;
+    const commandLineArgz =
+        chain(systemPaths.map!(a => "-I" ~ a),
+              commandLineArgs)
+        .map!(a => a.toStringz)
+        .array;
 
     CXTranslationUnit cx;
     const err = () @trusted {
@@ -62,6 +67,26 @@ TranslationUnit parse(in string fileName, in string[] commandLineArgs, in Transl
 
     return TranslationUnit(cx);
 }
+
+private string[] systemPaths() @safe {
+    import std.process: execute;
+    import std.string: splitLines, stripLeft;
+    import std.algorithm: map, countUntil;
+    import std.array: array;
+
+    const res = execute(["gcc", "-v", "-xc", "/dev/null", "-fsyntax-only"]);
+    if(res.status != 0) throw new Exception("Failed to call gcc:\n" ~ res.output);
+
+    auto lines = res.output.splitLines;
+
+    const startIndex = lines.countUntil("#include <...> search starts here:") + 1;
+    assert(startIndex > 0);
+    const endIndex = lines.countUntil("End of search list.");
+    assert(endIndex > 0);
+
+    return lines[startIndex .. endIndex].map!stripLeft.array;
+}
+
 
 mixin EnumD!("ChildVisitResult", CXChildVisitResult, "CXChildVisit_");
 
