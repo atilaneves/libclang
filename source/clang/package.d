@@ -55,7 +55,7 @@ TranslationUnit parse(in string fileName, in string[] commandLineArgs, in Transl
         auto diagnostic = clang_getDiagnostic(cx, i);
         scope(exit) clang_disposeDiagnostic(diagnostic);
         const severity = cast(DiagnosticSeverity) clang_getDiagnosticSeverity(diagnostic);
-        if(severity == DiagnosticSeverity.Error)
+        if(severity == DiagnosticSeverity.Error || severity == DiagnosticSeverity.Fatal)
             throw new Exception(text("Error parsing '", fileName, "': ",
                                      clang_formatDiagnostic(diagnostic, 0).toString));
     }
