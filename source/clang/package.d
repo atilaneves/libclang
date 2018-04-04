@@ -431,6 +431,10 @@ struct Type {
         return cast(bool)clang_isVolatileQualifiedType(cx);
     }
 
+    Cursor declaration() @safe nothrow const {
+        return Cursor(clang_getTypeDeclaration(cx));
+    }
+
     string toString() @safe pure nothrow const {
         import std.conv: text;
         try {
