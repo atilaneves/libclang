@@ -460,6 +460,10 @@ struct Type {
         return Cursor(clang_getTypeDeclaration(cx));
     }
 
+    Type namedType() @safe pure nothrow const {
+        return Type(clang_Type_getNamedType(cx));
+    }
+
     string toString() @safe pure nothrow const {
         import std.conv: text;
         try {

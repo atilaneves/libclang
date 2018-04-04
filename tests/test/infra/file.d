@@ -20,12 +20,13 @@ struct NewCppFile {
 }
 
 struct NewTranslationUnit {
-    import clang: TranslationUnit;
+    import clang: TranslationUnit, Cursor;
 
     alias newCppFile this;
 
     NewCppFile newCppFile;
     TranslationUnit translUnit;
+    Cursor translUnitCursor;
 
     this(in string fileName, in string fileContents) @safe {
         import clang: parse, TranslationUnitFlags;
@@ -34,5 +35,6 @@ struct NewTranslationUnit {
 
         string[] commandLineArgs;
         translUnit = parse(newCppFile.fileName, commandLineArgs, TranslationUnitFlags.None);
+        translUnitCursor = translUnit.cursor;
     }
 }
