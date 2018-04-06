@@ -3686,7 +3686,7 @@ long clang_Cursor_getOffsetOfField(CXCursor C);
  * \brief Determine whether the given cursor represents an anonymous record
  * declaration.
  */
-uint clang_Cursor_isAnonymous(CXCursor C);
+uint clang_Cursor_isAnonymous(CXCursor C) @safe @nogc pure nothrow;
 
 enum CXRefQualifierKind {
   /** \brief No ref-qualifier was provided. */

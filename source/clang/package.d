@@ -259,6 +259,10 @@ struct Cursor {
         return clang_hashCursor(cx);
     }
 
+    bool isAnonymous() @safe @nogc pure nothrow const {
+        return cast(bool) clang_Cursor_isAnonymous(cx);
+    }
+
     bool opEquals(ref const(Cursor) other) @safe @nogc pure nothrow const {
         return cast(bool) clang_equalCursors(cx, other.cx);
     }
@@ -389,7 +393,7 @@ struct Type {
         this.kind = cast(Kind) cx.kind;
         spelling = clang_getTypeSpelling(cx).toString;
 
-        if(this.kind == Kind.Pointer) {
+        if(this.kind == Kind.Pointer || this.kind == Kind.LValueReference) {
             pointee = new Type(clang_getPointeeType(cx));
         }
     }
