@@ -22,7 +22,7 @@ TranslationUnit parse(in string fileName, in string[] commandLineArgs, in Transl
 
     import std.string: toStringz;
     import std.algorithm: map;
-    import std.array: array;
+    import std.array: array, join;
     import std.conv: text;
 
     // faux booleans
@@ -52,15 +52,20 @@ TranslationUnit parse(in string fileName, in string[] commandLineArgs, in Transl
         throw new Exception(text("Could not parse ", fileName, ": ", err));
     }
 
+    string[] errorMessages;
     // throw if there are error diagnostics
     foreach(i; 0 .. clang_getNumDiagnostics(cx)) {
         auto diagnostic = clang_getDiagnostic(cx, i);
         scope(exit) clang_disposeDiagnostic(diagnostic);
         const severity = cast(DiagnosticSeverity) clang_getDiagnosticSeverity(diagnostic);
         if(severity == DiagnosticSeverity.Error || severity == DiagnosticSeverity.Fatal)
-            throw new Exception(text("Error parsing '", fileName, "': ",
-                                     clang_formatDiagnostic(diagnostic, 0).toString));
+            errorMessages ~= clang_formatDiagnostic(diagnostic, 0).toString;
     }
+
+    if(errorMessages.length > 0)
+        throw new Exception(text("Error parsing '", fileName, "':\n",
+                                 errorMessages.join("\n")));
+
 
     return TranslationUnit(cx);
 }
