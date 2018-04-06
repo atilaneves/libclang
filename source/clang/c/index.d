@@ -4225,7 +4225,7 @@ CXString clang_Cursor_getBriefCommentText(CXCursor C);
 /**
  * \brief Retrieve the CXString representing the mangled name of the cursor.
  */
-CXString clang_Cursor_getMangling(CXCursor);
+CXString clang_Cursor_getMangling(in CXCursor) @safe @nogc pure nothrow;
 
 /**
  * \brief Retrieve the CXStrings representing the mangled symbols of the C++

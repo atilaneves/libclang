@@ -264,6 +264,10 @@ struct Cursor {
         return clang_hashCursor(cx);
     }
 
+    string mangling() @safe pure nothrow const {
+        return clang_Cursor_getMangling(cx).toString;
+    }
+
     bool isAnonymous() @safe @nogc pure nothrow const {
         return cast(bool) clang_Cursor_isAnonymous(cx);
     }
