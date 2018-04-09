@@ -272,6 +272,14 @@ struct Cursor {
         return cast(bool) clang_Cursor_isAnonymous(cx);
     }
 
+    bool isBitField() @safe @nogc pure nothrow const {
+        return cast(bool) clang_Cursor_isBitField(cx);
+    }
+
+    int bitWidth() @safe @nogc pure nothrow const {
+        return clang_getFieldDeclBitWidth(cx);
+    }
+
     bool opEquals(ref const(Cursor) other) @safe @nogc pure nothrow const {
         return cast(bool) clang_equalCursors(cx, other.cx);
     }

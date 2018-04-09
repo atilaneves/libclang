@@ -3284,7 +3284,7 @@ ulong clang_getEnumConstantDeclUnsignedValue(CXCursor C);
  *
  * If a cursor that is not a bit field declaration is passed in, -1 is returned.
  */
-int clang_getFieldDeclBitWidth(CXCursor C);
+int clang_getFieldDeclBitWidth(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Retrieve the number of non-variadic arguments associated with a given
@@ -3726,7 +3726,7 @@ CXRefQualifierKind clang_Type_getCXXRefQualifier(in CXType T);
  * \brief Returns non-zero if the cursor specifies a Record member that is a
  *   bitfield.
  */
-uint clang_Cursor_isBitField(CXCursor C);
+uint clang_Cursor_isBitField(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Returns 1 if the base class specified by the cursor with kind
