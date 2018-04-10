@@ -134,7 +134,7 @@ struct Cursor {
         type = Type(clang_getCursorType(cx));
         sourceRange = SourceRange(clang_getCursorExtent(cx));
 
-        if(kind == Kind.FunctionDecl)
+        if(kind == Kind.FunctionDecl || kind == Kind.CXXMethod)
              returnType = Type(clang_getCursorResultType(cx));
     }
 
