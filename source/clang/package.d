@@ -439,7 +439,6 @@ struct Type {
     }
 
     Type returnType() @safe pure const {
-        if(kind != Kind.FunctionProto) throw new Exception("Type not a function");
         return Type(clang_getResultType(cx));
     }
 
