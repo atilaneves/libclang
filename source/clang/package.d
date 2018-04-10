@@ -418,7 +418,10 @@ struct Type {
         this.kind = cast(Kind) cx.kind;
         spelling = clang_getTypeSpelling(cx).toString;
 
-        if(this.kind == Kind.Pointer || this.kind == Kind.LValueReference) {
+        if(this.kind == Kind.Pointer ||
+           this.kind == Kind.LValueReference ||
+           this.kind == Kind.RValueReference)
+        {
             pointee = new Type(clang_getPointeeType(cx));
         }
     }
