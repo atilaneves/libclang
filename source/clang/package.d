@@ -16,6 +16,7 @@ TranslationUnit parse(in string fileName, in TranslationUnitFlags translUnitflag
 mixin EnumD!("ErrorCode", CXErrorCode, "");
 mixin EnumD!("DiagnosticSeverity", CXDiagnosticSeverity, "CXDiagnostic_");
 
+
 TranslationUnit parse(in string fileName, in string[] commandLineArgs, in TranslationUnitFlags translUnitflags)
     @safe
 {
@@ -91,7 +92,6 @@ string[] systemPaths() @safe {
 
 
 mixin EnumD!("ChildVisitResult", CXChildVisitResult, "CXChildVisit_");
-
 alias CursorVisitor = ChildVisitResult delegate(Cursor cursor, Cursor parent);
 
 struct TranslationUnit {
@@ -111,6 +111,9 @@ string toString(CXString cxString) @safe pure nothrow {
     scope(exit) clang_disposeString(cxString);
     return () @trusted { return cstr.to!string; }();
 }
+
+mixin EnumD!("AccessSpecifier", CX_CXXAccessSpecifier, "CX_CXX");
+
 
 struct Cursor {
 
@@ -278,6 +281,10 @@ struct Cursor {
 
     int bitWidth() @safe @nogc pure nothrow const {
         return clang_getFieldDeclBitWidth(cx);
+    }
+
+    auto accessSpecifier() @safe @nogc pure nothrow const {
+        return cast(AccessSpecifier) clang_getCXXAccessSpecifier(cx);
     }
 
     bool opEquals(ref const(Cursor) other) @safe @nogc pure nothrow const {

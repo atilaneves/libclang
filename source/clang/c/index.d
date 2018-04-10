@@ -3754,7 +3754,7 @@ mixin EnumC!CX_CXXAccessSpecifier;
  * parent scope is returned. Otherwise, if the cursor refers to a base specifier or
  * access specifier, the specifier itself is returned.
  */
-CX_CXXAccessSpecifier clang_getCXXAccessSpecifier(CXCursor);
+CX_CXXAccessSpecifier clang_getCXXAccessSpecifier(in CXCursor) @safe @nogc pure nothrow;
 
 
 /**
