@@ -76,7 +76,7 @@ string[] systemPaths() @safe {
     import std.algorithm: map, countUntil;
     import std.array: array;
 
-    const res = execute(["gcc", "-v", "-xc", "/dev/null", "-fsyntax-only"]);
+    const res = execute(["gcc", "-v", "-xc", "/dev/null", "-fsyntax-only"], ["LANG": "C"]);
     if(res.status != 0) throw new Exception("Failed to call gcc:\n" ~ res.output);
 
     auto lines = res.output.splitLines;
