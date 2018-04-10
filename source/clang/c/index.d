@@ -1716,7 +1716,7 @@ enum CXCursorKind {
   CXCursor_Constructor                   = 24,
   /** \brief A C++ destructor. */
   CXCursor_Destructor                    = 25,
-  /** \brief A C++ conversion function. */
+  /** \brief A C++ conversion function (cast operator). */
   CXCursor_ConversionFunction            = 26,
   /** \brief A C++ template type parameter. */
   CXCursor_TemplateTypeParameter         = 27,

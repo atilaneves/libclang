@@ -189,7 +189,8 @@ struct Cursor {
        For TypedefDecl cursors, return the underlying type
      */
     Type underlyingType() @safe pure nothrow const {
-        assert(kind == Cursor.Kind.TypedefDecl, "Not a TypedefDecl cursor");
+        assert(kind == Cursor.Kind.TypedefDecl || kind == Cursor.Kind.TypeAliasDecl,
+               "Not a TypedefDecl cursor");
         return Type(clang_getTypedefDeclUnderlyingType(cx));
     }
 
