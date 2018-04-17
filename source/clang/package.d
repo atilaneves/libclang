@@ -124,7 +124,6 @@ struct Cursor {
     Kind kind;
     string spelling;
     Type type;
-    Type returnType; // only if the cursor is a function
     SourceRange sourceRange;
 
     this(CXCursor cx) @safe nothrow {
@@ -133,9 +132,6 @@ struct Cursor {
         spelling = clang_getCursorSpelling(cx).toString;
         type = Type(clang_getCursorType(cx));
         sourceRange = SourceRange(clang_getCursorExtent(cx));
-
-        if(kind == Kind.FunctionDecl || kind == Kind.CXXMethod)
-             returnType = Type(clang_getCursorResultType(cx));
     }
 
     private static extern(C) CXChildVisitResult ctorVisitor(CXCursor cursor,
@@ -158,6 +154,7 @@ struct Cursor {
         this.type = type;
     }
 
+    /// Lazily return the cursor's children
     inout(Cursor)[] children() @safe @property nothrow inout {
         if(_children.length) return _children;
 
@@ -172,17 +169,8 @@ struct Cursor {
         _children = cursors;
     }
 
-    /**
-       Constructs a function declaration cursor.
-     */
-    static Cursor functionDecl(in string spelling, in string proto, Type returnType)
-        @safe pure nothrow
-    {
-        auto cursor = Cursor(Kind.FunctionDecl,
-                             spelling,
-                             Type(Type.Kind.FunctionProto, proto));
-        cursor.returnType = returnType;
-        return cursor;
+    Type returnType() @safe pure nothrow const {
+        return Type(clang_getCursorResultType(cx));
     }
 
     /**
@@ -411,19 +399,21 @@ struct Type {
     CXType cx;
     Kind kind;
     string spelling;
-    Type* pointee; // only if pointer
 
     this(CXType cx) @safe pure nothrow {
         this.cx = cx;
         this.kind = cast(Kind) cx.kind;
         spelling = clang_getTypeSpelling(cx).toString;
+    }
 
-        if(this.kind == Kind.Pointer ||
-           this.kind == Kind.LValueReference ||
-           this.kind == Kind.RValueReference)
-        {
-            pointee = new Type(clang_getPointeeType(cx));
-        }
+    this(in Type other) @trusted pure nothrow {
+        import std.algorithm: map;
+        import std.array: array;
+
+        this.cx.kind = other.cx.kind;
+        this.cx.data[] = other.cx.data[].map!(a => cast(void*) a).array;
+
+        this(this.cx);
     }
 
     this(in Kind kind) @safe @nogc pure nothrow {
@@ -435,10 +425,8 @@ struct Type {
         this.spelling = spelling;
     }
 
-    static Type* pointer(in string spelling, Type* pointee) @safe pure nothrow {
-        auto type = new Type(Kind.Pointer, spelling);
-        type.pointee = pointee;
-        return type;
+    Type pointee() @safe pure nothrow const {
+        return Type(clang_getPointeeType(cx));
     }
 
     Type unelaborate() @safe nothrow const {
@@ -504,10 +492,14 @@ struct Type {
         return cast(bool) clang_equalTypes(cx, other.cx);
     }
 
+    bool isInvalid() @safe @nogc pure nothrow const {
+        return kind == Kind.Invalid;
+    }
+
     string toString() @safe pure nothrow const {
         import std.conv: text;
         try {
-            const pointeeText = pointee is null ? "" : text(", ", *pointee);
+            const pointeeText = pointee.isInvalid ? "" : text(", ", pointee);
             return text("Type(", kind, `, "`, spelling, pointeeText, `")`);
         } catch(Exception e)
             assert(false, "Fatal error in Type.toString: " ~ e.msg);
