@@ -476,6 +476,10 @@ struct Type {
         return clang_getNumElements(cx);
     }
 
+    long arraySize() @safe @nogc pure nothrow const {
+        return clang_getArraySize(cx);
+    }
+
     bool isConstQualified() @safe @nogc pure nothrow const {
         return cast(bool)clang_isConstQualifiedType(cx);
     }
@@ -490,6 +494,14 @@ struct Type {
 
     Type namedType() @safe pure nothrow const {
         return Type(clang_Type_getNamedType(cx));
+    }
+
+    bool opEquals(ref const(Type) other) @safe @nogc pure nothrow const {
+        return cast(bool) clang_equalTypes(cx, other.cx);
+    }
+
+    bool opEquals(in Type other) @safe @nogc pure nothrow const {
+        return cast(bool) clang_equalTypes(cx, other.cx);
     }
 
     string toString() @safe pure nothrow const {
