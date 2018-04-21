@@ -112,12 +112,21 @@ string toString(CXString cxString) @safe pure nothrow {
     return () @trusted { return cstr.to!string; }();
 }
 
+string[] toStrings(CXStringSet* strings) @trusted pure nothrow {
+    scope(exit) clang_disposeStringSet(strings);
+    string[] ret;
+    foreach(cxstr; strings.Strings[0 .. strings.Count])
+        ret ~= cxstr.toString;
+    return ret;
+}
+
 mixin EnumD!("AccessSpecifier", CX_CXXAccessSpecifier, "CX_CXX");
 
 
 struct Cursor {
 
     mixin EnumD!("Kind", CXCursorKind, "CXCursor_");
+    mixin EnumD!("StorageClass", CX_StorageClass, "CX_SC_");
 
     CXCursor cx;
     private Cursor[] _children;
@@ -274,6 +283,10 @@ struct Cursor {
 
     auto accessSpecifier() @safe @nogc pure nothrow const {
         return cast(AccessSpecifier) clang_getCXXAccessSpecifier(cx);
+    }
+
+    StorageClass storageClass() @safe @nogc pure nothrow const {
+        return cast(StorageClass) clang_Cursor_getStorageClass(cx);
     }
 
     bool opEquals(ref const(Cursor) other) @safe @nogc pure nothrow const {

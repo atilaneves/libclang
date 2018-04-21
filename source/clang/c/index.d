@@ -3781,7 +3781,7 @@ mixin EnumC!CX_StorageClass;
  * If the passed in Cursor is not a function or variable declaration,
  * CX_SC_Invalid is returned else the storage class.
  */
-CX_StorageClass clang_Cursor_getStorageClass(CXCursor);
+CX_StorageClass clang_Cursor_getStorageClass(in CXCursor) @safe @nogc pure nothrow;
 
 /**
  * \brief Determine the number of overloaded declarations referenced by a
@@ -4231,7 +4231,7 @@ CXString clang_Cursor_getMangling(in CXCursor) @safe @nogc pure nothrow;
  * \brief Retrieve the CXStrings representing the mangled symbols of the C++
  * constructor or destructor at the cursor.
  */
-CXStringSet* clang_Cursor_getCXXManglings(CXCursor);
+CXStringSet* clang_Cursor_getCXXManglings(in CXCursor) @safe @nogc pure nothrow;
 
 /**
  * @}
