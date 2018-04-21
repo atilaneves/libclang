@@ -293,6 +293,10 @@ struct Cursor {
         return cast(bool) clang_CXXMethod_isConst(cx);
     }
 
+    bool isMoveConstructor() @safe @nogc pure nothrow const {
+        return cast(bool) clang_CXXConstructor_isMoveConstructor(cx);
+    }
+
     bool opEquals(ref const(Cursor) other) @safe @nogc pure nothrow const {
         return cast(bool) clang_equalCursors(cx, other.cx);
     }
