@@ -4330,57 +4330,57 @@ CXFile clang_Module_getTopLevelHeader(
 /**
  * \brief Determine if a C++ constructor is a converting constructor.
  */
-uint clang_CXXConstructor_isConvertingConstructor(CXCursor C);
+uint clang_CXXConstructor_isConvertingConstructor(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Determine if a C++ constructor is a copy constructor.
  */
-uint clang_CXXConstructor_isCopyConstructor(CXCursor C);
+uint clang_CXXConstructor_isCopyConstructor(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Determine if a C++ constructor is the default constructor.
  */
-uint clang_CXXConstructor_isDefaultConstructor(CXCursor C);
+uint clang_CXXConstructor_isDefaultConstructor(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Determine if a C++ constructor is a move constructor.
  */
-uint clang_CXXConstructor_isMoveConstructor(CXCursor C);
+uint clang_CXXConstructor_isMoveConstructor(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Determine if a C++ field is declared 'mutable'.
  */
-uint clang_CXXField_isMutable(CXCursor C);
+uint clang_CXXField_isMutable(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Determine if a C++ method is declared '= default'.
  */
-uint clang_CXXMethod_isDefaulted(CXCursor C);
+uint clang_CXXMethod_isDefaulted(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Determine if a C++ member function or member function template is
  * pure virtual.
  */
-uint clang_CXXMethod_isPureVirtual(CXCursor C);
+uint clang_CXXMethod_isPureVirtual(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Determine if a C++ member function or member function template is
  * declared 'static'.
  */
-uint clang_CXXMethod_isStatic(CXCursor C);
+uint clang_CXXMethod_isStatic(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Determine if a C++ member function or member function template is
  * explicitly declared 'virtual' or if it overrides a virtual method from
  * one of the base classes.
  */
-uint clang_CXXMethod_isVirtual(CXCursor C);
+uint clang_CXXMethod_isVirtual(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Determine if a C++ member function or member function template is
  * declared 'const'.
  */
-uint clang_CXXMethod_isConst(CXCursor C);
+uint clang_CXXMethod_isConst(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Given a cursor that represents a template, determine

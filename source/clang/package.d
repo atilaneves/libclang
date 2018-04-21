@@ -289,6 +289,10 @@ struct Cursor {
         return cast(StorageClass) clang_Cursor_getStorageClass(cx);
     }
 
+    bool isConstCppMethod() @safe @nogc pure nothrow const {
+        return cast(bool) clang_CXXMethod_isConst(cx);
+    }
+
     bool opEquals(ref const(Cursor) other) @safe @nogc pure nothrow const {
         return cast(bool) clang_equalCursors(cx, other.cx);
     }
@@ -482,11 +486,11 @@ struct Type {
     }
 
     bool isConstQualified() @safe @nogc pure nothrow const {
-        return cast(bool)clang_isConstQualifiedType(cx);
+        return cast(bool) clang_isConstQualifiedType(cx);
     }
 
     bool isVolatileQualified() @safe @nogc pure nothrow const {
-        return cast(bool)clang_isVolatileQualifiedType(cx);
+        return cast(bool) clang_isVolatileQualifiedType(cx);
     }
 
     Cursor declaration() @safe nothrow const {
