@@ -3449,19 +3449,19 @@ uint clang_isConstQualifiedType(in CXType T) @safe @nogc pure nothrow;
  * \brief Determine whether a  CXCursor that is a macro, is
  * function like.
  */
-uint clang_Cursor_isMacroFunctionLike(CXCursor C);
+uint clang_Cursor_isMacroFunctionLike(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Determine whether a  CXCursor that is a macro, is a
  * builtin one.
  */
-uint clang_Cursor_isMacroBuiltin(CXCursor C);
+uint clang_Cursor_isMacroBuiltin(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Determine whether a  CXCursor that is a function declaration, is an
  * inline declaration.
  */
-uint clang_Cursor_isFunctionInlined(CXCursor C);
+uint clang_Cursor_isFunctionInlined(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Determine whether a CXType has the "volatile" qualifier set,

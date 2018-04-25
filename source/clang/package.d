@@ -6,7 +6,8 @@ import clang.c.util: EnumD;
 mixin EnumD!("TranslationUnitFlags", CXTranslationUnit_Flags, "CXTranslationUnit_");
 mixin EnumD!("Language", CXLanguageKind, "CXLanguage_");
 
-TranslationUnit parse(in string fileName, in TranslationUnitFlags translUnitflags)
+TranslationUnit parse(in string fileName,
+                      in TranslationUnitFlags translUnitflags = TranslationUnitFlags.None)
     @safe
 {
     return parse(fileName, [], translUnitflags);
@@ -17,7 +18,9 @@ mixin EnumD!("ErrorCode", CXErrorCode, "");
 mixin EnumD!("DiagnosticSeverity", CXDiagnosticSeverity, "CXDiagnostic_");
 
 
-TranslationUnit parse(in string fileName, in string[] commandLineArgs, in TranslationUnitFlags translUnitflags)
+TranslationUnit parse(in string fileName,
+                      in string[] commandLineArgs,
+                      in TranslationUnitFlags translUnitflags = TranslationUnitFlags.None)
     @safe
 {
 
@@ -299,6 +302,10 @@ struct Cursor {
 
     bool isCopyConstructor() @safe @nogc pure nothrow const {
         return cast(bool) clang_CXXConstructor_isCopyConstructor(cx);
+    }
+
+    bool isMacroFunction() @safe @nogc pure nothrow const {
+        return cast(bool) clang_Cursor_isMacroFunctionLike(cx);
     }
 
     bool opEquals(ref const(Cursor) other) @safe @nogc pure nothrow const {
