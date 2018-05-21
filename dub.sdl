@@ -3,13 +3,12 @@ description "libclang bindings / wrappers for D"
 authors "Atila Neves"
 copyright "Copyright © 2018, Atila Neves"
 license "BSD 3-clause"
-targetType "library"
 libs "clang"
 lflags "-L/usr/local/opt/llvm/lib" platform="osx"
 lflags "-L/usr/lib/llvm-3.9/lib" platform="posix"  # travis
 
 configuration "library" {
-
+    targetType "library"
 }
 
 configuration "unittest" {
