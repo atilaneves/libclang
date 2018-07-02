@@ -62,8 +62,9 @@ TranslationUnit parse(in string fileName,
         auto diagnostic = clang_getDiagnostic(cx, i);
         scope(exit) clang_disposeDiagnostic(diagnostic);
         const severity = cast(DiagnosticSeverity) clang_getDiagnosticSeverity(diagnostic);
+        enum diagnosticOptions = CXDiagnostic_DisplaySourceLocation | CXDiagnostic_DisplayColumn;
         if(severity == DiagnosticSeverity.Error || severity == DiagnosticSeverity.Fatal)
-            errorMessages ~= clang_formatDiagnostic(diagnostic, 0).toString;
+            errorMessages ~= clang_formatDiagnostic(diagnostic, diagnosticOptions).toString;
     }
 
     if(errorMessages.length > 0)
