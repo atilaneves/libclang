@@ -3650,7 +3650,7 @@ CXType clang_Type_getClassType(in CXType T);
  * If the type declaration is a dependent type, CXTypeLayoutError_Dependent is
  *   returned.
  */
-long clang_Type_getSizeOf(in CXType T);
+long clang_Type_getSizeOf(in CXType T) @safe @nogc pure nothrow;
 
 /**
  * \brief Return the offset of a field named S in a record of type T in bits

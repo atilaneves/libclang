@@ -529,6 +529,10 @@ struct Type {
         return kind == Kind.Invalid;
     }
 
+    long getSizeof() @safe @nogc pure nothrow const {
+        return clang_Type_getSizeOf(cx);
+    }
+
     string toString() @safe pure nothrow const {
         import std.conv: text;
         try {
