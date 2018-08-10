@@ -2638,7 +2638,7 @@ uint clang_isAttribute(CXCursorKind);
 /**
  * \brief Determine whether the given cursor has any attributes.
  */
-uint clang_Cursor_hasAttrs(CXCursor C);
+uint clang_Cursor_hasAttrs(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Determine whether the given cursor kind represents an invalid
@@ -2691,7 +2691,7 @@ mixin EnumC!CXLinkageKind;
 /**
  * \brief Determine the linkage of the entity referred to by a given cursor.
  */
-CXLinkageKind clang_getCursorLinkage(CXCursor cursor);
+CXLinkageKind clang_getCursorLinkage(in CXCursor cursor) @safe @nogc pure nothrow;
 
 enum CXVisibilityKind {
   /** \brief This value indicates that no visibility information is available
@@ -2720,7 +2720,7 @@ mixin EnumC!CXVisibilityKind;
  *
  * \returns The visibility of the cursor.
  */
-CXVisibilityKind clang_getCursorVisibility(CXCursor cursor);
+CXVisibilityKind clang_getCursorVisibility(in CXCursor cursor) @safe @nogc pure nothrow;
 
 /**
  * \brief Determine the availability of the entity that this cursor refers to,
@@ -2730,7 +2730,7 @@ CXVisibilityKind clang_getCursorVisibility(CXCursor cursor);
  *
  * \returns The availability of the cursor.
  */
-CXAvailabilityKind clang_getCursorAvailability(CXCursor cursor);
+CXAvailabilityKind clang_getCursorAvailability(in CXCursor cursor) @safe @nogc pure nothrow;
 
 /**
  * Describes the availability of a given entity on a particular platform, e.g.,
@@ -3001,7 +3001,7 @@ void clang_disposeOverriddenCursors(CXCursor* overridden);
  * \brief Retrieve the file that is included by the given inclusion directive
  * cursor.
  */
-CXFile clang_getIncludedFile(CXCursor cursor);
+CXFile clang_getIncludedFile(in CXCursor cursor) @safe @nogc pure nothrow;
 
 /**
  * @}
@@ -3257,7 +3257,7 @@ CXType clang_getTypedefDeclUnderlyingType(in CXCursor C) @safe @nogc pure nothro
  * If the cursor does not reference an enum declaration, an invalid type is
  * returned.
  */
-CXType clang_getEnumDeclIntegerType(CXCursor C);
+CXType clang_getEnumDeclIntegerType(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Retrieve the integer value of an enum constant declaration as a signed
@@ -3267,7 +3267,7 @@ CXType clang_getEnumDeclIntegerType(CXCursor C);
  * Since this is also potentially a valid constant value, the kind of the cursor
  * must be verified before calling this function.
  */
-long clang_getEnumConstantDeclValue(CXCursor C) @safe @nogc pure nothrow;
+long clang_getEnumConstantDeclValue(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Retrieve the integer value of an enum constant declaration as an unsigned
@@ -3277,7 +3277,7 @@ long clang_getEnumConstantDeclValue(CXCursor C) @safe @nogc pure nothrow;
  * Since this is also potentially a valid constant value, the kind of the cursor
  * must be verified before calling this function.
  */
-ulong clang_getEnumConstantDeclUnsignedValue(CXCursor C);
+ulong clang_getEnumConstantDeclUnsignedValue(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Retrieve the bit width of a bit field declaration as an integer.
@@ -3293,7 +3293,7 @@ int clang_getFieldDeclBitWidth(in CXCursor C) @safe @nogc pure nothrow;
  * The number of arguments can be determined for calls as well as for
  * declarations of functions or methods. For other cursors -1 is returned.
  */
-int clang_Cursor_getNumArguments(CXCursor C);
+int clang_Cursor_getNumArguments(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Retrieve the argument cursor of a function or method.
@@ -3302,7 +3302,7 @@ int clang_Cursor_getNumArguments(CXCursor C);
  * of functions or methods. For other cursors and for invalid indices, an
  * invalid cursor is returned.
  */
-CXCursor clang_Cursor_getArgument(CXCursor C, uint i);
+CXCursor clang_Cursor_getArgument(in CXCursor C, uint i) @safe @nogc pure nothrow;
 
 /**
  * \brief Describes the kind of a template argument.
@@ -3342,7 +3342,7 @@ mixin EnumC!CXTemplateArgumentKind;
  *
  * The value 3 would be returned from this call.
  */
-int clang_Cursor_getNumTemplateArguments(CXCursor C);
+int clang_Cursor_getNumTemplateArguments(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Retrieve the kind of the I'th template argument of the CXCursor C.
@@ -3360,7 +3360,7 @@ int clang_Cursor_getNumTemplateArguments(CXCursor C);
  * For I = 0, 1, and 2, Type, Integral, and Integral will be returned,
  * respectively.
  */
-CXTemplateArgumentKind clang_Cursor_getTemplateArgumentKind(CXCursor C, uint I);
+CXTemplateArgumentKind clang_Cursor_getTemplateArgumentKind(in CXCursor C, uint I) @safe @nogc pure nothrow;
 
 /**
  * \brief Retrieve a CXType representing the type of a TemplateArgument of a
@@ -3380,7 +3380,7 @@ CXTemplateArgumentKind clang_Cursor_getTemplateArgumentKind(CXCursor C, uint I);
  * If called with I = 0, "float", will be returned.
  * Invalid types will be returned for I == 1 or 2.
  */
-CXType clang_Cursor_getTemplateArgumentType(CXCursor C, uint I);
+CXType clang_Cursor_getTemplateArgumentType(in CXCursor C, uint I) @safe @nogc pure nothrow;
 
 /**
  * \brief Retrieve the value of an Integral TemplateArgument (of a function
@@ -3399,7 +3399,7 @@ CXType clang_Cursor_getTemplateArgumentType(CXCursor C, uint I);
  * If called with I = 1 or 2, -7 or true will be returned, respectively.
  * For I == 0, this function's behavior is undefined.
  */
-long clang_Cursor_getTemplateArgumentValue(CXCursor C, uint I);
+long clang_Cursor_getTemplateArgumentValue(in CXCursor C, uint I) @safe @nogc pure nothrow;
 
 /**
  * \brief Retrieve the value of an Integral TemplateArgument (of a function
@@ -3418,7 +3418,7 @@ long clang_Cursor_getTemplateArgumentValue(CXCursor C, uint I);
  * If called with I = 1 or 2, 2147483649 or true will be returned, respectively.
  * For I == 0, this function's behavior is undefined.
  */
-ulong clang_Cursor_getTemplateArgumentUnsignedValue(CXCursor C, uint I);
+ulong clang_Cursor_getTemplateArgumentUnsignedValue(in CXCursor C, uint I);
 
 /**
  * \brief Determine whether two CXTypes represent the same type.
@@ -3490,7 +3490,7 @@ CXCursor clang_getTypeDeclaration(in CXType T) @safe @nogc pure nothrow;
 /**
  * Returns the Objective-C type encoding for the specified declaration.
  */
-CXString clang_getDeclObjCTypeEncoding(CXCursor C);
+CXString clang_getDeclObjCTypeEncoding(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * Returns the Objective-C type encoding for the specified CXType.
@@ -3680,13 +3680,13 @@ long clang_Type_getOffsetOf(in CXType T, const(char)* S);
  * If the field's name S is not found,
  *   CXTypeLayoutError_InvalidFieldName is returned.
  */
-long clang_Cursor_getOffsetOfField(CXCursor C);
+long clang_Cursor_getOffsetOfField(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Determine whether the given cursor represents an anonymous record
  * declaration.
  */
-uint clang_Cursor_isAnonymous(CXCursor C) @safe @nogc pure nothrow;
+uint clang_Cursor_isAnonymous(in CXCursor C) @safe @nogc pure nothrow;
 
 enum CXRefQualifierKind {
   /** \brief No ref-qualifier was provided. */
@@ -3732,7 +3732,7 @@ uint clang_Cursor_isBitField(in CXCursor C) @safe @nogc pure nothrow;
  * \brief Returns 1 if the base class specified by the cursor with kind
  *   CX_CXXBaseSpecifier is virtual.
  */
-uint clang_isVirtualBase(CXCursor);
+uint clang_isVirtualBase(in CXCursor) @safe @nogc pure nothrow;
 
 /**
  * \brief Represents the C++ access control level to a base class for a
@@ -3792,7 +3792,7 @@ CX_StorageClass clang_Cursor_getStorageClass(in CXCursor) @safe @nogc pure nothr
  * \returns The number of overloaded declarations referenced by \c cursor. If it
  * is not a \c CXCursor_OverloadedDeclRef cursor, returns 0.
  */
-uint clang_getNumOverloadedDecls(CXCursor cursor);
+uint clang_getNumOverloadedDecls(in CXCursor cursor) @safe @nogc pure nothrow;
 
 /**
  * \brief Retrieve a cursor for one of the overloaded declarations referenced
@@ -3808,7 +3808,7 @@ uint clang_getNumOverloadedDecls(CXCursor cursor);
  * associated set of overloaded declarations, or if the index is out of bounds,
  * returns \c clang_getNullCursor();
  */
-CXCursor clang_getOverloadedDecl(CXCursor cursor, uint index);
+CXCursor clang_getOverloadedDecl(in CXCursor cursor, uint index) @safe @nogc pure nothrow;
 
 /**
  * @}
@@ -4117,13 +4117,13 @@ int clang_Cursor_getObjCSelectorIndex(CXCursor);
  * If the method/message is "static" or the cursor does not point to a
  * method/message, it will return zero.
  */
-int clang_Cursor_isDynamicCall(CXCursor C);
+int clang_Cursor_isDynamicCall(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Given a cursor pointing to an Objective-C message, returns the CXType
  * of the receiver.
  */
-CXType clang_Cursor_getReceiverType(CXCursor C);
+CXType clang_Cursor_getReceiverType(in CXCursor C) @safe @nogc pure nothrow;
 
 
 /**
@@ -4155,7 +4155,7 @@ mixin EnumC!CXObjCPropertyAttrKind;
  *
  * \param reserved Reserved for future use, pass 0.
  */
-uint clang_Cursor_getObjCPropertyAttributes(CXCursor C, uint reserved);
+uint clang_Cursor_getObjCPropertyAttributes(in CXCursor C, uint reserved) @safe @nogc pure nothrow;
 
 /**
  * \brief 'Qualifiers' written next to the return and parameter types in
@@ -4179,39 +4179,39 @@ mixin EnumC!CXObjCDeclQualifierKind;
  * type or the parameter respectively. The bits are formed from
  * CXObjCDeclQualifierKind.
  */
-uint clang_Cursor_getObjCDeclQualifiers(CXCursor C);
+uint clang_Cursor_getObjCDeclQualifiers(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Given a cursor that represents an Objective-C method or property
  * declaration, return non-zero if the declaration was affected by "@optional".
  * Returns zero if the cursor is not such a declaration or it is "@required".
  */
-uint clang_Cursor_isObjCOptional(CXCursor C);
+uint clang_Cursor_isObjCOptional(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Returns non-zero if the given cursor is a variadic function or method.
  */
-uint clang_Cursor_isVariadic(CXCursor C);
+uint clang_Cursor_isVariadic(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Given a cursor that represents a declaration, return the associated
  * comment's source range.  The range may include multiple consecutive comments
  * with whitespace in between.
  */
-CXSourceRange clang_Cursor_getCommentRange(CXCursor C);
+CXSourceRange clang_Cursor_getCommentRange(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Given a cursor that represents a declaration, return the associated
  * comment text, including comment markers.
  */
-CXString clang_Cursor_getRawCommentText(CXCursor C);
+CXString clang_Cursor_getRawCommentText(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Given a cursor that represents a documentable entity (e.g.,
  * declaration), return the associated \\brief paragraph; otherwise return the
  * first paragraph.
  */
-CXString clang_Cursor_getBriefCommentText(CXCursor C);
+CXString clang_Cursor_getBriefCommentText(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * @}
@@ -4250,7 +4250,7 @@ alias CXModule = void*;
 /**
  * \brief Given a CXCursor_ModuleImportDecl cursor, return the associated module.
  */
-CXModule clang_Cursor_getModule(CXCursor C);
+CXModule clang_Cursor_getModule(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Given a CXFile header file, return the module that contains it, if one
@@ -4399,7 +4399,7 @@ uint clang_CXXMethod_isConst(in CXCursor C) @safe @nogc pure nothrow;
  * by instantiating the template \p C. If \p C is not a template, returns
  * \c CXCursor_NoDeclFound.
  */
-CXCursorKind clang_getTemplateCursorKind(CXCursor C);
+CXCursorKind clang_getTemplateCursorKind(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Given a cursor that may represent a specialization or instantiation
@@ -4429,7 +4429,7 @@ CXCursorKind clang_getTemplateCursorKind(CXCursor C);
  * template or a member thereof, the template or member that it specializes or
  * from which it was instantiated. Otherwise, returns a NULL cursor.
  */
-CXCursor clang_getSpecializedCursorTemplate(CXCursor C);
+CXCursor clang_getSpecializedCursorTemplate(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Given a cursor that references something else, return the source range
@@ -5015,7 +5015,7 @@ CXString clang_getCompletionBriefComment(CXCompletionString completion_string);
  * \returns A non-context-sensitive completion string for declaration and macro
  * definition cursors, or NULL for other kinds of cursors.
  */
-CXCompletionString clang_getCursorCompletionString(CXCursor cursor);
+CXCompletionString clang_getCursorCompletionString(in CXCursor cursor) @safe @nogc pure nothrow;
 
 /**
  * \brief Contains the results of code-completion.
@@ -5445,7 +5445,7 @@ alias CXEvalResult = void*;
  * statement and if its variable, tries to evaluate its initializer,
  * into its corresponding type.
  */
-CXEvalResult clang_Cursor_Evaluate(CXCursor C);
+CXEvalResult clang_Cursor_Evaluate(in CXCursor C) @safe @nogc pure nothrow;
 
 /**
  * \brief Returns the kind of the evaluated result.
