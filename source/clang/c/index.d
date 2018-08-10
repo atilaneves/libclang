@@ -3703,7 +3703,7 @@ mixin EnumC!CXRefQualifierKind;
  * \brief Returns the number of template arguments for given template
  * specialization, or -1 if type \c T is not a template specialization.
  */
-int clang_Type_getNumTemplateArguments(in CXType T);
+int clang_Type_getNumTemplateArguments(in CXType T) @safe @nogc pure nothrow;
 
 /**
  * \brief Returns the type template argument of a template class specialization
@@ -3712,7 +3712,7 @@ int clang_Type_getNumTemplateArguments(in CXType T);
  * This function only returns template type arguments and does not handle
  * template template arguments or variadic packs.
  */
-CXType clang_Type_getTemplateArgumentAsType(in CXType T, uint i);
+CXType clang_Type_getTemplateArgumentAsType(in CXType T, uint i) @safe @nogc pure nothrow;
 
 /**
  * \brief Retrieve the ref-qualifier kind of a function or method.
@@ -3720,7 +3720,7 @@ CXType clang_Type_getTemplateArgumentAsType(in CXType T, uint i);
  * The ref-qualifier is returned for C++ functions or methods. For other types
  * or non-C++ declarations, CXRefQualifier_None is returned.
  */
-CXRefQualifierKind clang_Type_getCXXRefQualifier(in CXType T);
+CXRefQualifierKind clang_Type_getCXXRefQualifier(in CXType T) @safe @nogc pure nothrow;
 
 /**
  * \brief Returns non-zero if the cursor specifies a Record member that is a

@@ -309,6 +309,10 @@ struct Cursor {
         return cast(bool) clang_Cursor_isMacroFunctionLike(cx);
     }
 
+    Cursor specializedCursorTemplate() @safe nothrow const {
+        return Cursor(clang_getSpecializedCursorTemplate(cx));
+    }
+
     bool opEquals(ref const(Cursor) other) @safe @nogc pure nothrow const {
         return cast(bool) clang_equalCursors(cx, other.cx);
     }
@@ -531,6 +535,14 @@ struct Type {
 
     long getSizeof() @safe @nogc pure nothrow const {
         return clang_Type_getSizeOf(cx);
+    }
+
+    int numTemplateArguments() @safe @nogc pure nothrow const {
+        return clang_Type_getNumTemplateArguments(cx);
+    }
+
+    Type typeTemplateArgument(int i) @safe pure nothrow const {
+        return Type(clang_Type_getTemplateArgumentAsType(cx, i));
     }
 
     string toString() @safe pure nothrow const {
