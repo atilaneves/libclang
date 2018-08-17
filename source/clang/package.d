@@ -313,6 +313,26 @@ struct Cursor {
         return Cursor(clang_getSpecializedCursorTemplate(cx));
     }
 
+    TranslationUnit translationUnit() @safe nothrow const {
+        return TranslationUnit(clang_Cursor_getTranslationUnit(cx));
+    }
+
+    Token[] tokens() @safe nothrow const {
+        import std.algorithm: map;
+        import std.array: array;
+
+        CXToken* tokens;
+        uint numTokens;
+
+        () @trusted { clang_tokenize(translationUnit.cx, sourceRange.cx, &tokens, &numTokens); }();
+        // I hope this only deallocates the array
+        scope(exit) clang_disposeTokens(translationUnit.cx, tokens, numTokens);
+
+        auto tokenSlice = () @trusted { return tokens[0 .. numTokens]; }();
+
+        return tokenSlice.map!(a => Token(a, translationUnit)).array;
+    }
+
     bool opEquals(ref const(Cursor) other) @safe @nogc pure nothrow const {
         return cast(bool) clang_equalCursors(cx, other.cx);
     }
@@ -553,5 +573,38 @@ struct Type {
             return text("Type(", kind, `, "`, spelling, pointeeText, `")`);
         } catch(Exception e)
             assert(false, "Fatal error in Type.toString: " ~ e.msg);
+    }
+}
+
+
+struct Token {
+
+    mixin EnumD!("Kind", CXTokenKind, "CXToken_");
+
+    Kind kind;
+    string spelling;
+    CXToken cx;
+    TranslationUnit translationUnit;
+
+    this(CXToken cx, TranslationUnit unit) @safe pure nothrow {
+        this.cx = cx;
+        this.translationUnit = unit;
+        this.kind = cast(Kind) clang_getTokenKind(cx);
+        this.spelling = .toString(clang_getTokenSpelling(translationUnit.cx, cx));
+    }
+
+    this(Kind kind, string spelling) @safe @nogc pure nothrow {
+        this.kind = kind;
+        this.spelling = spelling;
+    }
+
+    string toString() @safe pure const {
+        import std.conv: text;
+
+        return text("Token(", kind, `, "`, spelling, `")`);
+    }
+
+    bool opEquals(in Token other) @safe pure nothrow const {
+        return kind == other.kind && spelling == other.spelling;
     }
 }

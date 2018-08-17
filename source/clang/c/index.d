@@ -2840,7 +2840,7 @@ CXLanguageKind clang_getCursorLanguage(in CXCursor cursor) @safe @nogc pure noth
 /**
  * \brief Returns the translation unit that a cursor originated from.
  */
-CXTranslationUnit clang_Cursor_getTranslationUnit(CXCursor);
+CXTranslationUnit clang_Cursor_getTranslationUnit(in CXCursor) @safe @nogc pure nothrow;
 
 /**
  * \brief A fast container representing a set of CXCursors.
@@ -4541,7 +4541,7 @@ struct CXToken
 /**
  * \brief Determine the kind of the given token.
  */
-CXTokenKind clang_getTokenKind(CXToken);
+CXTokenKind clang_getTokenKind(in CXToken) @safe @nogc pure nothrow;
 
 /**
  * \brief Determine the spelling of the given token.
@@ -4549,17 +4549,17 @@ CXTokenKind clang_getTokenKind(CXToken);
  * The spelling of a token is the textual representation of that token, e.g.,
  * the text of an identifier or keyword.
  */
-CXString clang_getTokenSpelling(CXTranslationUnit, CXToken);
+CXString clang_getTokenSpelling(in CXTranslationUnit, in CXToken) @safe @nogc pure nothrow;
 
 /**
  * \brief Retrieve the source location of the given token.
  */
-CXSourceLocation clang_getTokenLocation(CXTranslationUnit, CXToken);
+CXSourceLocation clang_getTokenLocation(in CXTranslationUnit, in CXToken) @safe @nogc pure nothrow;
 
 /**
  * \brief Retrieve a source range that covers the given token.
  */
-CXSourceRange clang_getTokenExtent(CXTranslationUnit, CXToken);
+CXSourceRange clang_getTokenExtent(in CXTranslationUnit, in CXToken) @safe @nogc pure nothrow;
 
 /**
  * \brief Tokenize the source code described by the given range into raw
@@ -4579,10 +4579,10 @@ CXSourceRange clang_getTokenExtent(CXTranslationUnit, CXToken);
  *
  */
 void clang_tokenize(
-    CXTranslationUnit TU,
-    CXSourceRange Range,
-    CXToken** Tokens,
-    uint* NumTokens);
+    in CXTranslationUnit TU,
+    in CXSourceRange Range,
+    scope CXToken** Tokens,
+    scope uint* NumTokens) @safe @nogc nothrow;
 
 /**
  * \brief Annotate the given set of tokens by providing cursors for each token
@@ -4615,15 +4615,15 @@ void clang_tokenize(
  * replaced with the cursors corresponding to each token.
  */
 void clang_annotateTokens(
-    CXTranslationUnit TU,
+    in CXTranslationUnit TU,
     CXToken* Tokens,
     uint NumTokens,
-    CXCursor* Cursors);
+    CXCursor* Cursors) @safe @nogc nothrow;
 
 /**
  * \brief Free the given set of tokens.
  */
-void clang_disposeTokens(CXTranslationUnit TU, CXToken* Tokens, uint NumTokens);
+void clang_disposeTokens(in CXTranslationUnit TU, in CXToken* Tokens, uint NumTokens) @safe @nogc nothrow;
 
 /**
  * @}
@@ -4639,7 +4639,7 @@ void clang_disposeTokens(CXTranslationUnit TU, CXToken* Tokens, uint NumTokens);
  */
 
 /* for debug/testing */
-CXString clang_getCursorKindSpelling(CXCursorKind Kind);
+CXString clang_getCursorKindSpelling(in CXCursorKind Kind) @safe @nogc pure nothrow;
 void clang_getDefinitionSpellingAndExtent(
     CXCursor,
     const(char*)* startBuf,
