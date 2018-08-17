@@ -139,7 +139,7 @@ struct Cursor {
     Type type;
     SourceRange sourceRange;
 
-    this(CXCursor cx) @safe nothrow {
+    this(CXCursor cx) @safe pure nothrow {
         this.cx = cx;
         kind = cast(Kind) clang_getCursorKind(cx);
         spelling = clang_getCursorSpelling(cx).toString;
@@ -356,6 +356,7 @@ struct Cursor {
 
 
 struct SourceRange {
+
     CXSourceRange cx;
     string path;
     SourceLocation start;
@@ -513,7 +514,7 @@ struct Type {
         return cast(bool) clang_isVolatileQualifiedType(cx);
     }
 
-    Cursor declaration() @safe nothrow const {
+    Cursor declaration() @safe pure nothrow const {
         return Cursor(clang_getTypeDeclaration(cx));
     }
 
