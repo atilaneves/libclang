@@ -129,8 +129,12 @@ mixin EnumD!("AccessSpecifier", CX_CXXAccessSpecifier, "CX_CXX");
 
 struct Cursor {
 
+    import std.traits: ReturnType;
+
     mixin EnumD!("Kind", CXCursorKind, "CXCursor_");
     mixin EnumD!("StorageClass", CX_StorageClass, "CX_SC_");
+
+    alias Hash = ReturnType!(clang_hashCursor);
 
     CXCursor cx;
     private Cursor[] _children;
