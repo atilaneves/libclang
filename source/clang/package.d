@@ -337,19 +337,20 @@ struct Cursor {
         return tokenSlice.map!(a => Token(a, translationUnit)).array;
     }
 
-    // returns a range of cursors
-    auto templateParams() @safe nothrow const {
+    const(Cursor)[] templateParams() @safe nothrow const {
         import std.algorithm: filter;
+        import std.array: array;
 
         const templateCursor = kind == Cursor.Kind.ClassTemplate
             ? this
             : specializedCursorTemplate;
 
-        return templateCursor
+        auto range = templateCursor
             .children
-            .filter!(a => a.kind == Cursor.Kind.TemplateTypeParameter || a.kind == Cursor.Kind.NonTypeTemplateParameter)
-            ;
+            .filter!(a => a.kind == Cursor.Kind.TemplateTypeParameter || a.kind == Cursor.Kind.NonTypeTemplateParameter);
 
+        // Why is this @system? Who knows.
+        return () @trusted { return range.array; }();
     }
 
     bool opEquals(ref const(Cursor) other) @safe @nogc pure nothrow const {
