@@ -337,6 +337,21 @@ struct Cursor {
         return tokenSlice.map!(a => Token(a, translationUnit)).array;
     }
 
+    // returns a range of cursors
+    auto templateParams() @safe nothrow const {
+        import std.algorithm: filter;
+
+        const templateCursor = kind == Cursor.Kind.ClassTemplate
+            ? this
+            : specializedCursorTemplate;
+
+        return templateCursor
+            .children
+            .filter!(a => a.kind == Cursor.Kind.TemplateTypeParameter || a.kind == Cursor.Kind.NonTypeTemplateParameter)
+            ;
+
+    }
+
     bool opEquals(ref const(Cursor) other) @safe @nogc pure nothrow const {
         return cast(bool) clang_equalCursors(cx, other.cx);
     }
