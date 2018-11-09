@@ -337,7 +337,9 @@ struct Cursor {
         return tokenSlice.map!(a => Token(a, translationUnit)).array;
     }
 
-    const(Cursor)[] templateParams() @safe nothrow const {
+    alias templateParams = templateParameters;
+
+    const(Cursor)[] templateParameters() @safe nothrow const {
         import std.algorithm: filter;
         import std.array: array;
 
