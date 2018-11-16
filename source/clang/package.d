@@ -309,6 +309,10 @@ struct Cursor {
         return cast(bool) clang_Cursor_isMacroFunctionLike(cx);
     }
 
+    bool isMacroBuiltin() @safe @nogc pure nothrow const {
+        return cast(bool) clang_Cursor_isMacroBuiltin(cx);
+    }
+
     Cursor specializedCursorTemplate() @safe nothrow const {
         return Cursor(clang_getSpecializedCursorTemplate(cx));
     }
