@@ -355,6 +355,13 @@ struct Cursor {
         return () @trusted { return range.array; }();
     }
 
+    /**
+       If declared at file scope.
+     */
+    bool isFileScope() @safe nothrow const {
+        return lexicalParent.kind == Cursor.Kind.TranslationUnit;
+    }
+
     bool opEquals(ref const(Cursor) other) @safe @nogc pure nothrow const {
         return cast(bool) clang_equalCursors(cx, other.cx);
     }
