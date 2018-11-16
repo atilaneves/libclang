@@ -141,6 +141,7 @@ struct Cursor {
     Kind kind;
     string spelling;
     Type type;
+    Type underlyingType;
     SourceRange sourceRange;
 
     this(CXCursor cx) @safe pure nothrow {
@@ -148,6 +149,10 @@ struct Cursor {
         kind = cast(Kind) clang_getCursorKind(cx);
         spelling = clang_getCursorSpelling(cx).toString;
         type = Type(clang_getCursorType(cx));
+
+        if(kind == Cursor.Kind.TypedefDecl || kind == Cursor.Kind.TypeAliasDecl)
+            underlyingType = Type(clang_getTypedefDeclUnderlyingType(cx));
+
         sourceRange = SourceRange(clang_getCursorExtent(cx));
     }
 
@@ -188,15 +193,6 @@ struct Cursor {
 
     Type returnType() @safe pure nothrow const {
         return Type(clang_getCursorResultType(cx));
-    }
-
-    /**
-       For TypedefDecl cursors, return the underlying type
-     */
-    Type underlyingType() @safe pure nothrow const {
-        assert(kind == Cursor.Kind.TypedefDecl || kind == Cursor.Kind.TypeAliasDecl,
-               "Not a TypedefDecl cursor");
-        return Type(clang_getTypedefDeclUnderlyingType(cx));
     }
 
     /**
