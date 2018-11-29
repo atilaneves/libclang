@@ -12,6 +12,8 @@ import clang: Cursor, Type;
              })
         )
     {
+        import clang: Cursor;
+
         {
             const foo = translUnitCursor.children[0];
             foo.kind.shouldEqual(Cursor.Kind.StructDecl);

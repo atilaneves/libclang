@@ -11,6 +11,8 @@ import clang;
         translUnit.cursor.visitChildren(
             (cursor, parent) {
 
+                import clang: Cursor;
+
                 static int cursorIndex;
 
                 switch(cursorIndex) {
@@ -68,6 +70,8 @@ import clang;
     {
         foreach(cursor, parent; translUnit.cursor) {
 
+            import clang: Cursor;
+
             static int cursorIndex;
 
             switch(cursorIndex) {
@@ -103,6 +107,8 @@ import clang;
     {
         foreach(cursor; translUnit.cursor) {
 
+            import clang: Cursor;
+
             static int cursorIndex;
 
             switch(cursorIndex) {
@@ -135,6 +141,8 @@ import clang;
     with(NewTranslationUnit("foo.cpp",
                             q{ struct Struct { int int_; double double_; }; }))
     {
+        import clang: Cursor;
+
         const cursor = translUnit.cursor;
         with(Cursor.Kind) {
             cursor.children.map!(a => a.kind).shouldEqual([StructDecl]);
@@ -153,6 +161,8 @@ import clang;
                                 const char* newString();
                             }))
     {
+        import clang: Cursor;
+
         const cursor = translUnit.cursor;
         cursor.children.length.shouldEqual(1);
         const function_ = cursor.children[0];

@@ -18,5 +18,5 @@ configuration "unittest" {
     mainSourceFile "tests/ut_main.d"
     sourcePaths "source" "tests"
     importPaths "source" "tests"
-    dependency "unit-threaded" version="~>0.7.0"
+    dependency "unit-threaded" version="*"
 }
