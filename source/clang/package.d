@@ -313,7 +313,7 @@ struct Cursor {
         return cast(bool) clang_Cursor_isMacroBuiltin(cx);
     }
 
-    Cursor specializedCursorTemplate() @safe nothrow const {
+    Cursor specializedCursorTemplate() @safe pure nothrow const {
         return Cursor(clang_getSpecializedCursorTemplate(cx));
     }
 
