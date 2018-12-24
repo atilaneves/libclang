@@ -344,7 +344,10 @@ struct Cursor {
         import std.array: array;
 
         const amTemplate =
-            kind == Cursor.Kind.ClassTemplate || kind == Cursor.Kind.TypeAliasTemplateDecl;
+            kind == Cursor.Kind.ClassTemplate
+            || kind == Cursor.Kind.TypeAliasTemplateDecl
+            || kind == Cursor.Kind.FunctionTemplate
+            ;
         const templateCursor = amTemplate ? this : specializedCursorTemplate;
 
         auto range = templateCursor
