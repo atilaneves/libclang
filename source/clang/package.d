@@ -343,13 +343,14 @@ struct Cursor {
         import std.algorithm: filter;
         import std.array: array;
 
-        const templateCursor = kind == Cursor.Kind.ClassTemplate
-            ? this
-            : specializedCursorTemplate;
+        const amTemplate =
+            kind == Cursor.Kind.ClassTemplate || kind == Cursor.Kind.TypeAliasTemplateDecl;
+        const templateCursor = amTemplate ? this : specializedCursorTemplate;
 
         auto range = templateCursor
             .children
-            .filter!(a => a.kind == Cursor.Kind.TemplateTypeParameter || a.kind == Cursor.Kind.NonTypeTemplateParameter);
+            .filter!(a => a.kind == Cursor.Kind.TemplateTypeParameter ||
+                          a.kind == Cursor.Kind.NonTypeTemplateParameter);
 
         // Why is this @system? Who knows.
         return () @trusted { return range.array; }();
