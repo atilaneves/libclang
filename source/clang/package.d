@@ -16,6 +16,7 @@ TranslationUnit parse(in string fileName,
 
 mixin EnumD!("ErrorCode", CXErrorCode, "");
 mixin EnumD!("DiagnosticSeverity", CXDiagnosticSeverity, "CXDiagnostic_");
+mixin EnumD!("TemplateArgumentKind", CXTemplateArgumentKind, "CXTemplateArgumentKind_");
 
 
 TranslationUnit parse(in string fileName,
@@ -364,6 +365,22 @@ struct Cursor {
      */
     bool isFileScope() @safe nothrow const {
         return lexicalParent.kind == Cursor.Kind.TranslationUnit;
+    }
+
+    int numTemplateArguments() @safe @nogc pure nothrow const {
+        return clang_Cursor_getNumTemplateArguments(cx);
+    }
+
+    TemplateArgumentKind templateArgumentKind(int i) @safe @nogc pure nothrow const {
+        return cast(TemplateArgumentKind) clang_Cursor_getTemplateArgumentKind(cx, i);
+    }
+
+    Type templateArgumentType(int i) @safe pure nothrow const {
+        return Type(clang_Cursor_getTemplateArgumentType(cx, i));
+    }
+
+    long templateArgumentValue(int i) @safe @nogc pure nothrow const {
+        return clang_Cursor_getTemplateArgumentValue(cx, i);
     }
 
     bool opEquals(ref const(Cursor) other) @safe @nogc pure nothrow const {
