@@ -549,15 +549,28 @@ struct Type {
         return Type(clang_getResultType(cx));
     }
 
-    Type[] paramTypes() @safe pure const {
-        const numArgs = clang_getNumArgTypes(cx);
-        auto types = new Type[numArgs];
+    // Returns a range of Type
+    auto paramTypes() @safe pure const nothrow {
 
-        foreach(i; 0 .. numArgs) {
-            types[i] = Type(clang_getArgType(cx, i));
+        static struct Range {
+            const CXType cx;
+            const int numArgs;
+            int index = 0;
+
+            bool empty() {
+                return index < 0 || index >= numArgs;
+            }
+
+            void popFront() {
+                ++index;
+            }
+
+            Type front() {
+                return Type(clang_getArgType(cx, index));
+            }
         }
 
-        return types;
+        return Range(cx, clang_getNumArgTypes(cx));
     }
 
     bool isVariadicFunction() @safe @nogc pure nothrow const {
