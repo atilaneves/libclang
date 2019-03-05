@@ -550,7 +550,7 @@ struct Type {
     }
 
     // Returns a range of Type
-    auto paramTypes() @safe pure const nothrow {
+    auto paramTypes()() @safe pure const nothrow {
 
         static struct Range {
             const CXType cx;
