@@ -3904,8 +3904,8 @@ alias CXCursorVisitor = CXChildVisitResult function(CXCursor cursor, CXCursor pa
  */
 uint clang_visitChildren(
     CXCursor parent,
-    CXCursorVisitor visitor,
-    CXClientData client_data) @safe nothrow;
+    scope CXCursorVisitor visitor,
+    scope CXClientData client_data) @safe nothrow;
 
 /**
  * \brief Visitor invoked for each cursor found by a traversal.

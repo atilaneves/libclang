@@ -392,7 +392,9 @@ struct Cursor {
     }
 
     void visitChildren(scope CursorVisitor visitor) @safe nothrow const {
-        clang_visitChildren(cx, &cvisitor, new ClientData(visitor));
+        scope clientData = ClientData(visitor);
+        // why isn't this @safe with dip10000???
+        () @trusted { clang_visitChildren(cx, &cvisitor, &clientData); }();
     }
 
     int opApply(scope int delegate(Cursor cursor, Cursor parent) @safe block) @safe nothrow const {
