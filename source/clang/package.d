@@ -391,7 +391,7 @@ struct Cursor {
         return cast(bool) clang_equalCursors(cx, other.cx);
     }
 
-    void visitChildren(CursorVisitor visitor) @safe nothrow const {
+    void visitChildren(scope CursorVisitor visitor) @safe nothrow const {
         clang_visitChildren(cx, &cvisitor, new ClientData(visitor));
     }
 
@@ -403,14 +403,18 @@ struct Cursor {
         return opApplyN(block);
     }
 
-    private int opApplyN(T...)(int delegate(T args) @safe block) const {
+    private int opApplyN(T)(scope T block) const {
+        import std.traits: Parameters;
+
         int stop = 0;
+
+        enum numParams = Parameters!T.length;
 
         visitChildren((cursor, parent) {
 
-            static if(T.length == 2)
+            static if(numParams == 2)
                 stop = block(cursor, parent);
-            else static if(T.length == 1)
+            else static if(numParams == 1)
                 stop = block(cursor);
             else
                 static assert(false);

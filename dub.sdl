@@ -7,16 +7,22 @@ libs "clang"
 lflags "-L/usr/local/opt/llvm/lib" platform="osx"
 lflags "-L/usr/lib/llvm-3.9/lib" platform="posix"  # travis
 
+
 configuration "library" {
     targetType "library"
 }
+
 
 configuration "unittest" {
     targetType "executable"
     targetName "ut"
     targetPath "bin"
+
     mainSourceFile "tests/ut_main.d"
     sourcePaths "source" "tests"
     importPaths "source" "tests"
+
+    dflags "-dip25" "-dip1000"
+
     dependency "unit-threaded" version="*"
 }
