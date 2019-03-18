@@ -82,8 +82,25 @@ string[] systemPaths() @safe {
     import std.algorithm: map, countUntil;
     import std.array: array;
 
-    const res = execute(["clang", "-v", "-xc++", "/dev/null", "-fsyntax-only"], ["LANG": "C"]);
-    if(res.status != 0) throw new Exception("Failed to call gcc:\n" ~ res.output);
+    version(Windows)
+    {
+        enum devnull = "NUL";
+    } else {
+        enum devnull = "/dev/null";
+    }
+
+    const res = () {
+        try
+        {
+            return execute(["clang", "-v", "-xc++", devnull, "-fsyntax-only"], ["LANG": "C"]);
+        }
+        catch (Exception e)
+        {
+            import std.typecons : Tuple;
+            return Tuple!(int, "status", string, "output")(-1, e.msg);
+        }
+    }();
+    if(res.status != 0) throw new Exception("Failed to call clang:\n" ~ res.output);
 
     auto lines = res.output.splitLines;
 
