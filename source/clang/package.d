@@ -654,9 +654,9 @@ struct Type {
 
     string toString() @safe pure nothrow const {
         import std.conv: text;
+
         try {
-            const pointeeText = pointee.isInvalid ? "" : text(", ", pointee);
-            return text("Type(", kind, `, "`, spelling, pointeeText, `")`);
+            return text("Type(", kind, `, "`, spelling, `")`);
         } catch(Exception e)
             assert(false, "Fatal error in Type.toString: " ~ e.msg);
     }
