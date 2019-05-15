@@ -400,6 +400,14 @@ struct Cursor {
         return clang_Cursor_getTemplateArgumentValue(cx, i);
     }
 
+    bool isVirtual() @safe @nogc pure nothrow const {
+        return cast(bool) clang_CXXMethod_isVirtual(cx);
+    }
+
+    bool isPureVirtual() @safe @nogc pure nothrow const {
+        return cast(bool) clang_CXXMethod_isPureVirtual(cx);
+    }
+
     bool opEquals(ref const(Cursor) other) @safe @nogc pure nothrow const {
         return cast(bool) clang_equalCursors(cx, other.cx);
     }
