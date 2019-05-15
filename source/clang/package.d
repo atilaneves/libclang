@@ -408,6 +408,19 @@ struct Cursor {
         return cast(bool) clang_CXXMethod_isPureVirtual(cx);
     }
 
+    Cursor[] overriddenCursors() @trusted /* @safe with DIP1000 */ const {
+        import std.algorithm: map;
+        import std.array: array;
+
+        uint length;
+        CXCursor* cursors;
+
+        clang_getOverriddenCursors(cx, &cursors, &length);
+        scope(exit) clang_disposeOverriddenCursors(cursors);
+
+        return cursors[0 .. length].map!(a => Cursor(a)).array;
+    }
+
     bool opEquals(ref const(Cursor) other) @safe @nogc pure nothrow const {
         return cast(bool) clang_equalCursors(cx, other.cx);
     }

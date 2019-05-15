@@ -2987,15 +2987,15 @@ CXCursor clang_getCursorLexicalParent(in CXCursor cursor) @safe @nogc pure nothr
  * array pointed to by \p overridden.
  */
 void clang_getOverriddenCursors(
-    CXCursor cursor,
-    CXCursor** overridden,
-    uint* num_overridden);
+    in CXCursor cursor,
+    scope CXCursor** overridden,
+    scope uint* num_overridden) @safe @nogc pure nothrow;
 
 /**
  * \brief Free the set of overridden cursors returned by \c
  * clang_getOverriddenCursors().
  */
-void clang_disposeOverriddenCursors(CXCursor* overridden);
+void clang_disposeOverriddenCursors(CXCursor* overridden) @safe @nogc pure nothrow;
 
 /**
  * \brief Retrieve the file that is included by the given inclusion directive
