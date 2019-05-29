@@ -4017,7 +4017,7 @@ CXSourceRange clang_Cursor_getSpellingNameRange(
  * such as the parameters of a function or template or the arguments of a
  * class template specialization.
  */
-CXString clang_getCursorDisplayName(CXCursor);
+CXString clang_getCursorDisplayName(in CXCursor) @safe @nogc pure nothrow;
 
 /** \brief For a cursor that is a reference, retrieve a cursor representing the
  * entity that it references.
@@ -4029,7 +4029,7 @@ CXString clang_getCursorDisplayName(CXCursor);
  * definition, it returns that declaration or definition unchanged.
  * Otherwise, returns the NULL cursor.
  */
-CXCursor clang_getCursorReferenced(CXCursor);
+CXCursor clang_getCursorReferenced(in CXCursor) @safe @nogc pure nothrow;
 
 /**
  *  \brief For a cursor that is either a reference to or a declaration

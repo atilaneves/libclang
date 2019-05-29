@@ -408,6 +408,17 @@ struct Cursor {
         return cast(bool) clang_CXXMethod_isPureVirtual(cx);
     }
 
+    string displayName() @safe pure nothrow const {
+        return clang_getCursorDisplayName(cx).toString;
+    }
+
+    /**
+       For e.g. TypeRef or TemplateRef
+     */
+    Cursor referencedCursor() @safe nothrow const {
+        return Cursor(clang_getCursorReferenced(cx));
+    }
+
     Cursor[] overriddenCursors() @trusted /* @safe with DIP1000 */ const {
         import std.algorithm: map;
         import std.array: array;
