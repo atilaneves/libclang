@@ -1,10 +1,50 @@
 module clang;
 
+
 import clang.c.index;
 import clang.c.util: EnumD;
 
+
+immutable bool[string] gPredefinedCursors;
+
+
+shared static this() nothrow {
+    try {
+
+        const fileName = () {
+            import std.file: tempDir;
+            import core.sys.posix.stdlib: mkstemp;
+            char[] tmpnamBuf = tempDir() ~ "/libclangXXXXXX\0".dup;
+            mkstemp(tmpnamBuf.ptr);
+            return tmpnamBuf[0 .. $-1].idup;
+        }();
+        {
+            // create an empty file
+            import std.stdio: File;
+            auto f = File(fileName, "w");
+            f.writeln;
+            f.flush;
+            f.detach;
+        }
+
+        auto tu = parse(fileName,
+                        ["-xc"],
+                        TranslationUnitFlags.DetailedPreprocessingRecord);
+        foreach(cursor; tu.cursor.children) {
+            gPredefinedCursors[cursor.spelling] = true;
+        }
+
+    } catch(Exception e) {
+        import std.stdio: stderr;
+        try
+            stderr.writeln("Error initialising libclang: ", e);
+        catch(Exception _) {}
+    }
+}
+
 mixin EnumD!("TranslationUnitFlags", CXTranslationUnit_Flags, "CXTranslationUnit_");
 mixin EnumD!("Language", CXLanguageKind, "CXLanguage_");
+
 
 TranslationUnit parse(in string fileName,
                       in TranslationUnitFlags translUnitflags = TranslationUnitFlags.None)
@@ -267,8 +307,7 @@ struct Cursor {
     }
 
     bool isPredefined() @safe @nogc pure nothrow const {
-        // FIXME
-        return false;
+        return (spelling in gPredefinedCursors) !is null;
     }
 
     Cursor semanticParent() @safe nothrow const {
