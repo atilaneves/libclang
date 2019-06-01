@@ -432,6 +432,14 @@ struct Cursor {
         return cursors[0 .. length].map!(a => Cursor(a)).array;
     }
 
+    auto numOverloadedDecls() @safe @nogc pure nothrow const {
+        return clang_getNumOverloadedDecls(cx);
+    }
+
+    Cursor overloadedDecl(int i) @safe nothrow const {
+        return Cursor(clang_getOverloadedDecl(cx, cast(uint) i));
+    }
+
     bool opEquals(ref const(Cursor) other) @safe @nogc pure nothrow const {
         return cast(bool) clang_equalCursors(cx, other.cx);
     }
