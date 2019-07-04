@@ -7,16 +7,23 @@ import clang.c.util: EnumD;
 
 immutable bool[string] gPredefinedCursors;
 
+version (Windows)
+    extern(C) private int _mktemp_s(char* nameTemplate, size_t sizeInChars) nothrow @safe @nogc;
 
 shared static this() nothrow {
     try {
 
         const fileName = () {
             import std.file: tempDir;
-            import core.sys.posix.stdlib: mkstemp;
-            char[] tmpnamBuf = tempDir() ~ "/libclangXXXXXX\0".dup;
-            mkstemp(tmpnamBuf.ptr);
-            return tmpnamBuf[0 .. $-1].idup;
+            import std.path: buildPath;
+            char[] tmpnamBuf = "libclangXXXXXX\0".dup;
+            version (Posix) {
+                import core.sys.posix.stdlib: mkstemp;
+                mkstemp(tmpnamBuf.ptr);
+            }
+            else version (Windows)
+                _mktemp_s(tmpnamBuf.ptr, tmpnamBuf.length);
+            return tempDir().buildPath(tmpnamBuf[0 .. $-1]);
         }();
         {
             // create an empty file
