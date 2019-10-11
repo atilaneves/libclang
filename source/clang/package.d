@@ -340,7 +340,23 @@ struct Cursor {
     }
 
     string mangling() @safe pure nothrow const {
-        return clang_Cursor_getMangling(cx).toString;
+        string mangle;
+        // for destructors, there may be multiple mangles,
+        // and the getMangling function doesn't always return
+        // the right one. To be honest, I don't know how to find
+        // the right one all the time, but in testing, the first
+        // one on this function, if it returns one, works more often.
+        // I wish I could explain more, I just know this passes the tests
+        // and the plain impl of just getMangling doesn't.
+        auto otherMangles = clang_Cursor_getCXXManglings(cx);
+        if(otherMangles) {
+            auto strings = toStrings(otherMangles);
+            if(strings.length)
+                mangle = strings[0];
+        }
+        if(mangle is null)
+            mangle = clang_Cursor_getMangling(cx).toString;
+        return mangle;
     }
 
     bool isAnonymous() @safe @nogc pure nothrow const {
