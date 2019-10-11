@@ -182,10 +182,16 @@ string toString(CXString cxString) @safe pure nothrow {
 }
 
 string[] toStrings(CXStringSet* strings) @trusted pure nothrow {
+    import std.conv: to;
     scope(exit) clang_disposeStringSet(strings);
     string[] ret;
-    foreach(cxstr; strings.Strings[0 .. strings.Count])
-        ret ~= cxstr.toString;
+    foreach(cxstr; strings.Strings[0 .. strings.Count]) {
+        // cannot use the toString above since it frees, and so
+        // does the dispose string set at scope exit, leading to
+        // a double free situation
+        auto cstr = clang_getCString(cxstr);
+        ret ~= cstr.to!string;
+    }
     return ret;
 }
 
