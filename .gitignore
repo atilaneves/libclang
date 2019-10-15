@@ -2,12 +2,6 @@
 docs.json
 __dummy.html
 docs/
-libclang.so
-libclang.dylib
-libclang.dll
-libclang.a
-libclang.lib
-libclang-test-*
 *.exe
 *.o
 *.obj
@@ -15,3 +9,5 @@ libclang-test-*
 bin
 tmp
 *.a
+bin.ldc
+libclang*
