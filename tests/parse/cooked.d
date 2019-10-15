@@ -1,7 +1,9 @@
 module parse.cooked;
 
+
 import test.infra;
 import clang;
+
 
 @("visitChildren C++ file with one simple struct")
 @safe unittest {
@@ -45,23 +47,6 @@ import clang;
     }
 }
 
-
-@("visitChildren C++ file with one simple struct and throwing visitor")
-@safe unittest {
-    with(NewTranslationUnit("foo.cpp",
-                            q{ struct Struct { int int_; double double_; }; }))
-    {
-        translUnit.cursor.visitChildren(
-            (cursor, parent) {
-                int i;
-                if(i % 2 == 0)
-                    throw new Exception("oops");
-                return ChildVisitResult.Recurse;
-            }
-        ).shouldThrowWithMessage("oops");
-    }
-
-}
 
 @("foreach(cursor, parent) C++ file with one simple struct")
 @safe unittest {

@@ -1,8 +1,11 @@
 module wrap;
 
+
 import test.infra;
 import clang: Cursor, Type;
 
+
+@("wrapped.enums")
 @safe unittest {
     with(const NewTranslationUnit(
              "c.c",
@@ -16,19 +19,19 @@ import clang: Cursor, Type;
 
         {
             const foo = translUnitCursor.children[0];
-            foo.kind.shouldEqual(Cursor.Kind.StructDecl);
-            foo.spelling.shouldEqual("Foo");
+            foo.kind.should == Cursor.Kind.StructDecl;
+            foo.spelling.should == "Foo";
         }
 
         {
             const createFoo = translUnitCursor.children[1];
-            createFoo.kind.shouldEqual(Cursor.Kind.FunctionDecl);
+            createFoo.kind.should == Cursor.Kind.FunctionDecl;
             const returnType = createFoo.returnType;
-            returnType.kind.shouldEqual(Type.Kind.Elaborated);
-            returnType.spelling.shouldEqual("struct Foo");
+            returnType.kind.should == Type.Kind.Elaborated;
+            returnType.spelling.should == "struct Foo";
             const namedReturnType = returnType.namedType;
-            namedReturnType.kind.shouldEqual(Type.Kind.Record);
-            namedReturnType.spelling.shouldEqual("struct Foo");
+            namedReturnType.kind.should == Type.Kind.Record;
+            namedReturnType.spelling.should == "struct Foo";
         }
     }
 }
