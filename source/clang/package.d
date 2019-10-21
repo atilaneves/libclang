@@ -13,18 +13,7 @@ version (Windows)
 shared static this() nothrow {
     try {
 
-        const fileName = () {
-            import std.file: tempDir;
-            import std.path: buildPath;
-            char[] tmpnamBuf = "libclangXXXXXX\0".dup;
-            version (Posix) {
-                import core.sys.posix.stdlib: mkstemp;
-                mkstemp(tmpnamBuf.ptr);
-            }
-            else version (Windows)
-                _mktemp_s(tmpnamBuf.ptr, tmpnamBuf.length);
-            return tempDir().buildPath(tmpnamBuf[0 .. $-1]);
-        }();
+        const fileName = getTempFileName;
         {
             // create an empty file
             import std.stdio: File;
@@ -48,6 +37,25 @@ shared static this() nothrow {
         catch(Exception _) {}
     }
 }
+
+
+string getTempFileName() @trusted {
+    import std.file: tempDir;
+    import std.path: buildPath;
+    import std.string: fromStringz;
+
+    char[] tmpnamBuf = "libclangXXXXXX\0".dup;
+
+    version (Posix) {
+        import core.sys.posix.stdlib: mkstemp;
+        mkstemp(&tmpnamBuf[0]);
+    }
+    else version (Windows)
+        _mktemp_s(&tmpnamBuf[0], tmpnamBuf.length);
+
+    return tempDir().buildPath(tempDir, fromStringz(&tmpnamBuf[0]));
+}
+
 
 mixin EnumD!("TranslationUnitFlags", CXTranslationUnit_Flags, "CXTranslationUnit_");
 mixin EnumD!("Language", CXLanguageKind, "CXLanguage_");
