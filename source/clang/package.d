@@ -53,7 +53,7 @@ string getTempFileName() @trusted {
     else version (Windows)
         _mktemp_s(&tmpnamBuf[0], tmpnamBuf.length);
 
-    return tempDir().buildPath(tempDir, fromStringz(&tmpnamBuf[0]));
+    return buildPath(tempDir, fromStringz(&tmpnamBuf[0]));
 }
 
 
