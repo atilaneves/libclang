@@ -219,25 +219,27 @@ mixin EnumD!("AccessSpecifier", CX_CXXAccessSpecifier, "CX_CXX");
 
 struct Cursor {
 
+    import clang.util: Lazy;
     import std.traits: ReturnType;
 
     mixin EnumD!("Kind", CXCursorKind, "CXCursor_");
     mixin EnumD!("StorageClass", CX_StorageClass, "CX_SC_");
 
-    alias Hash = ReturnType!(clang_hashCursor);
+    alias Hash = ReturnType!clang_hashCursor;
 
     CXCursor cx;
     private Cursor[] _children;
     Kind kind;
-    string spelling;
+    private string _spelling;
     Type type;
     Type underlyingType;
     SourceRange sourceRange;
 
+    mixin Lazy!_spelling;
+
     this(CXCursor cx) @safe pure nothrow {
         this.cx = cx;
         kind = cast(Kind) clang_getCursorKind(cx);
-        spelling = clang_getCursorSpelling(cx).toString;
         type = Type(clang_getCursorType(cx));
 
         if(kind == Cursor.Kind.TypedefDecl || kind == Cursor.Kind.TypeAliasDecl)
@@ -246,39 +248,53 @@ struct Cursor {
         sourceRange = SourceRange(clang_getCursorExtent(cx));
     }
 
-    private static extern(C) CXChildVisitResult ctorVisitor(CXCursor cursor,
-                                                            CXCursor parent,
-                                                            void* clientData_)
-        @safe nothrow
-    {
-        auto children = () @trusted { return cast(Cursor[]*) clientData_; }();
-        *children ~= Cursor(cursor);
-        return CXChildVisit_Continue;
-    }
-
     this(in Kind kind, in string spelling) @safe @nogc pure nothrow {
         this(kind, spelling, Type());
     }
 
     this(in Kind kind, in string spelling, Type type) @safe @nogc pure nothrow {
         this.kind = kind;
-        this.spelling = spelling;
+        this._spelling = spelling;
+        this._spellingInit = true;
         this.type = type;
     }
 
     /// Lazily return the cursor's children
-    inout(Cursor)[] children() @safe @property nothrow inout {
+    auto children(this This)() @property {
+        import std.array: appender;
+
         if(_children.length) return _children;
 
-        inout(Cursor)[] ret;
+        auto app = appender!(Cursor[]);
+        app.reserve(10); // hacky but speeds things up, faster than counting the right number
         // calling Cursor.visitChildren here would cause infinite recursion
         // because cvisitor constructs a Cursor out of the parent
-        () @trusted { clang_visitChildren(cx, &ctorVisitor, &ret); }();
-        return ret;
+        () @trusted { clang_visitChildren(cx, &childrenVisitor, &app); }();
+        () @trusted { cast(Cursor[]) _children = app.data; }();
+
+        return _children;
+    }
+
+    private static extern(C) CXChildVisitResult childrenVisitor(CXCursor cursor,
+                                                                CXCursor parent,
+                                                                void* clientData)
+        @safe nothrow
+    {
+        import std.array: Appender;
+
+        auto app = () @trusted { return cast(Appender!(Cursor[])*) clientData; }();
+        *app ~= Cursor(cursor);
+
+        return CXChildVisit_Continue;
     }
 
     void children(Cursor[] cursors) @safe @property pure nothrow {
         _children = cursors;
+    }
+
+    void setSpelling(string str) @safe @nogc @property pure nothrow {
+        _spelling = str;
+        _spellingInit = true;
     }
 
     Type returnType() @safe pure nothrow const {
@@ -338,7 +354,7 @@ struct Cursor {
             assert(false, "Fatal error in Cursor.toString: " ~ e.msg);
     }
 
-    bool isPredefined() @safe @nogc pure nothrow const {
+    bool isPredefined() @safe pure nothrow const {
         return (spelling in gPredefinedCursors) !is null;
     }
 
@@ -433,13 +449,15 @@ struct Cursor {
         CXToken* tokens;
         uint numTokens;
 
-        () @trusted { clang_tokenize(translationUnit.cx, sourceRange.cx, &tokens, &numTokens); }();
+        auto tu = clang_Cursor_getTranslationUnit(cx);
+
+        () @trusted { clang_tokenize(tu, sourceRange.cx, &tokens, &numTokens); }();
         // I hope this only deallocates the array
-        scope(exit) clang_disposeTokens(translationUnit.cx, tokens, numTokens);
+        scope(exit) clang_disposeTokens(tu, tokens, numTokens);
 
         auto tokenSlice = () @trusted { return tokens[0 .. numTokens]; }();
 
-        return tokenSlice.map!(a => Token(a, translationUnit)).array;
+        return tokenSlice.map!(a => Token(a, tu)).array;
     }
 
     alias templateParams = templateParameters;
@@ -572,6 +590,10 @@ struct Cursor {
 
         return stop;
     }
+
+    private string _spellingCreate() @safe pure nothrow const {
+        return clang_getCursorSpelling(cx).toString;
+    }
 }
 
 
@@ -667,16 +689,19 @@ private extern(C) CXChildVisitResult cvisitor(CXCursor cursor, CXCursor parent, 
 
 struct Type {
 
+    import clang.util: Lazy;
+
     mixin EnumD!("Kind", CXTypeKind, "CXType_");
 
     CXType cx;
     Kind kind;
-    string spelling;
+    private string _spelling;
+
+    mixin Lazy!_spelling;
 
     this(CXType cx) @safe pure nothrow {
         this.cx = cx;
         this.kind = cast(Kind) cx.kind;
-        spelling = clang_getTypeSpelling(cx).toString;
     }
 
     this(in Type other) @trusted pure nothrow {
@@ -695,7 +720,7 @@ struct Type {
 
     this(in Kind kind, in string spelling) @safe @nogc pure nothrow {
         this.kind = kind;
-        this.spelling = spelling;
+        _spelling = spelling;
     }
 
     Type pointee() @safe pure nothrow const {
@@ -802,6 +827,10 @@ struct Type {
         } catch(Exception e)
             assert(false, "Fatal error in Type.toString: " ~ e.msg);
     }
+
+    private string _spellingCreate() @safe pure nothrow const {
+        return clang_getTypeSpelling(cx).toString;
+    }
 }
 
 
@@ -811,14 +840,14 @@ struct Token {
 
     Kind kind;
     string spelling;
-    CXToken cx;
-    TranslationUnit translationUnit;
+    CXToken cxToken;
+    CXTranslationUnit cxTU;
 
-    this(CXToken cx, TranslationUnit unit) @safe pure nothrow {
-        this.cx = cx;
-        this.translationUnit = unit;
-        this.kind = cast(Kind) clang_getTokenKind(cx);
-        this.spelling = .toString(clang_getTokenSpelling(translationUnit.cx, cx));
+    this(CXToken cxToken, CXTranslationUnit cxTU) @safe pure nothrow {
+        this.cxToken = cxToken;
+        this.cxTU = cxTU;
+        this.kind = cast(Kind) clang_getTokenKind(cxToken);
+        this.spelling = .toString(clang_getTokenSpelling(cxTU, cxToken));
     }
 
     this(Kind kind, string spelling) @safe @nogc pure nothrow {
