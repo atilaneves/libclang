@@ -282,9 +282,7 @@ struct Cursor {
     {
         import std.array: Appender;
 
-        //auto children = () @trusted { return cast(Cursor[]*) clientData_; }();
         auto app = () @trusted { return cast(Appender!(Cursor[])*) clientData; }();
-        //*children ~= Cursor(cursor);
         *app ~= Cursor(cursor);
 
         return CXChildVisit_Continue;
