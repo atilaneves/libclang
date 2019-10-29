@@ -44,7 +44,7 @@ string getTempFileName() @trusted {
     import std.path: buildPath;
     import std.string: fromStringz;
 
-    char[] tmpnamBuf = "libclangXXXXXX\0".dup;
+    char[] tmpnamBuf = buildPath(tempDir, "libclangXXXXXX\0").dup;
 
     version (Posix) {
         import core.sys.posix.stdlib: mkstemp;
@@ -53,7 +53,7 @@ string getTempFileName() @trusted {
     else version (Windows)
         _mktemp_s(&tmpnamBuf[0], tmpnamBuf.length);
 
-    return buildPath(tempDir, fromStringz(&tmpnamBuf[0]));
+    return tmpnamBuf.idup;
 }
 
 
