@@ -34,7 +34,10 @@ import clang;
         function_.sourceRange.start.path.should == inSandboxPath("foo.cpp");
         function_.sourceRange.start.line.should == 2;
         function_.sourceRange.start.column.should == 33;
-        function_.sourceRange.start.offset.should == 33;
+        version(Windows)
+            function_.sourceRange.start.offset.should == 34;
+        else
+            function_.sourceRange.start.offset.should == 33;
     }
 }
 
@@ -53,6 +56,9 @@ import clang;
         function_.sourceRange.end.path.should == inSandboxPath("foo.cpp");
         function_.sourceRange.end.line.should == 2;
         function_.sourceRange.end.column.should == 56;
-        function_.sourceRange.end.offset.should == 56;
+        version(Windows)
+            function_.sourceRange.end.offset.should == 57;
+        else
+            function_.sourceRange.end.offset.should == 56;
     }
 }
