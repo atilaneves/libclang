@@ -689,16 +689,19 @@ private extern(C) CXChildVisitResult cvisitor(CXCursor cursor, CXCursor parent, 
 
 struct Type {
 
+    import clang.util: Lazy;
+
     mixin EnumD!("Kind", CXTypeKind, "CXType_");
 
     CXType cx;
     Kind kind;
-    string spelling;
+    private string _spelling;
+
+    mixin Lazy!_spelling;
 
     this(CXType cx) @safe pure nothrow {
         this.cx = cx;
         this.kind = cast(Kind) cx.kind;
-        spelling = clang_getTypeSpelling(cx).toString;
     }
 
     this(in Type other) @trusted pure nothrow {
@@ -717,7 +720,7 @@ struct Type {
 
     this(in Kind kind, in string spelling) @safe @nogc pure nothrow {
         this.kind = kind;
-        this.spelling = spelling;
+        _spelling = spelling;
     }
 
     Type pointee() @safe pure nothrow const {
@@ -823,6 +826,10 @@ struct Type {
             return text("Type(", kind, `, "`, spelling, `")`);
         } catch(Exception e)
             assert(false, "Fatal error in Type.toString: " ~ e.msg);
+    }
+
+    private string _spellingCreate() @safe pure nothrow const {
+        return clang_getTypeSpelling(cx).toString;
     }
 }
 
