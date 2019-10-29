@@ -246,16 +246,6 @@ struct Cursor {
         sourceRange = SourceRange(clang_getCursorExtent(cx));
     }
 
-    private static extern(C) CXChildVisitResult ctorVisitor(CXCursor cursor,
-                                                            CXCursor parent,
-                                                            void* clientData_)
-        @safe nothrow
-    {
-        auto children = () @trusted { return cast(Cursor[]*) clientData_; }();
-        *children ~= Cursor(cursor);
-        return CXChildVisit_Continue;
-    }
-
     this(in Kind kind, in string spelling) @safe @nogc pure nothrow {
         this(kind, spelling, Type());
     }
@@ -267,14 +257,35 @@ struct Cursor {
     }
 
     /// Lazily return the cursor's children
-    inout(Cursor)[] children() @safe @property nothrow inout {
+    auto children(this This)() @property {
+        import std.array: appender;
+
         if(_children.length) return _children;
 
-        inout(Cursor)[] ret;
+        //inout(Cursor)[] ret;
+        auto app = appender!(Cursor[]);
+        app.reserve(10); // hacky but speeds things up, faster than counting the right number
         // calling Cursor.visitChildren here would cause infinite recursion
         // because cvisitor constructs a Cursor out of the parent
-        () @trusted { clang_visitChildren(cx, &ctorVisitor, &ret); }();
-        return ret;
+        () @trusted { clang_visitChildren(cx, &childrenVisitor, &app); }();
+        () @trusted { cast(Cursor[]) _children = app.data; }();
+
+        return _children;
+    }
+
+    private static extern(C) CXChildVisitResult childrenVisitor(CXCursor cursor,
+                                                                CXCursor parent,
+                                                                void* clientData)
+        @safe nothrow
+    {
+        import std.array: Appender;
+
+        //auto children = () @trusted { return cast(Cursor[]*) clientData_; }();
+        auto app = () @trusted { return cast(Appender!(Cursor[])*) clientData; }();
+        //*children ~= Cursor(cursor);
+        *app ~= Cursor(cursor);
+
+        return CXChildVisit_Continue;
     }
 
     void children(Cursor[] cursors) @safe @property pure nothrow {
