@@ -444,13 +444,15 @@ struct Cursor {
         CXToken* tokens;
         uint numTokens;
 
-        () @trusted { clang_tokenize(translationUnit.cx, sourceRange.cx, &tokens, &numTokens); }();
+        auto tu = clang_Cursor_getTranslationUnit(cx);
+
+        () @trusted { clang_tokenize(tu, sourceRange.cx, &tokens, &numTokens); }();
         // I hope this only deallocates the array
-        scope(exit) clang_disposeTokens(translationUnit.cx, tokens, numTokens);
+        scope(exit) clang_disposeTokens(tu, tokens, numTokens);
 
         auto tokenSlice = () @trusted { return tokens[0 .. numTokens]; }();
 
-        return tokenSlice.map!(a => Token(a, translationUnit)).array;
+        return tokenSlice.map!(a => Token(a, tu)).array;
     }
 
     alias templateParams = templateParameters;
@@ -822,14 +824,14 @@ struct Token {
 
     Kind kind;
     string spelling;
-    CXToken cx;
-    TranslationUnit translationUnit;
+    CXToken cxToken;
+    CXTranslationUnit cxTU;
 
-    this(CXToken cx, TranslationUnit unit) @safe pure nothrow {
-        this.cx = cx;
-        this.translationUnit = unit;
-        this.kind = cast(Kind) clang_getTokenKind(cx);
-        this.spelling = .toString(clang_getTokenSpelling(translationUnit.cx, cx));
+    this(CXToken cxToken, CXTranslationUnit cxTU) @safe pure nothrow {
+        this.cxToken = cxToken;
+        this.cxTU = cxTU;
+        this.kind = cast(Kind) clang_getTokenKind(cxToken);
+        this.spelling = .toString(clang_getTokenSpelling(cxTU, cxToken));
     }
 
     this(Kind kind, string spelling) @safe @nogc pure nothrow {
