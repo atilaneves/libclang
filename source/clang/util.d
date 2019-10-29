@@ -13,7 +13,7 @@ mixin template Lazy(alias memberVariable) {
     mixin(`bool `, initVar, `;`);
 
     private enum str = q{
-            ref %s()() @property const {
+            ref %s()() @property const scope return {
                 import std.traits: Unqual;
                 if(!%s) {
                     () @trusted { cast(bool) %s = true; }();
