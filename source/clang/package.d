@@ -262,7 +262,6 @@ struct Cursor {
 
         if(_children.length) return _children;
 
-        //inout(Cursor)[] ret;
         auto app = appender!(Cursor[]);
         app.reserve(10); // hacky but speeds things up, faster than counting the right number
         // calling Cursor.visitChildren here would cause infinite recursion
