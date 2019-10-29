@@ -237,7 +237,7 @@ struct Cursor {
 
     mixin Lazy!_spelling;
 
-    this(CXCursor cx) @safe pure nothrow {
+    this(CXCursor cx) @safe @nogc pure nothrow {
         this.cx = cx;
         kind = cast(Kind) clang_getCursorKind(cx);
         type = Type(clang_getCursorType(cx));
@@ -608,7 +608,7 @@ struct SourceRange {
     mixin Lazy!_start;
     mixin Lazy!_end;
 
-    this(CXSourceRange cx) @safe pure nothrow {
+    this(CXSourceRange cx) @safe @nogc pure nothrow {
         this.cx = cx;
     }
 
@@ -699,7 +699,7 @@ struct Type {
 
     mixin Lazy!_spelling;
 
-    this(CXType cx) @safe pure nothrow {
+    this(CXType cx) @safe @nogc pure nothrow {
         this.cx = cx;
         this.kind = cast(Kind) cx.kind;
     }
@@ -779,11 +779,11 @@ struct Type {
         return clang_getArraySize(cx);
     }
 
-    bool isConstQualified() @safe @nogc pure nothrow const {
+    bool isConstQualified() @safe @nogc pure nothrow const scope {
         return cast(bool) clang_isConstQualifiedType(cx);
     }
 
-    bool isVolatileQualified() @safe @nogc pure nothrow const {
+    bool isVolatileQualified() @safe @nogc pure nothrow const scope {
         return cast(bool) clang_isVolatileQualifiedType(cx);
     }
 
