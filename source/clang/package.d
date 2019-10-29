@@ -219,25 +219,27 @@ mixin EnumD!("AccessSpecifier", CX_CXXAccessSpecifier, "CX_CXX");
 
 struct Cursor {
 
+    import clang.util: Lazy;
     import std.traits: ReturnType;
 
     mixin EnumD!("Kind", CXCursorKind, "CXCursor_");
     mixin EnumD!("StorageClass", CX_StorageClass, "CX_SC_");
 
-    alias Hash = ReturnType!(clang_hashCursor);
+    alias Hash = ReturnType!clang_hashCursor;
 
     CXCursor cx;
     private Cursor[] _children;
     Kind kind;
-    string spelling;
+    private string _spelling;
     Type type;
     Type underlyingType;
     SourceRange sourceRange;
 
+    mixin Lazy!_spelling;
+
     this(CXCursor cx) @safe pure nothrow {
         this.cx = cx;
         kind = cast(Kind) clang_getCursorKind(cx);
-        spelling = clang_getCursorSpelling(cx).toString;
         type = Type(clang_getCursorType(cx));
 
         if(kind == Cursor.Kind.TypedefDecl || kind == Cursor.Kind.TypeAliasDecl)
@@ -252,7 +254,8 @@ struct Cursor {
 
     this(in Kind kind, in string spelling, Type type) @safe @nogc pure nothrow {
         this.kind = kind;
-        this.spelling = spelling;
+        this._spelling = spelling;
+        this._spellingInit = true;
         this.type = type;
     }
 
@@ -289,6 +292,11 @@ struct Cursor {
 
     void children(Cursor[] cursors) @safe @property pure nothrow {
         _children = cursors;
+    }
+
+    void setSpelling(string str) @safe @nogc @property pure nothrow {
+        _spelling = str;
+        _spellingInit = true;
     }
 
     Type returnType() @safe pure nothrow const {
@@ -348,7 +356,7 @@ struct Cursor {
             assert(false, "Fatal error in Cursor.toString: " ~ e.msg);
     }
 
-    bool isPredefined() @safe @nogc pure nothrow const {
+    bool isPredefined() @safe pure nothrow const {
         return (spelling in gPredefinedCursors) !is null;
     }
 
@@ -583,6 +591,10 @@ struct Cursor {
         });
 
         return stop;
+    }
+
+    private string _spellingCreate() @safe pure nothrow const {
+        return clang_getCursorSpelling(cx).toString;
     }
 }
 
