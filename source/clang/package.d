@@ -184,10 +184,11 @@ struct TranslationUnit {
 
 
 string toString(CXString cxString) @safe pure nothrow {
-    import std.conv: to;
-    auto cstr = clang_getCString(cxString);
+    import std.string: fromStringz;
+
     scope(exit) clang_disposeString(cxString);
-    return () @trusted { return cstr.to!string; }();
+    auto cstr = clang_getCString(cxString);
+    return  () @trusted { return cstr.fromStringz.idup; }();
 }
 
 
@@ -205,8 +206,8 @@ string[] toStrings(CXStringSet* strings) @safe pure nothrow {
         // does the dispose string set at scope exit, leading to
         // a double free situation
         auto cstr = clang_getCString(cxstr);
-        auto str = () @trusted { return cstr.fromStringz; }();
-        app ~= () @trusted { return cast(string) str; }();
+        auto str = () @trusted { return cstr.fromStringz.idup; }();
+        app ~= str;
     }
 
     return app.data;
@@ -576,25 +577,40 @@ struct Cursor {
 
 struct SourceRange {
 
+    import clang.util: Lazy;
+
     CXSourceRange cx;
-    string path;
-    SourceLocation start;
-    SourceLocation end;
+    private SourceLocation _start;
+    private SourceLocation _end;
+
+    mixin Lazy!_start;
+    mixin Lazy!_end;
 
     this(CXSourceRange cx) @safe pure nothrow {
         this.cx = cx;
-        this.start = clang_getRangeStart(cx);
-        this.end = clang_getRangeEnd(cx);
-        this.path = start.path;
+    }
+
+    string path() @safe nothrow const {
+        return start.path;
     }
 
     string toString() @safe pure const {
         import std.conv: text;
         return text(`SourceRange("`, start.path, `", `, start.line, ":", start.column, ", ", end.line, ":", end.column, ")");
     }
+
+    private auto _startCreate() @safe pure nothrow const {
+        return SourceLocation(clang_getRangeStart(cx));
+    }
+
+    private auto _endCreate() @safe pure nothrow const {
+        return SourceLocation(clang_getRangeEnd(cx));
+    }
 }
 
+
 struct SourceLocation {
+
     CXSourceLocation cx;
     string path;
     uint line;
@@ -608,7 +624,7 @@ struct SourceLocation {
         () @trusted { clang_getExpansionLocation(cx, &file, null, null, null); }();
         this.path = clang_getFileName(file).toString;
 
-        () @trusted { clang_getSpellingLocation(cx, &file, &line, &column, &offset); }();
+       () @trusted { clang_getSpellingLocation(cx, &file, &line, &column, &offset); }();
     }
 
     int opCmp(ref const(SourceLocation) other) @safe @nogc pure nothrow const {
