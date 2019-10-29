@@ -182,6 +182,7 @@ struct TranslationUnit {
     }
 }
 
+
 string toString(CXString cxString) @safe pure nothrow {
     import std.conv: to;
     auto cstr = clang_getCString(cxString);
@@ -189,19 +190,28 @@ string toString(CXString cxString) @safe pure nothrow {
     return () @trusted { return cstr.to!string; }();
 }
 
-string[] toStrings(CXStringSet* strings) @trusted pure nothrow {
-    import std.conv: to;
+
+string[] toStrings(CXStringSet* strings) @safe pure nothrow {
+    import std.string: fromStringz;
+    import std.array: appender;
+
     scope(exit) clang_disposeStringSet(strings);
-    string[] ret;
-    foreach(cxstr; strings.Strings[0 .. strings.Count]) {
+
+    auto app = appender!(string[]);
+    app.reserve(strings.Count);
+
+    foreach(cxstr; () @trusted { return strings.Strings[0 .. strings.Count]; }()) {
         // cannot use the toString above since it frees, and so
         // does the dispose string set at scope exit, leading to
         // a double free situation
         auto cstr = clang_getCString(cxstr);
-        ret ~= cstr.to!string;
+        auto str = () @trusted { return cstr.fromStringz; }();
+        app ~= () @trusted { return cast(string) str; }();
     }
-    return ret;
+
+    return app.data;
 }
+
 
 mixin EnumD!("AccessSpecifier", CX_CXXAccessSpecifier, "CX_CXX");
 
