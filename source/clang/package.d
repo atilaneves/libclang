@@ -233,9 +233,10 @@ struct Cursor {
     private string _spelling;
     Type type;
     Type underlyingType;
-    SourceRange sourceRange;
+    private SourceRange _sourceRange;
 
     mixin Lazy!_spelling;
+    mixin Lazy!_sourceRange;
 
     this(CXCursor cx) @safe @nogc pure nothrow {
         this.cx = cx;
@@ -244,8 +245,6 @@ struct Cursor {
 
         if(kind == Cursor.Kind.TypedefDecl || kind == Cursor.Kind.TypeAliasDecl)
             underlyingType = Type(clang_getTypedefDeclUnderlyingType(cx));
-
-        sourceRange = SourceRange(clang_getCursorExtent(cx));
     }
 
     this(in Kind kind, in string spelling) @safe @nogc pure nothrow {
@@ -593,6 +592,10 @@ struct Cursor {
 
     private string _spellingCreate() @safe pure nothrow const {
         return clang_getCursorSpelling(cx).toString;
+    }
+
+    private SourceRange _sourceRangeCreate() @safe pure nothrow const {
+        return SourceRange(clang_getCursorExtent(cx));
     }
 }
 
