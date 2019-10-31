@@ -1,6 +1,11 @@
 module clang.util;
 
 
+version (Windows) {
+    extern(C) private int _mktemp_s(char* nameTemplate, size_t sizeInChars) nothrow @safe @nogc;
+}
+
+
 /**
    Makes a member variable lazy so that it's only computed if necessary.
    Very hacky, uses undefined behaviour by casting const away as if
@@ -37,4 +42,25 @@ mixin template Lazy(alias memberVariable) {
 
     //pragma(msg, str);
     mixin(str);
+}
+
+
+/**
+   Returns a suitable temporary file name
+ */
+string getTempFileName() @trusted {
+    import std.file: tempDir;
+    import std.path: buildPath;
+    import std.string: fromStringz;
+
+    char[] tmpnamBuf = buildPath(tempDir, "libclangXXXXXX\0").dup;
+
+    version (Posix) {
+        import core.sys.posix.stdlib: mkstemp;
+        mkstemp(&tmpnamBuf[0]);
+    }
+    else version (Windows)
+        _mktemp_s(&tmpnamBuf[0], tmpnamBuf.length);
+
+    return tmpnamBuf.idup;
 }

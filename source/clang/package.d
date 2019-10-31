@@ -5,57 +5,6 @@ import clang.c.index;
 import clang.c.util: EnumD;
 
 
-immutable bool[string] gPredefinedCursors;
-
-version (Windows)
-    extern(C) private int _mktemp_s(char* nameTemplate, size_t sizeInChars) nothrow @safe @nogc;
-
-shared static this() nothrow {
-    try {
-
-        const fileName = getTempFileName;
-        {
-            // create an empty file
-            import std.stdio: File;
-            auto f = File(fileName, "w");
-            f.writeln;
-            f.flush;
-            f.detach;
-        }
-
-        auto tu = parse(fileName,
-                        ["-xc"],
-                        TranslationUnitFlags.DetailedPreprocessingRecord);
-        foreach(cursor; tu.cursor.children) {
-            gPredefinedCursors[cursor.spelling] = true;
-        }
-
-    } catch(Exception e) {
-        import std.stdio: stderr;
-        try
-            stderr.writeln("Error initialising libclang: ", e);
-        catch(Exception _) {}
-    }
-}
-
-
-string getTempFileName() @trusted {
-    import std.file: tempDir;
-    import std.path: buildPath;
-    import std.string: fromStringz;
-
-    char[] tmpnamBuf = buildPath(tempDir, "libclangXXXXXX\0").dup;
-
-    version (Posix) {
-        import core.sys.posix.stdlib: mkstemp;
-        mkstemp(&tmpnamBuf[0]);
-    }
-    else version (Windows)
-        _mktemp_s(&tmpnamBuf[0], tmpnamBuf.length);
-
-    return tmpnamBuf.idup;
-}
-
 
 mixin EnumD!("TranslationUnitFlags", CXTranslationUnit_Flags, "CXTranslationUnit_");
 mixin EnumD!("Language", CXLanguageKind, "CXLanguage_");
@@ -354,6 +303,7 @@ struct Cursor {
     }
 
     bool isPredefined() @safe pure nothrow const {
+        import clang.static_: gPredefinedCursors;
         return (spelling in gPredefinedCursors) !is null;
     }
 
