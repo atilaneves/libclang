@@ -52,8 +52,13 @@ string getTempFileName() @trusted {
     import std.file: tempDir;
     import std.path: buildPath;
     import std.string: fromStringz;
+    import std.process: environment;
 
-    char[] tmpnamBuf = buildPath(tempDir, "libclangXXXXXX\0").dup;
+    const dir = environment.get("APPVEYOR", null) is null
+        ? tempDir
+        : ".";
+
+    char[] tmpnamBuf = buildPath(dir, "libclangXXXXXX\0").dup;
 
     version (Posix) {
         import core.sys.posix.stdlib: mkstemp;
