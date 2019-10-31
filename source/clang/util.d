@@ -49,23 +49,20 @@ mixin template Lazy(alias memberVariable) {
    Returns a suitable temporary file name
  */
 string getTempFileName() @trusted {
-    import std.file: tempDir, thisExePath;
-    import std.path: buildPath, dirName;
-    import std.string: fromStringz;
-    import std.process: environment;
+    import std.file: tempDir;
+    import std.path: buildPath;
 
-    const dir = environment.get("APPVEYOR", null) is null
-        ? tempDir
-        : thisExePath.dirName;
-
-    char[] tmpnamBuf = buildPath(dir, "libclangXXXXXX\0").dup;
+    const pattern = "libclangXXXXXX\0";
 
     version (Posix) {
         import core.sys.posix.stdlib: mkstemp;
+        char[] tmpnamBuf = buildPath(tempDir, pattern).dup;
         mkstemp(&tmpnamBuf[0]);
-    }
-    else version (Windows)
+        return tmpnamBuf.idup;
+    } else version (Windows) {
         _mktemp_s(&tmpnamBuf[0], tmpnamBuf.length);
+        char[] tmpnamBuf = pattern.dup;
+        return buildPath(tempDir, tmpnamBuf.idup);
+    }
 
-    return tmpnamBuf.idup;
 }
