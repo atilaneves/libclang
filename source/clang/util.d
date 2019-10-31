@@ -1,6 +1,11 @@
 module clang.util;
 
 
+/**
+   Makes a member variable lazy so that it's only computed if necessary.
+   Very hacky, uses undefined behaviour by casting const away as if
+   it were using C++'s `mutable`.
+ */
 mixin template Lazy(alias memberVariable) {
 
     import std.format: format;
