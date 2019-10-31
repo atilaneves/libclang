@@ -60,9 +60,8 @@ string getTempFileName() @trusted {
         mkstemp(&tmpnamBuf[0]);
         return tmpnamBuf.idup;
     } else version (Windows) {
-        _mktemp_s(&tmpnamBuf[0], tmpnamBuf.length);
         char[] tmpnamBuf = pattern.dup;
+        _mktemp_s(&tmpnamBuf[0], tmpnamBuf.length);
         return buildPath(tempDir, tmpnamBuf.idup);
     }
-
 }
