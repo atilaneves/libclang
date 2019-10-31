@@ -50,13 +50,13 @@ mixin template Lazy(alias memberVariable) {
  */
 string getTempFileName() @trusted {
     import std.file: tempDir, thisExePath;
-    import std.path: buildPath;
+    import std.path: buildPath, dirName;
     import std.string: fromStringz;
     import std.process: environment;
 
     const dir = environment.get("APPVEYOR", null) is null
         ? tempDir
-        : thisExePath;
+        : thisExePath.dirName;
 
     char[] tmpnamBuf = buildPath(dir, "libclangXXXXXX\0").dup;
 
