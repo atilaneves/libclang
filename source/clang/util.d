@@ -49,14 +49,14 @@ mixin template Lazy(alias memberVariable) {
    Returns a suitable temporary file name
  */
 string getTempFileName() @trusted {
-    import std.file: tempDir;
+    import std.file: tempDir, thisExePath;
     import std.path: buildPath;
     import std.string: fromStringz;
     import std.process: environment;
 
     const dir = environment.get("APPVEYOR", null) is null
         ? tempDir
-        : ".";
+        : thisExePath;
 
     char[] tmpnamBuf = buildPath(dir, "libclangXXXXXX\0").dup;
 
