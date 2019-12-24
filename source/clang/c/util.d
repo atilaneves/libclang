@@ -11,42 +11,21 @@ module clang.c.util;
    Enum.foo and Enum.bar
  */
 mixin template EnumC(T) if(is(T == enum)) {
-
-    private string _enumMixinStr(string member) {
-        import std.conv: text;
-        return text(`enum `, member, ` = `, T.stringof, `.`, member, `;`);
-    }
-
     static foreach(member; __traits(allMembers, T)) {
-        mixin(_enumMixinStr(member));
+        mixin(`enum `, member, ` = `, T.stringof, `.`, member, `;`);
     }
 }
 
 
 mixin template EnumD(string name, T, string prefix) if(is(T == enum)) {
+    import std.conv: text;
+    import std.algorithm : map;
+    import std.format : format;
 
-    private static string _memberMixinStr(string member) {
-        import std.conv: text;
-        import std.array: replace;
-        return text(`    `, member.replace(prefix, ""), ` = `, T.stringof, `.`, member, `,`);
-    }
-
-    private static string _enumMixinStr() {
-        import std.array: join;
-
-        string[] ret;
-
-        ret ~= "enum " ~ name ~ "{";
-
-        static foreach(member; __traits(allMembers, T)) {
-            ret ~= _memberMixinStr(member);
-        }
-
-        ret ~= "}";
-
-        return ret.join("\n");
-    }
-
-    //pragma(msg, _enumMixinStr);
-    mixin(_enumMixinStr());
+    mixin(
+q{enum %s {
+    %-(%s,
+    %),
+}}.format(name, [ __traits(allMembers, T) ].map!(
+             (string v) => text(v[prefix.length .. $], " = ", T.stringof, ".", v))));
 }
