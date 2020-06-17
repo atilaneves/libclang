@@ -324,14 +324,21 @@ struct Cursor {
     }
 
     string mangling() @safe pure nothrow const {
-        string mangle;
-        // for destructors, there may be multiple mangles,
+
+        // constructors and destructors can have multiple mangles,
+        // but everything else is simpler
+        if(kind != Kind.Constructor && kind != Kind.Destructor)
+            return clang_Cursor_getMangling(cx).toString;
+
+        // for (con|de)structors, there may be multiple mangles,
         // and the getMangling function doesn't always return
         // the right one. To be honest, I don't know how to find
         // the right one all the time, but in testing, the first
         // one on this function, if it returns one, works more often.
         // I wish I could explain more, I just know this passes the tests
         // and the plain impl of just getMangling doesn't.
+        string mangle;
+
         auto otherMangles = clang_Cursor_getCXXManglings(cx);
         if(otherMangles) {
             auto strings = toStrings(otherMangles);
