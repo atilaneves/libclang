@@ -129,8 +129,27 @@ struct TranslationUnit {
         this.cx = cx;
         this.cursor = Cursor(clang_getTranslationUnitCursor(cx));
     }
+
+    string spelling() @safe pure nothrow const {
+        return clang_getTranslationUnitSpelling(cx).toString;
+    }
+
+    Language language() @safe pure nothrow const {
+        return fileNameToLanguage(spelling);
+    }
 }
 
+Language fileNameToLanguage(in string fileName) @safe pure nothrow {
+    import std.path: extension;
+    import std.algorithm: among;
+
+    if(fileName.extension.among(".cpp", ".cxx", ".C", ".cc", ".c++",
+                                ".hpp", ".hh", ".H", ".hxx", ".h++"))
+        return Language.CPlusPlus;
+
+    return Language.C;
+
+}
 
 string toString(CXString cxString) @safe pure nothrow {
     import std.string: fromStringz;
@@ -396,6 +415,10 @@ struct Cursor {
 
     TranslationUnit translationUnit() @safe nothrow const {
         return TranslationUnit(clang_Cursor_getTranslationUnit(cx));
+    }
+
+    Language translationUnitLanguage() @safe pure nothrow const {
+        return fileNameToLanguage(clang_getTranslationUnitSpelling(clang_Cursor_getTranslationUnit(cx)).toString);
     }
 
     Token[] tokens() @safe nothrow const {

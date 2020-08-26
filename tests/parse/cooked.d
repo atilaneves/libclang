@@ -160,3 +160,32 @@ import clang;
         function_.returnType.cx.kind.shouldEqual(CXType_Pointer);
     }
 }
+
+
+@("language.cpp")
+@safe unittest {
+    with(NewTranslationUnit("foo.cpp",
+                            q{
+                                int inc(int);
+                                class Foo {};
+                            }))
+    {
+        import clang: Cursor;
+
+        translUnit.spelling.should == inSandboxPath("foo.cpp");
+        translUnit.language.should == Language.CPlusPlus;
+
+        const cursor = translUnit.cursor;
+        cursor.children.length.should == 2;
+
+        // not the language of the file, but of the cursor itself
+        // as a language feature
+        const inc = cursor.children[0];
+        inc.language.should == Language.C;
+
+        // Only C++ has classes, so the "language" is C++. Sigh.
+        const foo = cursor.children[1];
+        foo.language.should == Language.CPlusPlus;
+    }
+
+}

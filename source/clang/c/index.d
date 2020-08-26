@@ -1093,7 +1093,7 @@ CXString clang_getDiagnosticFixIt(
 /**
  * \brief Get the original translation unit source file name.
  */
-CXString clang_getTranslationUnitSpelling(CXTranslationUnit CTUnit);
+CXString clang_getTranslationUnitSpelling(in CXTranslationUnit CTUnit) @safe pure nothrow;
 
 /**
  * \brief Return the CXTranslationUnit for a given source file and the provided
