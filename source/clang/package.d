@@ -229,6 +229,7 @@ struct Cursor {
     /// Lazily return the cursor's children
     auto children(this This)() @property {
         import std.array: appender;
+        import std.traits: isMutable;
 
         if(_children.length) return _children;
 
@@ -237,9 +238,12 @@ struct Cursor {
         // calling Cursor.visitChildren here would cause infinite recursion
         // because cvisitor constructs a Cursor out of the parent
         () @trusted { clang_visitChildren(cx, &childrenVisitor, &app); }();
-        () @trusted { cast(Cursor[]) _children = app.data; }();
 
-        return _children;
+        static if(isMutable!This) {
+            _children = app.data;
+            return _children;
+        } else
+            return app.data;
     }
 
     private static extern(C) CXChildVisitResult childrenVisitor(CXCursor cursor,
@@ -450,7 +454,7 @@ struct Cursor {
             || kind == Cursor.Kind.TypeAliasTemplateDecl
             || kind == Cursor.Kind.FunctionTemplate
             ;
-        const templateCursor = amTemplate ? this : specializedCursorTemplate;
+        auto templateCursor = amTemplate ? this : specializedCursorTemplate;
 
         auto range = templateCursor
             .children
