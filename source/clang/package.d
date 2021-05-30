@@ -852,3 +852,77 @@ struct Token {
         return kind == other.kind && spelling == other.spelling;
     }
 }
+
+/** A comment in the source text. */
+struct Comment {
+    CXComment x;
+
+    /**  What kind of comment is this? */
+    auto kind() {
+        return clang_Comment_getKind(x);
+    }
+
+    /**  Get this comment children comment */
+    auto get_children() {
+        return CommentChildrenIterator(x, clang_Comment_getNumChildren(x), 0);
+    }
+
+    /**  Given that this comment is the start or end of an HTML tag, get its tag name. */
+    auto get_tag_name() {
+        return toString(clang_HTMLTagComment_getTagName(x));
+    }
+
+    /**  Given that this comment is an HTML start tag index, get its attributes. */
+    auto get_tag_attrs() {
+        return CommentAttributesIterator(x, clang_HTMLStartTag_getNumAttrs(x), 0);
+    }
+}
+
+/**  An iterator for a comment children */
+struct CommentChildrenIterator {
+    CXComment parent;
+    uint length;
+    uint index;
+
+    import std : Nullable;
+
+    Nullable!Comment next() {
+        if (index < length) {
+            auto idx = index;
+            index += 1;
+            return Nullable!Comment(Comment(clang_Comment_getChild(parent, idx)));
+        }
+        else {
+            return Nullable!Comment.init;
+        }
+    }
+}
+
+/**  An HTML start tag comment attribute */
+struct CommentAttribute {
+    /**  HTML start tag attribute name */
+    string name;
+    /**  HTML start tag attribute value */
+    string value;
+}
+
+/**  An iterator for a comment attributes */
+struct CommentAttributesIterator {
+    CXComment x;
+    uint length;
+    uint index;
+
+    import std : Nullable;
+
+    Nullable!CommentAttribute next() {
+        if (index < length) {
+            auto idx = index;
+            index += 1;
+            return Nullable!CommentAttribute(CommentAttribute(toString(clang_HTMLStartTag_getAttrName(x,
+                    idx)), toString(clang_HTMLStartTag_getAttrValue(x, idx))));
+        }
+        else {
+            return Nullable!CommentAttribute.init;
+        }
+    }
+}
