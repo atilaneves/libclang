@@ -500,6 +500,16 @@ struct Cursor {
         return clang_getCursorDisplayName(cx).toString;
     }
 
+    /**  Get the raw declaration comment for this referent, if one exists. */
+    auto raw_comment() @safe pure nothrow const {
+        return clang_Cursor_getRawCommentText(cx).toString();
+    }
+
+    /**  Get the referent parsed comment. */
+    auto comment() const {
+        return Comment(clang_Cursor_getParsedComment(cx));
+    }
+
     /**
        For e.g. TypeRef or TemplateRef
      */
