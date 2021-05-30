@@ -864,7 +864,7 @@ struct Comment {
 
     /**  Get this comment children comment */
     auto get_children() {
-        return CommentChildrenIterator(x, clang_Comment_getNumChildren(x), 0);
+        return CommentChildrenRange(x, clang_Comment_getNumChildren(x), 0);
     }
 
     /**  Given that this comment is the start or end of an HTML tag, get its tag name. */
@@ -874,27 +874,29 @@ struct Comment {
 
     /**  Given that this comment is an HTML start tag index, get its attributes. */
     auto get_tag_attrs() {
-        return CommentAttributesIterator(x, clang_HTMLStartTag_getNumAttrs(x), 0);
+        return CommentAttributesRange(x, clang_HTMLStartTag_getNumAttrs(x), 0);
     }
 }
 
-/**  An iterator for a comment children */
-struct CommentChildrenIterator {
+/**  A range for a comment children */
+struct CommentChildrenRange {
     CXComment parent;
-    uint length;
+    const uint length;
     uint index;
 
-    import std : Nullable;
+    /** get the current child */
+    auto front() {
+        return Comment(clang_Comment_getChild(parent, index));
+    }
 
-    Nullable!Comment next() {
-        if (index < length) {
-            auto idx = index;
-            index += 1;
-            return Nullable!Comment(Comment(clang_Comment_getChild(parent, idx)));
-        }
-        else {
-            return Nullable!Comment.init;
-        }
+    /** increment the index */
+    void popFront() {
+        index++;
+    }
+
+    /** is it the end? */
+    auto empty() {
+        return index == length;
     }
 }
 
@@ -906,23 +908,27 @@ struct CommentAttribute {
     string value;
 }
 
-/**  An iterator for a comment attributes */
-struct CommentAttributesIterator {
+/**  An range for a comment attributes */
+struct CommentAttributesRange {
     CXComment x;
-    uint length;
+    const uint length;
     uint index;
 
-    import std : Nullable;
+    /** get the current attribute */
+    auto front() {
+        return CommentAttribute(
+            toString(clang_HTMLStartTag_getAttrName(x, index)),
+            toString(clang_HTMLStartTag_getAttrValue(x, index))
+        );
+    }
 
-    Nullable!CommentAttribute next() {
-        if (index < length) {
-            auto idx = index;
-            index += 1;
-            return Nullable!CommentAttribute(CommentAttribute(toString(clang_HTMLStartTag_getAttrName(x,
-                    idx)), toString(clang_HTMLStartTag_getAttrValue(x, idx))));
-        }
-        else {
-            return Nullable!CommentAttribute.init;
-        }
+    /** increment the index */
+    void popFront() {
+        index++;
+    }
+
+    /** is it the end? */
+    auto empty() {
+        return index == length;
     }
 }
