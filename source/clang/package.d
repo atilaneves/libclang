@@ -502,12 +502,24 @@ struct Cursor {
 
     /**  Get the raw declaration comment for this referent, if one exists. */
     auto raw_comment() @safe pure nothrow const {
-        return clang_Cursor_getRawCommentText(cx).toString();
+        import std.typecons: Nullable;
+        auto cxrawcomment = clang_Cursor_getRawCommentText(cx);
+        if (cxrawcomment.data != null) {
+            return Nullable!string(cxrawcomment.toString());
+        } else {
+            return Nullable!string.init;
+        }
     }
 
     /**  Get the referent parsed comment. */
     auto comment() const {
-        return Comment(clang_Cursor_getParsedComment(cx));
+        import std.typecons: Nullable;
+        auto cxcomment = clang_Cursor_getParsedComment(cx);
+        if (cxcomment.ASTNode != null) {
+            return Nullable!Comment(Comment(cxcomment));
+        } else {
+            return Nullable!Comment.init;
+        }
     }
 
     /**
