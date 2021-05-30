@@ -855,26 +855,26 @@ struct Token {
 
 /** A comment in the source text. */
 struct Comment {
-    CXComment x;
+    CXComment cx;
 
     /**  What kind of comment is this? */
     auto kind() {
-        return clang_Comment_getKind(x);
+        return clang_Comment_getKind(cx);
     }
 
     /**  Get this comment children comment */
     auto get_children() {
-        return CommentChildrenRange(x, clang_Comment_getNumChildren(x), 0);
+        return CommentChildrenRange(cx, clang_Comment_getNumChildren(cx), 0);
     }
 
     /**  Given that this comment is the start or end of an HTML tag, get its tag name. */
     auto get_tag_name() {
-        return toString(clang_HTMLTagComment_getTagName(x));
+        return toString(clang_HTMLTagComment_getTagName(cx));
     }
 
     /**  Given that this comment is an HTML start tag index, get its attributes. */
     auto get_tag_attrs() {
-        return CommentAttributesRange(x, clang_HTMLStartTag_getNumAttrs(x), 0);
+        return CommentAttributesRange(cx, clang_HTMLStartTag_getNumAttrs(cx), 0);
     }
 }
 
@@ -910,15 +910,15 @@ struct CommentAttribute {
 
 /**  An range for a comment attributes */
 struct CommentAttributesRange {
-    CXComment x;
+    CXComment cx;
     const uint length;
     uint index;
 
     /** get the current attribute */
     auto front() {
         return CommentAttribute(
-            toString(clang_HTMLStartTag_getAttrName(x, index)),
-            toString(clang_HTMLStartTag_getAttrValue(x, index))
+            toString(clang_HTMLStartTag_getAttrName(cx, index)),
+            toString(clang_HTMLStartTag_getAttrValue(cx, index))
         );
     }
 
