@@ -886,7 +886,7 @@ struct Comment {
 
     /**  Get this comment children comment */
     auto get_children() @nogc {
-        return CommentChildrenRange(cx, clang_Comment_getNumChildren(cx), 0);
+        return CommentChildren(cx, clang_Comment_getNumChildren(cx), 0);
     }
 
     /**  Given that this comment is the start or end of an HTML tag, get its tag name. */
@@ -896,12 +896,12 @@ struct Comment {
 
     /**  Given that this comment is an HTML start tag index, get its attributes. */
     auto get_tag_attrs() @nogc {
-        return CommentAttributesRange(cx, clang_HTMLStartTag_getNumAttrs(cx), 0);
+        return CommentAttributes(cx, clang_HTMLStartTag_getNumAttrs(cx), 0);
     }
 }
 
 /**  A range for a comment children */
-struct CommentChildrenRange {
+struct CommentChildren {
     CXComment parent;
     const uint length;
     uint index;
@@ -931,7 +931,7 @@ struct CommentAttribute {
 }
 
 /**  An range for a comment attributes */
-struct CommentAttributesRange {
+struct CommentAttributes {
     CXComment cx;
     const uint length;
     uint index;
