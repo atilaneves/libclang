@@ -512,7 +512,7 @@ struct Cursor {
     }
 
     /**  Get the referent parsed comment. */
-    auto comment() const {
+    auto comment() const @nogc {
         import std.typecons: Nullable;
         auto cxcomment = clang_Cursor_getParsedComment(cx);
         if (cxcomment.ASTNode != null) {
@@ -880,12 +880,12 @@ struct Comment {
     CXComment cx;
 
     /**  What kind of comment is this? */
-    auto kind() {
+    auto kind() @nogc {
         return clang_Comment_getKind(cx);
     }
 
     /**  Get this comment children comment */
-    auto get_children() {
+    auto get_children() @nogc {
         return CommentChildrenRange(cx, clang_Comment_getNumChildren(cx), 0);
     }
 
@@ -895,7 +895,7 @@ struct Comment {
     }
 
     /**  Given that this comment is an HTML start tag index, get its attributes. */
-    auto get_tag_attrs() {
+    auto get_tag_attrs() @nogc {
         return CommentAttributesRange(cx, clang_HTMLStartTag_getNumAttrs(cx), 0);
     }
 }
@@ -907,17 +907,17 @@ struct CommentChildrenRange {
     uint index;
 
     /** get the current child */
-    auto front() {
+    auto front() @nogc {
         return Comment(clang_Comment_getChild(parent, index));
     }
 
     /** increment the index */
-    void popFront() {
+    void popFront() pure @nogc nothrow @safe {
         index++;
     }
 
     /** is it the end? */
-    auto empty() {
+    auto empty() const pure @nogc nothrow @safe {
         return index == length;
     }
 }
@@ -945,12 +945,12 @@ struct CommentAttributesRange {
     }
 
     /** increment the index */
-    void popFront() {
+    void popFront() pure @nogc nothrow @safe {
         index++;
     }
 
     /** is it the end? */
-    auto empty() {
+    auto empty() const pure @nogc nothrow @safe {
         return index == length;
     }
 }

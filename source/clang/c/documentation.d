@@ -1,6 +1,8 @@
 /** D header for clang-c/Documentation.h - Utilities for comment processing */
 module clang.c.documentation;
 
+@nogc:
+
 import clang.c.index;
 
 extern (C):
