@@ -4,6 +4,7 @@ import clang.c.util: EnumC;
 
 public import clang.c.CXErrorCode;
 public import clang.c.CXString;
+public import clang.c.documentation;
 
 import core.stdc.config;
 import core.stdc.time;

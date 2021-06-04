@@ -500,6 +500,28 @@ struct Cursor {
         return clang_getCursorDisplayName(cx).toString;
     }
 
+    /**  Get the raw declaration comment for this referent, if one exists. */
+    auto raw_comment() @safe pure nothrow const {
+        import std.typecons: Nullable;
+        auto cxrawcomment = clang_Cursor_getRawCommentText(cx);
+        if (cxrawcomment.data != null) {
+            return Nullable!string(cxrawcomment.toString());
+        } else {
+            return Nullable!string.init;
+        }
+    }
+
+    /**  Get the referent parsed comment. */
+    auto comment() const @nogc {
+        import std.typecons: Nullable;
+        auto cxcomment = clang_Cursor_getParsedComment(cx);
+        if (cxcomment.ASTNode != null) {
+            return Nullable!Comment(Comment(cxcomment));
+        } else {
+            return Nullable!Comment.init;
+        }
+    }
+
     /**
        For e.g. TypeRef or TemplateRef
      */
@@ -850,5 +872,85 @@ struct Token {
 
     bool opEquals(in Token other) @safe pure nothrow const {
         return kind == other.kind && spelling == other.spelling;
+    }
+}
+
+/** A comment in the source text. */
+struct Comment {
+    CXComment cx;
+
+    /**  What kind of comment is this? */
+    auto kind() @nogc {
+        return clang_Comment_getKind(cx);
+    }
+
+    /**  Get this comment children comment */
+    auto get_children() @nogc {
+        return CommentChildren(cx, clang_Comment_getNumChildren(cx), 0);
+    }
+
+    /**  Given that this comment is the start or end of an HTML tag, get its tag name. */
+    auto get_tag_name() {
+        return toString(clang_HTMLTagComment_getTagName(cx));
+    }
+
+    /**  Given that this comment is an HTML start tag index, get its attributes. */
+    auto get_tag_attrs() @nogc {
+        return CommentAttributes(cx, clang_HTMLStartTag_getNumAttrs(cx), 0);
+    }
+}
+
+/**  A range for a comment children */
+struct CommentChildren {
+    CXComment parent;
+    const uint length;
+    uint index;
+
+    /** get the current child */
+    auto front() @nogc {
+        return Comment(clang_Comment_getChild(parent, index));
+    }
+
+    /** increment the index */
+    void popFront() pure @nogc nothrow @safe {
+        index++;
+    }
+
+    /** is it the end? */
+    auto empty() const pure @nogc nothrow @safe {
+        return index == length;
+    }
+}
+
+/**  An HTML start tag comment attribute */
+struct CommentAttribute {
+    /**  HTML start tag attribute name */
+    string name;
+    /**  HTML start tag attribute value */
+    string value;
+}
+
+/**  An range for a comment attributes */
+struct CommentAttributes {
+    CXComment cx;
+    const uint length;
+    uint index;
+
+    /** get the current attribute */
+    auto front() {
+        return CommentAttribute(
+            toString(clang_HTMLStartTag_getAttrName(cx, index)),
+            toString(clang_HTMLStartTag_getAttrValue(cx, index))
+        );
+    }
+
+    /** increment the index */
+    void popFront() pure @nogc nothrow @safe {
+        index++;
+    }
+
+    /** is it the end? */
+    auto empty() const pure @nogc nothrow @safe {
+        return index == length;
     }
 }
