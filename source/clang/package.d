@@ -38,6 +38,7 @@ TranslationUnit parse(in string fileName,
     const excludeDeclarationsFromPCH = 0;
     const displayDiagnostics = 0;
     auto index = clang_createIndex(excludeDeclarationsFromPCH, displayDiagnostics);
+    scope(exit) clang_disposeIndex(index);
     CXUnsavedFile[] unsavedFiles;
     const commandLineArgz = commandLineArgs
         .map!(a => a.toStringz)
