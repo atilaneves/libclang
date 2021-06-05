@@ -130,6 +130,10 @@ struct TranslationUnit {
         this.cursor = Cursor(clang_getTranslationUnitCursor(cx));
     }
 
+    ~this() @safe @nogc pure nothrow {
+        clang_disposeTranslationUnit(cx);
+    }
+
     string spelling() @safe pure nothrow const {
         return clang_getTranslationUnitSpelling(cx).toString;
     }

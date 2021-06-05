@@ -1487,7 +1487,7 @@ int clang_saveTranslationUnit(
 /**
  * \brief Destroy the specified CXTranslationUnit object.
  */
-void clang_disposeTranslationUnit(CXTranslationUnit);
+void clang_disposeTranslationUnit(CXTranslationUnit) @trusted @nogc pure nothrow;
 /**
  * \brief Flags that control the reparsing of translation units.
  *
