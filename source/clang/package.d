@@ -131,6 +131,8 @@ struct TranslationUnit {
         this.cursor = Cursor(clang_getTranslationUnitCursor(cx));
     }
 
+    @disable this(this);
+
     ~this() @safe @nogc pure nothrow {
         clang_disposeTranslationUnit(cx);
     }
