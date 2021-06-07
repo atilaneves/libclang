@@ -1,8 +1,7 @@
 libclang
 =========
 
-[![Build Status](https://travis-ci.org/atilaneves/libclang.png?branch=master)](https://travis-ci.org/atilaneves/libclang)
-[![Build Status](https://ci.appveyor.com/api/projects/status/github/atilaneves/libclang?branch=master&svg=true)](https://ci.appveyor.com/project/atilaneves/libclang)
+[![CI](https://github.com/atilaneves/libclang/actions/workflows/d.yml/badge.svg)](https://github.com/atilaneves/libclang/actions/workflows/d.yml)
 [![Coverage](https://codecov.io/gh/atilaneves/libclang/branch/master/graph/badge.svg)](https://codecov.io/gh/atilaneves/libclang)
 
 
