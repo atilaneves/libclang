@@ -33,8 +33,13 @@ import clang;
 
         function_.sourceRange.start.path.should == inSandboxPath("foo.cpp");
         function_.sourceRange.start.line.should == 2;
-        function_.sourceRange.start.column.should == 33;
-        function_.sourceRange.start.offset.should == 33;
+        version(Windows)
+            enum exp = 34;
+        else
+            enum exp = 33;
+
+        function_.sourceRange.start.column.should == exp;
+        function_.sourceRange.start.offset.should == exp;
     }
 }
 
@@ -52,7 +57,11 @@ import clang;
 
         function_.sourceRange.end.path.should == inSandboxPath("foo.cpp");
         function_.sourceRange.end.line.should == 2;
-        function_.sourceRange.end.column.should == 56;
-        function_.sourceRange.end.offset.should == 56;
+        version(Windows)
+            enum exp = 57;
+        else
+            enum exp = 56;
+        function_.sourceRange.end.column.should == exp;
+        function_.sourceRange.end.offset.should == exp;
     }
 }
