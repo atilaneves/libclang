@@ -131,9 +131,8 @@ struct TranslationUnit {
         this.cursor = Cursor(clang_getTranslationUnitCursor(cx));
     }
 
-    ~this() @safe @nogc pure nothrow {
-        clang_disposeTranslationUnit(cx);
-    }
+    // calling clang_disposeTranslationUnit in the destructor will
+    // cause crashes due to postblitting / copy constructor
 
     string spelling() @safe pure nothrow const {
         return clang_getTranslationUnitSpelling(cx).toString;
