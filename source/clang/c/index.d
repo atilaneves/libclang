@@ -262,7 +262,7 @@ CXIndex clang_createIndex(
  * The index must not be destroyed until all of the translation units created
  * within that index have been destroyed.
  */
-void clang_disposeIndex(CXIndex index);
+void clang_disposeIndex(CXIndex index) @trusted @nogc pure nothrow;
 
 enum CXGlobalOptFlags {
   /**
@@ -1487,7 +1487,7 @@ int clang_saveTranslationUnit(
 /**
  * \brief Destroy the specified CXTranslationUnit object.
  */
-void clang_disposeTranslationUnit(CXTranslationUnit);
+void clang_disposeTranslationUnit(CXTranslationUnit) @trusted @nogc pure nothrow;
 /**
  * \brief Flags that control the reparsing of translation units.
  *

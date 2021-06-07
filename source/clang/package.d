@@ -38,6 +38,7 @@ TranslationUnit parse(in string fileName,
     const excludeDeclarationsFromPCH = 0;
     const displayDiagnostics = 0;
     auto index = clang_createIndex(excludeDeclarationsFromPCH, displayDiagnostics);
+    scope(exit) clang_disposeIndex(index);
     CXUnsavedFile[] unsavedFiles;
     const commandLineArgz = commandLineArgs
         .map!(a => a.toStringz)
@@ -128,6 +129,10 @@ struct TranslationUnit {
     this(CXTranslationUnit cx) @safe nothrow {
         this.cx = cx;
         this.cursor = Cursor(clang_getTranslationUnitCursor(cx));
+    }
+
+    ~this() @safe @nogc pure nothrow {
+        clang_disposeTranslationUnit(cx);
     }
 
     string spelling() @safe pure nothrow const {
