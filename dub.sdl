@@ -8,7 +8,6 @@ libs "clang" platform="posix"
 libs "libclang" platform="windows"
 
 lflags "-L/usr/local/opt/llvm/lib" platform="osx"
-lflags "-L/usr/lib/llvm-3.9/lib" platform="posix"  # travis
 lflags "/LIBPATH:C:\\PROGRA~1\\LLVM\\lib" platform="windows"
 
 
