@@ -31,9 +31,8 @@ jobs:
         if: startsWith(matrix.os,'windows')
         uses: ilammy/msvc-dev-cmd@v1
 
-      # NOTE use KyleMayes/install-llvm-action once https://github.com/KyleMayes/install-llvm-action/pull/11 is merged
       - name: Setup LLVM
-        uses: aminya/install-llvm-action@default-directory
+        uses: KyleMayes/install-llvm-action@v1.4.0
         with:
           version: ${{ matrix.clang }}
 
