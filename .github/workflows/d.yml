@@ -29,7 +29,7 @@ jobs:
           path: |
             C:/Program Files/LLVM
             ./llvm
-          key: cache-clang:${{ matrix.clang }}
+          key: cache-os:${{ matrix.os }}-clang:${{ matrix.clang }}
 
       - name: Setup D
         uses: dlang-community/setup-dlang@v1
@@ -49,6 +49,11 @@ jobs:
       - name: Linux - link libclang.so
         if: contains(matrix.os, 'ubuntu')
         run: sudo ln -s libclang-${{ matrix.clang }}.so.1 /lib/x86_64-linux-gnu/libclang.so
+        working-directory: ${{ env.LLVM_PATH }}/lib
+
+      - name: MacOS - link libclang.dylib
+        if: contains(matrix.os, 'macos')
+        run: ln -s libclang.dylib /usr/local/lib/libclang.dylib
         working-directory: ${{ env.LLVM_PATH }}/lib
 
       - name: Run tests
