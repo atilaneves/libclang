@@ -22,6 +22,15 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Cache
+        id: cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            C:/Program Files/LLVM
+            ./llvm
+          key: cache-clang:${{ matrix.clang }}
+
       - name: Setup D
         uses: dlang-community/setup-dlang@v1
         with:
@@ -35,6 +44,7 @@ jobs:
         uses: KyleMayes/install-llvm-action@v1.4.0
         with:
           version: ${{ matrix.clang }}
+          cached: ${{ steps.cache.outputs.cache-hit }}
 
       - name: Linux - link libclang.so
         if: contains(matrix.os, 'ubuntu')
