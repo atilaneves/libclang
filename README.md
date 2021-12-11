@@ -11,7 +11,7 @@ Bindings / wrapper API for libclang in the [D programming language](https://dlan
 Build Instructions
 ------------------
 
-See [GitHub Action config](./.github/workflows/d.yml), for a reproducible build environment.
+To reproduce the environment of dpp's CI, you can run [setup-cpp](https://github.com/aminya/setup-cpp) with `--llvm=11.0.0` and `--vcvarsall=true`. This will set up LLVM 11.0.0 and the proper environment variables.
 
 ### Windows
 
