@@ -11,7 +11,7 @@ Bindings / wrapper API for libclang in the [D programming language](https://dlan
 Build Instructions
 ------------------
 
-Note: for a reproducible and cross-platform build environment, you can run [setup-cpp](https://github.com/aminya/setup-cpp) with `--llvm=11.0.0` and `--vcvarsall=true`. This will set up LLVM 11.0.0 and the proper environment variables.
+Note: for a reproducible and cross-platform build environment, you can run [setup-cpp](https://github.com/aminya/setup-cpp) with `--llvm=11.0.0`. This will set up LLVM 11.0.0 and the proper environment variables.
 
 ### Windows
 
