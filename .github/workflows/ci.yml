@@ -11,7 +11,7 @@ jobs:
         os:
           - ubuntu-20.04
           - windows-2022
-          #- macos-latest   not finding libclang for some reason
+          - macos-10.15
         dc:
           - dmd-2.098.0
           - dmd-2.097.2
