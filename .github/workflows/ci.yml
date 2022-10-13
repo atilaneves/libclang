@@ -10,7 +10,7 @@ jobs:
       matrix:
         os:
           - ubuntu-20.04
-          - windows-latest
+          - windows-2022
           #- macos-latest   not finding libclang for some reason
         dc:
           - dmd-2.098.0
