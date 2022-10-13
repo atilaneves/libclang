@@ -8,7 +8,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-20.04, windows-latest, macos-latest]
+        os:
+          - ubuntu-20.04
+          - windows-latest
+          #- macos-latest   not finding libclang for some reason
         dc:
           - dmd-2.098.0
           - dmd-2.097.2
@@ -34,7 +37,7 @@ jobs:
         uses: dlang-community/setup-dlang@v1
         with:
           compiler: ${{ matrix.dc }}
-          
+
       - name: Setup C++
         uses: aminya/setup-cpp@v1
         with:
