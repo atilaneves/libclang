@@ -21,6 +21,7 @@ TranslationUnit parse(in string fileName,
 mixin EnumD!("ErrorCode", CXErrorCode, "");
 mixin EnumD!("DiagnosticSeverity", CXDiagnosticSeverity, "CXDiagnostic_");
 mixin EnumD!("TemplateArgumentKind", CXTemplateArgumentKind, "CXTemplateArgumentKind_");
+mixin EnumD!("Linkage", CXLinkageKind, "CXLinkage_");
 
 
 TranslationUnit parse(in string fileName,
@@ -558,6 +559,10 @@ struct Cursor {
 
     Cursor overloadedDecl(int i) @safe nothrow const {
         return Cursor(clang_getOverloadedDecl(cx, cast(uint) i));
+    }
+
+    Linkage linkage() @safe @nogc pure nothrow const {
+        return cast(typeof(return)) clang_getCursorLinkage(cx);
     }
 
     bool opEquals(ref const(Cursor) other) @safe @nogc pure nothrow const {
