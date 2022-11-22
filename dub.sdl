@@ -7,7 +7,7 @@ license "BSD 3-clause"
 libs "clang" platform="posix"
 libs "libclang" platform="windows"
 
-lflags "-L/usr/local/opt/llvm/lib" platform="osx"
+#lflags "-L/usr/local/opt/llvm/lib" platform="osx"
 lflags "/LIBPATH:C:\\PROGRA~1\\LLVM\\lib" platform="windows"
 
 
