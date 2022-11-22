@@ -10,6 +10,7 @@ jobs:
       matrix:
         os:
           - ubuntu-20.04
+          - ubuntu-22.04
           - windows-2022
           - macos-10.15
         dc:
@@ -40,14 +41,18 @@ jobs:
         with:
           compiler: ${{ matrix.dc }}
 
-      - name: Setup C++
+      - name: 'Non-Linux: Setup C++'
+        if: runner.os != 'Linux'
         uses: aminya/setup-cpp@v1
         with:
           llvm: ${{ matrix.clang }}
+      - name: 'Linux: Install libclang-dev apt package'
+        if: runner.os == 'Linux'
+        run: sudo apt-get install -y libclang-dev
 
       - name: Run tests
         run: dub test -q --build=unittest-cov --arch=${{ matrix.arch }}
         env:
-          LIBRARY_PATH: "${{ env.LLVM_PATH }}/lib"
+          LIBRARY_PATH: ${{ runner.os != 'Linux' && format('{0}/lib', env.LLVM_PATH) || '' }}
 
       - uses: codecov/codecov-action@v3

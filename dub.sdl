@@ -9,6 +9,8 @@ libs "libclang" platform="windows"
 
 lflags "-L/usr/local/opt/llvm/lib" platform="osx"
 lflags "/LIBPATH:C:\\PROGRA~1\\LLVM\\lib" platform="windows"
+# unversioned libclang.so symlink on Debian/Ubuntu:
+lflags "-L/usr/lib/llvm-20/lib" "-L/usr/lib/llvm-19/lib" "-L/usr/lib/llvm-18/lib" "-L/usr/lib/llvm-17/lib" "-L/usr/lib/llvm-16/lib" "-L/usr/lib/llvm-15/lib" "-L/usr/lib/llvm-14/lib" "-L/usr/lib/llvm-13/lib" "-L/usr/lib/llvm-12/lib" "-L/usr/lib/llvm-11/lib" "-L/usr/lib/llvm-10/lib" "-L/usr/lib/llvm-9/lib" "-L/usr/lib/llvm-8/lib" "-L/usr/lib/llvm-7/lib" "-L/usr/lib/llvm-6.0/lib" platform="linux"
 
 
 configuration "library" {
