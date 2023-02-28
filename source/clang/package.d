@@ -867,25 +867,25 @@ struct Token {
     CXToken cxToken;
     CXTranslationUnit cxTU;
 
-    this(CXToken cxToken, CXTranslationUnit cxTU) @safe pure nothrow {
+    this(CXToken cxToken, CXTranslationUnit cxTU) @safe pure scope nothrow {
         this.cxToken = cxToken;
         this.cxTU = cxTU;
         this.kind = cast(Kind) clang_getTokenKind(cxToken);
         this.spelling = .toString(clang_getTokenSpelling(cxTU, cxToken));
     }
 
-    this(Kind kind, string spelling) @safe @nogc pure nothrow {
+    this(Kind kind, string spelling) @safe @nogc pure scope nothrow {
         this.kind = kind;
         this.spelling = spelling;
     }
 
-    string toString() @safe pure const {
+    string toString() @safe pure scope const {
         import std.conv: text;
 
         return text("Token(", kind, `, "`, spelling, `")`);
     }
 
-    bool opEquals(in Token other) @safe pure nothrow const {
+    bool opEquals(in Token other) @safe pure scope nothrow const {
         return kind == other.kind && spelling == other.spelling;
     }
 }
