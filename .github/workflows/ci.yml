@@ -10,14 +10,12 @@ jobs:
       matrix:
         os:
           - ubuntu-20.04
-          - windows-2022
-          #- macos-10.15
+          # - windows-2022
+          # - macos-10.15
         dc:
-          - dmd-2.101.2
-          - dmd-2.098.0
+          - dmd-2.102.1
           - dmd-2.097.2
           - ldc-1.31.0
-          - ldc-1.28.0
           - ldc-1.27.1
         arch:
           - x86_64

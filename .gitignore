@@ -11,3 +11,4 @@ tmp
 *.a
 bin.ldc
 libclang*
+source/clang/c/*.d

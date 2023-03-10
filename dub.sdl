@@ -4,6 +4,8 @@ authors "Atila Neves"
 copyright "Copyright © 2018, Atila Neves"
 license "BSD 3-clause"
 
+preGenerateCommands "rdmd $PACKAGE_DIR/copy_translated_headers.d $PACKAGE_DIR"
+
 libs "clang" platform="posix"
 libs "libclang" platform="windows"
 
