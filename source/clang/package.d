@@ -18,7 +18,7 @@ TranslationUnit parse(in string fileName,
 }
 
 
-mixin EnumD!("ErrorCode", CXErrorCode, "");
+mixin EnumD!("ErrorCode", CXErrorCode, "CXError_");
 mixin EnumD!("DiagnosticSeverity", CXDiagnosticSeverity, "CXDiagnostic_");
 mixin EnumD!("TemplateArgumentKind", CXTemplateArgumentKind, "CXTemplateArgumentKind_");
 mixin EnumD!("Linkage", CXLinkageKind, "CXLinkage_");
@@ -59,7 +59,7 @@ TranslationUnit parse(in string fileName,
         );
     }();
 
-    if(err != ErrorCode.success) {
+    if(err != ErrorCode.Success) {
         throw new Exception(text("Could not parse ", fileName, ": ", err));
     }
 
@@ -456,7 +456,7 @@ struct Cursor {
 
     alias templateParams = templateParameters;
 
-    const(Cursor)[] templateParameters() @safe nothrow const {
+    const(Cursor)[] templateParameters() @safe const {
         import std.algorithm: filter;
         import std.array: array;
 
@@ -573,17 +573,17 @@ struct Cursor {
         return cast(bool) clang_equalCursors(cx, other.cx);
     }
 
-    void visitChildren(scope CursorVisitor visitor) @safe nothrow const {
+    void visitChildren(scope CursorVisitor visitor) @safe const {
         scope clientData = ClientData(visitor);
         // why isn't this @safe with dip10000???
         () @trusted { clang_visitChildren(cx, &cvisitor, &clientData); }();
     }
 
-    int opApply(scope int delegate(Cursor cursor, Cursor parent) @safe block) @safe nothrow const {
+    int opApply(scope int delegate(Cursor cursor, Cursor parent) @safe block) @safe const {
         return opApplyN(block);
     }
 
-    int opApply(scope int delegate(Cursor cursor) @safe block) @safe nothrow const {
+    int opApply(scope int delegate(Cursor cursor) @safe block) @safe const {
         return opApplyN(block);
     }
 
