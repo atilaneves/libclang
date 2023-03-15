@@ -52,6 +52,7 @@ private string[] entries(in string path) @trusted {
 private int clangVersion() @safe {
     import std.string: splitLines, split;
     import std.conv: to, text;
+    import std.algorithm : countUntil;
 
     const clangOutput = exe(["clang", "--version"]);
     const clangLines = clangOutput.splitLines;
@@ -61,6 +62,7 @@ private int clangVersion() @safe {
 
     const firstLine = clangLines[0];
     const elements = firstLine.split(" ");
+    const versionIndex = elements.countUntil("version");
 
     void fail(A...)(A args) {
         import std.conv : text;
@@ -72,10 +74,10 @@ private int clangVersion() @safe {
         );
     }
 
-    if(elements.length < 3)
+    if(versionIndex < 0 || versionIndex >= elements.length - 1)
         fail("Could not get version from line '", firstLine, "'");
 
-    const version_ = elements[2];
+    const version_ = elements[versionIndex + 1];
     const versionParts = version_.split(".");
 
     if(versionParts.length < 2)
