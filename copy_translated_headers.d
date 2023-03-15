@@ -18,7 +18,15 @@ void run(string[] args) @safe {
         throw new Exception("First argument must be directory of libclang repository");
 
     const repoPath = args[1];
-    const majorVersion = clangVersion;
+    const majorVersion = () @trusted {
+        try
+            return clangVersion;
+        catch(Exception e) {
+            import std.stdio : stderr;
+            stderr.writeln("Could not get clang version, defaulting to 14:\n" ~ e.msg);
+            return 14;
+        }
+    }();
     // treat every version before 15 as 14
     const versionString = majorVersion < 15 ? "14" : "15";
     const translationsPath = buildPath(repoPath, "pretranslated", versionString);
