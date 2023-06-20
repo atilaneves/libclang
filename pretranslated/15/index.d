@@ -60,7 +60,7 @@ alias CXCursorVisitor = extern(C) CXChildVisitResult function (
  * prematurely by the visitor returning \c CXChildVisit_Break.
  */
 extern(C) uint clang_visitChildren (
-    in CXCursor parent,
+    const CXCursor parent,
     CXCursorVisitor visitor,
     CXClientData client_data) @trusted;
 
@@ -1213,7 +1213,7 @@ CXString clang_getDiagnosticFixIt (
 /**
  * Get the original translation unit source file name.
  */
-CXString clang_getTranslationUnitSpelling (in CXTranslationUnit CTUnit) pure;
+CXString clang_getTranslationUnitSpelling (const CXTranslationUnit CTUnit) pure;
 
 /**
  * Return the CXTranslationUnit for a given source file and the provided
@@ -1585,7 +1585,7 @@ alias CXSaveTranslationUnit_None = CXSaveTranslationUnit_Flags.CXSaveTranslation
  * set contains an unspecified set of options that save translation units with
  * the most commonly-requested data.
  */
-uint clang_defaultSaveOptions (in CXTranslationUnit TU);
+uint clang_defaultSaveOptions (const CXTranslationUnit TU);
 
 /**
  * Describes the kind of error that occurred (if any) in a call to
@@ -1663,12 +1663,12 @@ int clang_saveTranslationUnit (
  * side does not support any other calls than \c clang_reparseTranslationUnit
  * to resume it or \c clang_disposeTranslationUnit to dispose it completely.
  */
-uint clang_suspendTranslationUnit (in CXTranslationUnit);
+uint clang_suspendTranslationUnit (const CXTranslationUnit);
 
 /**
  * Destroy the specified CXTranslationUnit object.
  */
-void clang_disposeTranslationUnit (in CXTranslationUnit);
+void clang_disposeTranslationUnit (const CXTranslationUnit);
 
 /**
  * Flags that control the reparsing of translation units.
@@ -1697,7 +1697,7 @@ alias CXReparse_None = CXReparse_Flags.CXReparse_None;
  * of reparsing. The set of optimizations enabled may change from one version
  * to the next.
  */
-uint clang_defaultReparseOptions (in CXTranslationUnit TU);
+uint clang_defaultReparseOptions (const CXTranslationUnit TU);
 
 /**
  * Reparse the source files that produced this translation unit.
@@ -1793,7 +1793,7 @@ alias CXTUResourceUsage_Last = CXTUResourceUsageKind.CXTUResourceUsage_Last;
  * Returns the human-readable null-terminated C string that represents
  *  the name of the memory category.  This string should never be freed.
  */
-const(char)* clang_getTUResourceUsageName (in CXTUResourceUsageKind kind);
+const(char)* clang_getTUResourceUsageName (const CXTUResourceUsageKind kind);
 
 struct CXTUResourceUsageEntry
 {
@@ -1824,35 +1824,35 @@ struct CXTUResourceUsage
  * Return the memory usage of a translation unit.  This object
  *  should be released with clang_disposeCXTUResourceUsage().
  */
-CXTUResourceUsage clang_getCXTUResourceUsage (in CXTranslationUnit TU);
+CXTUResourceUsage clang_getCXTUResourceUsage (const CXTranslationUnit TU);
 
-void clang_disposeCXTUResourceUsage (in CXTUResourceUsage usage);
+void clang_disposeCXTUResourceUsage (const CXTUResourceUsage usage);
 
 /**
  * Get target information for this translation unit.
  *
  * The CXTargetInfo object cannot outlive the CXTranslationUnit object.
  */
-CXTargetInfo clang_getTranslationUnitTargetInfo (in CXTranslationUnit CTUnit);
+CXTargetInfo clang_getTranslationUnitTargetInfo (const CXTranslationUnit CTUnit);
 
 /**
  * Destroy the CXTargetInfo object.
  */
-void clang_TargetInfo_dispose (in CXTargetInfo Info);
+void clang_TargetInfo_dispose (const CXTargetInfo Info);
 
 /**
  * Get the normalized target triple as a string.
  *
  * Returns the empty string in case of any error.
  */
-CXString clang_TargetInfo_getTriple (in CXTargetInfo Info);
+CXString clang_TargetInfo_getTriple (const CXTargetInfo Info);
 
 /**
  * Get the pointer width of the target in bits.
  *
  * Returns -1 in case of error.
  */
-int clang_TargetInfo_getPointerWidth (in CXTargetInfo Info);
+int clang_TargetInfo_getPointerWidth (const CXTargetInfo Info);
 
 /**
  * @}
@@ -3231,32 +3231,32 @@ CXCursor clang_getNullCursor ();
  * The translation unit cursor can be used to start traversing the
  * various declarations within the given translation unit.
  */
-CXCursor clang_getTranslationUnitCursor (in CXTranslationUnit);
+CXCursor clang_getTranslationUnitCursor (const CXTranslationUnit);
 
 /**
  * Determine whether two cursors are equivalent.
  */
-uint clang_equalCursors (in CXCursor, CXCursor) pure;
+uint clang_equalCursors (const CXCursor, CXCursor) pure;
 
 /**
  * Returns non-zero if \p cursor is null.
  */
-int clang_Cursor_isNull (in CXCursor cursor) pure;
+int clang_Cursor_isNull (const CXCursor cursor) pure;
 
 /**
  * Compute a hash value for the given cursor.
  */
-uint clang_hashCursor (in CXCursor) pure;
+uint clang_hashCursor (const CXCursor) pure;
 
 /**
  * Retrieve the kind of the given cursor.
  */
-CXCursorKind clang_getCursorKind (in CXCursor) pure;
+CXCursorKind clang_getCursorKind (const CXCursor) pure;
 
 /**
  * Determine whether the given cursor kind represents a declaration.
  */
-uint clang_isDeclaration (in CXCursorKind);
+uint clang_isDeclaration (const CXCursorKind);
 
 /**
  * Determine whether the given declaration is invalid.
@@ -3266,7 +3266,7 @@ uint clang_isDeclaration (in CXCursorKind);
  * \returns non-zero if the cursor represents a declaration and it is
  * invalid, otherwise NULL.
  */
-uint clang_isInvalidDeclaration (in CXCursor);
+uint clang_isInvalidDeclaration (const CXCursor);
 
 /**
  * Determine whether the given cursor kind represents a simple
@@ -3276,51 +3276,51 @@ uint clang_isInvalidDeclaration (in CXCursor);
  * other cursors. Use clang_getCursorReferenced() to determine whether a
  * particular cursor refers to another entity.
  */
-uint clang_isReference (in CXCursorKind);
+uint clang_isReference (const CXCursorKind);
 
 /**
  * Determine whether the given cursor kind represents an expression.
  */
-uint clang_isExpression (in CXCursorKind);
+uint clang_isExpression (const CXCursorKind);
 
 /**
  * Determine whether the given cursor kind represents a statement.
  */
-uint clang_isStatement (in CXCursorKind);
+uint clang_isStatement (const CXCursorKind);
 
 /**
  * Determine whether the given cursor kind represents an attribute.
  */
-uint clang_isAttribute (in CXCursorKind);
+uint clang_isAttribute (const CXCursorKind);
 
 /**
  * Determine whether the given cursor has any attributes.
  */
-uint clang_Cursor_hasAttrs (in CXCursor C);
+uint clang_Cursor_hasAttrs (const CXCursor C);
 
 /**
  * Determine whether the given cursor kind represents an invalid
  * cursor.
  */
-uint clang_isInvalid (in CXCursorKind) pure;
+uint clang_isInvalid (const CXCursorKind) pure;
 
 /**
  * Determine whether the given cursor kind represents a translation
  * unit.
  */
-uint clang_isTranslationUnit (in CXCursorKind);
+uint clang_isTranslationUnit (const CXCursorKind);
 
 /***
  * Determine whether the given cursor represents a preprocessing
  * element, such as a preprocessor directive or macro instantiation.
  */
-uint clang_isPreprocessing (in CXCursorKind);
+uint clang_isPreprocessing (const CXCursorKind);
 
 /***
  * Determine whether the given cursor represents a currently
  *  unexposed piece of the AST (e.g., CXCursor_UnexposedStmt).
  */
-uint clang_isUnexposed (in CXCursorKind);
+uint clang_isUnexposed (const CXCursorKind);
 
 /**
  * Describe the linkage of the entity referred to by a cursor.
@@ -3353,7 +3353,7 @@ alias CXLinkage_External = CXLinkageKind.CXLinkage_External;
 /**
  * Determine the linkage of the entity referred to by a given cursor.
  */
-CXLinkageKind clang_getCursorLinkage (in CXCursor cursor) pure;
+CXLinkageKind clang_getCursorLinkage (const CXCursor cursor) pure;
 
 enum CXVisibilityKind
 {
@@ -3385,7 +3385,7 @@ alias CXVisibility_Default = CXVisibilityKind.CXVisibility_Default;
  *
  * \returns The visibility of the cursor.
  */
-CXVisibilityKind clang_getCursorVisibility (in CXCursor cursor);
+CXVisibilityKind clang_getCursorVisibility (const CXCursor cursor);
 
 /**
  * Determine the availability of the entity that this cursor refers to,
@@ -3395,7 +3395,7 @@ CXVisibilityKind clang_getCursorVisibility (in CXCursor cursor);
  *
  * \returns The availability of the cursor.
  */
-CXAvailabilityKind clang_getCursorAvailability (in CXCursor cursor);
+CXAvailabilityKind clang_getCursorAvailability (const CXCursor cursor);
 
 /**
  * Describes the availability of a given entity on a particular platform, e.g.,
@@ -3484,27 +3484,27 @@ int clang_getCursorPlatformAvailability (
 /**
  * Free the memory associated with a \c CXPlatformAvailability structure.
  */
-void clang_disposeCXPlatformAvailability (in CXPlatformAvailability* availability);
+void clang_disposeCXPlatformAvailability (const CXPlatformAvailability* availability);
 
 /**
  * If cursor refers to a variable declaration and it has initializer returns
  * cursor referring to the initializer otherwise return null cursor.
  */
-CXCursor clang_Cursor_getVarDeclInitializer (in CXCursor cursor);
+CXCursor clang_Cursor_getVarDeclInitializer (const CXCursor cursor);
 
 /**
  * If cursor refers to a variable declaration that has global storage returns 1.
  * If cursor refers to a variable declaration that doesn't have global storage
  * returns 0. Otherwise returns -1.
  */
-int clang_Cursor_hasVarDeclGlobalStorage (in CXCursor cursor);
+int clang_Cursor_hasVarDeclGlobalStorage (const CXCursor cursor);
 
 /**
  * If cursor refers to a variable declaration that has external storage
  * returns 1. If cursor refers to a variable declaration that doesn't have
  * external storage returns 0. Otherwise returns -1.
  */
-int clang_Cursor_hasVarDeclExternalStorage (in CXCursor cursor);
+int clang_Cursor_hasVarDeclExternalStorage (const CXCursor cursor);
 
 /**
  * Describe the "language" of the entity referred to by a cursor.
@@ -3525,7 +3525,7 @@ alias CXLanguage_CPlusPlus = CXLanguageKind.CXLanguage_CPlusPlus;
 /**
  * Determine the "language" of the entity referred to by a given cursor.
  */
-CXLanguageKind clang_getCursorLanguage (in CXCursor cursor) pure;
+CXLanguageKind clang_getCursorLanguage (const CXCursor cursor) pure;
 
 /**
  * Describe the "thread-local storage (TLS) kind" of the declaration
@@ -3546,12 +3546,12 @@ alias CXTLS_Static = CXTLSKind.CXTLS_Static;
  * Determine the "thread-local storage (TLS) kind" of the declaration
  * referred to by a cursor.
  */
-CXTLSKind clang_getCursorTLSKind (in CXCursor cursor);
+CXTLSKind clang_getCursorTLSKind (const CXCursor cursor);
 
 /**
  * Returns the translation unit that a cursor originated from.
  */
-CXTranslationUnit clang_Cursor_getTranslationUnit (in CXCursor) pure;
+CXTranslationUnit clang_Cursor_getTranslationUnit (const CXCursor) pure;
 
 /**
  * A fast container representing a set of CXCursors.
@@ -3567,21 +3567,21 @@ CXCursorSet clang_createCXCursorSet ();
 /**
  * Disposes a CXCursorSet and releases its associated memory.
  */
-void clang_disposeCXCursorSet (in CXCursorSet cset);
+void clang_disposeCXCursorSet (const CXCursorSet cset);
 
 /**
  * Queries a CXCursorSet to see if it contains a specific CXCursor.
  *
  * \returns non-zero if the set contains the specified cursor.
  */
-uint clang_CXCursorSet_contains (in CXCursorSet cset, CXCursor cursor);
+uint clang_CXCursorSet_contains (const CXCursorSet cset, CXCursor cursor);
 
 /**
  * Inserts a CXCursor into a CXCursorSet.
  *
  * \returns zero if the CXCursor was already in the set, and non-zero otherwise.
  */
-uint clang_CXCursorSet_insert (in CXCursorSet cset, CXCursor cursor);
+uint clang_CXCursorSet_insert (const CXCursorSet cset, CXCursor cursor);
 
 /**
  * Determine the semantic parent of the given cursor.
@@ -3616,7 +3616,7 @@ uint clang_CXCursorSet_insert (in CXCursorSet cset, CXCursor cursor);
  *
  * For global declarations, the semantic parent is the translation unit.
  */
-CXCursor clang_getCursorSemanticParent (in CXCursor cursor);
+CXCursor clang_getCursorSemanticParent (const CXCursor cursor);
 
 /**
  * Determine the lexical parent of the given cursor.
@@ -3652,7 +3652,7 @@ CXCursor clang_getCursorSemanticParent (in CXCursor cursor);
  * For declarations written in the global scope, the lexical parent is
  * the translation unit.
  */
-CXCursor clang_getCursorLexicalParent (in CXCursor cursor);
+CXCursor clang_getCursorLexicalParent (const CXCursor cursor);
 
 /**
  * Determine the set of methods that are overridden by the given
@@ -3706,13 +3706,13 @@ void clang_getOverriddenCursors (
  * Free the set of overridden cursors returned by \c
  * clang_getOverriddenCursors().
  */
-void clang_disposeOverriddenCursors (in CXCursor* overridden);
+void clang_disposeOverriddenCursors (const CXCursor* overridden);
 
 /**
  * Retrieve the file that is included by the given inclusion directive
  * cursor.
  */
-CXFile clang_getIncludedFile (in CXCursor cursor);
+CXFile clang_getIncludedFile (const CXCursor cursor);
 
 /**
  * @}
@@ -3744,7 +3744,7 @@ CXFile clang_getIncludedFile (in CXCursor cursor);
  * \returns a cursor representing the entity at the given source location, or
  * a NULL cursor if no such entity can be found.
  */
-CXCursor clang_getCursor (in CXTranslationUnit, CXSourceLocation);
+CXCursor clang_getCursor (const CXTranslationUnit, CXSourceLocation);
 
 /**
  * Retrieve the physical location of the source constructor referenced
@@ -3756,7 +3756,7 @@ CXCursor clang_getCursor (in CXTranslationUnit, CXSourceLocation);
  * The location of a reference is where that reference occurs within the
  * source code.
  */
-CXSourceLocation clang_getCursorLocation (in CXCursor);
+CXSourceLocation clang_getCursorLocation (const CXCursor);
 
 /**
  * Retrieve the physical extent of the source construct referenced by
@@ -3769,7 +3769,7 @@ CXSourceLocation clang_getCursorLocation (in CXCursor);
  * the extent covers the location of the reference (e.g., where the referenced
  * entity was actually used).
  */
-CXSourceRange clang_getCursorExtent (in CXCursor) pure;
+CXSourceRange clang_getCursorExtent (const CXCursor) pure;
 
 /**
  * @}
@@ -4125,7 +4125,7 @@ struct CXType
 /**
  * Retrieve the type of a CXCursor (if any).
  */
-CXType clang_getCursorType (in CXCursor C) pure;
+CXType clang_getCursorType (const CXCursor C) pure;
 
 /**
  * Pretty-print the underlying type using the rules of the
@@ -4133,7 +4133,7 @@ CXType clang_getCursorType (in CXCursor C) pure;
  *
  * If the type is invalid, an empty string is returned.
  */
-CXString clang_getTypeSpelling (in CXType CT);
+CXString clang_getTypeSpelling (const CXType CT);
 
 /**
  * Retrieve the underlying type of a typedef declaration.
@@ -4141,7 +4141,7 @@ CXString clang_getTypeSpelling (in CXType CT);
  * If the cursor does not reference a typedef declaration, an invalid type is
  * returned.
  */
-CXType clang_getTypedefDeclUnderlyingType (in CXCursor C) pure;
+CXType clang_getTypedefDeclUnderlyingType (const CXCursor C) pure;
 
 /**
  * Retrieve the integer type of an enum declaration.
@@ -4149,7 +4149,7 @@ CXType clang_getTypedefDeclUnderlyingType (in CXCursor C) pure;
  * If the cursor does not reference an enum declaration, an invalid type is
  * returned.
  */
-CXType clang_getEnumDeclIntegerType (in CXCursor C);
+CXType clang_getEnumDeclIntegerType (const CXCursor C);
 
 /**
  * Retrieve the integer value of an enum constant declaration as a signed
@@ -4159,7 +4159,7 @@ CXType clang_getEnumDeclIntegerType (in CXCursor C);
  * returned. Since this is also potentially a valid constant value, the kind of
  * the cursor must be verified before calling this function.
  */
-long clang_getEnumConstantDeclValue (in CXCursor C) pure;
+long clang_getEnumConstantDeclValue (const CXCursor C) pure;
 
 /**
  * Retrieve the integer value of an enum constant declaration as an unsigned
@@ -4169,14 +4169,14 @@ long clang_getEnumConstantDeclValue (in CXCursor C) pure;
  * returned. Since this is also potentially a valid constant value, the kind of
  * the cursor must be verified before calling this function.
  */
-ulong clang_getEnumConstantDeclUnsignedValue (in CXCursor C);
+ulong clang_getEnumConstantDeclUnsignedValue (const CXCursor C);
 
 /**
  * Retrieve the bit width of a bit field declaration as an integer.
  *
  * If a cursor that is not a bit field declaration is passed in, -1 is returned.
  */
-int clang_getFieldDeclBitWidth (in CXCursor C) pure;
+int clang_getFieldDeclBitWidth (const CXCursor C) pure;
 
 /**
  * Retrieve the number of non-variadic arguments associated with a given
@@ -4185,7 +4185,7 @@ int clang_getFieldDeclBitWidth (in CXCursor C) pure;
  * The number of arguments can be determined for calls as well as for
  * declarations of functions or methods. For other cursors -1 is returned.
  */
-int clang_Cursor_getNumArguments (in CXCursor C);
+int clang_Cursor_getNumArguments (const CXCursor C);
 
 /**
  * Retrieve the argument cursor of a function or method.
@@ -4194,7 +4194,7 @@ int clang_Cursor_getNumArguments (in CXCursor C);
  * of functions or methods. For other cursors and for invalid indices, an
  * invalid cursor is returned.
  */
-CXCursor clang_Cursor_getArgument (in CXCursor C, uint i);
+CXCursor clang_Cursor_getArgument (const CXCursor C, uint i);
 
 /**
  * Describes the kind of a template argument.
@@ -4244,7 +4244,7 @@ alias CXTemplateArgumentKind_Invalid = CXTemplateArgumentKind.CXTemplateArgument
  *
  * The value 3 would be returned from this call.
  */
-int clang_Cursor_getNumTemplateArguments (in CXCursor C) pure;
+int clang_Cursor_getNumTemplateArguments (const CXCursor C) pure;
 
 /**
  * Retrieve the kind of the I'th template argument of the CXCursor C.
@@ -4284,7 +4284,7 @@ CXTemplateArgumentKind clang_Cursor_getTemplateArgumentKind (
  * If called with I = 0, "float", will be returned.
  * Invalid types will be returned for I == 1 or 2.
  */
-CXType clang_Cursor_getTemplateArgumentType (in CXCursor C, uint I) pure;
+CXType clang_Cursor_getTemplateArgumentType (const CXCursor C, uint I) pure;
 
 /**
  * Retrieve the value of an Integral TemplateArgument (of a function
@@ -4303,7 +4303,7 @@ CXType clang_Cursor_getTemplateArgumentType (in CXCursor C, uint I) pure;
  * If called with I = 1 or 2, -7 or true will be returned, respectively.
  * For I == 0, this function's behavior is undefined.
  */
-long clang_Cursor_getTemplateArgumentValue (in CXCursor C, uint I) pure;
+long clang_Cursor_getTemplateArgumentValue (const CXCursor C, uint I) pure;
 
 /**
  * Retrieve the value of an Integral TemplateArgument (of a function
@@ -4322,7 +4322,7 @@ long clang_Cursor_getTemplateArgumentValue (in CXCursor C, uint I) pure;
  * If called with I = 1 or 2, 2147483649 or true will be returned, respectively.
  * For I == 0, this function's behavior is undefined.
  */
-ulong clang_Cursor_getTemplateArgumentUnsignedValue (in CXCursor C, uint I);
+ulong clang_Cursor_getTemplateArgumentUnsignedValue (const CXCursor C, uint I);
 
 /**
  * Determine whether two CXTypes represent the same type.
@@ -4330,7 +4330,7 @@ ulong clang_Cursor_getTemplateArgumentUnsignedValue (in CXCursor C, uint I);
  * \returns non-zero if the CXTypes represent the same type and
  *          zero otherwise.
  */
-uint clang_equalTypes (in CXType A, in CXType B);
+uint clang_equalTypes (const CXType A, const CXType B);
 
 /**
  * Return the canonical type for a CXType.
@@ -4340,95 +4340,95 @@ uint clang_equalTypes (in CXType A, in CXType B);
  * type with all the "sugar" removed.  For example, if 'T' is a typedef
  * for 'int', the canonical type for 'T' would be 'int'.
  */
-CXType clang_getCanonicalType (in CXType T) pure;
+CXType clang_getCanonicalType (const CXType T) pure;
 
 /**
  * Determine whether a CXType has the "const" qualifier set,
  * without looking through typedefs that may have added "const" at a
  * different level.
  */
-uint clang_isConstQualifiedType (in CXType T) pure;
+uint clang_isConstQualifiedType (const CXType T) pure;
 
 /**
  * Determine whether a  CXCursor that is a macro, is
  * function like.
  */
-uint clang_Cursor_isMacroFunctionLike (in CXCursor C) pure;
+uint clang_Cursor_isMacroFunctionLike (const CXCursor C) pure;
 
 /**
  * Determine whether a  CXCursor that is a macro, is a
  * builtin one.
  */
-uint clang_Cursor_isMacroBuiltin (in CXCursor C) pure;
+uint clang_Cursor_isMacroBuiltin (const CXCursor C) pure;
 
 /**
  * Determine whether a  CXCursor that is a function declaration, is an
  * inline declaration.
  */
-uint clang_Cursor_isFunctionInlined (in CXCursor C);
+uint clang_Cursor_isFunctionInlined (const CXCursor C);
 
 /**
  * Determine whether a CXType has the "volatile" qualifier set,
  * without looking through typedefs that may have added "volatile" at
  * a different level.
  */
-uint clang_isVolatileQualifiedType (in CXType T) pure;
+uint clang_isVolatileQualifiedType (const CXType T) pure;
 
 /**
  * Determine whether a CXType has the "restrict" qualifier set,
  * without looking through typedefs that may have added "restrict" at a
  * different level.
  */
-uint clang_isRestrictQualifiedType (in CXType T);
+uint clang_isRestrictQualifiedType (const CXType T);
 
 /**
  * Returns the address space of the given type.
  */
-uint clang_getAddressSpace (in CXType T);
+uint clang_getAddressSpace (const CXType T);
 
 /**
  * Returns the typedef name of the given type.
  */
-CXString clang_getTypedefName (in CXType CT);
+CXString clang_getTypedefName (const CXType CT);
 
 /**
  * For pointer types, returns the type of the pointee.
  */
-CXType clang_getPointeeType (in CXType T) pure;
+CXType clang_getPointeeType (const CXType T) pure;
 
 /**
  * Return the cursor for the declaration of the given type.
  */
-CXCursor clang_getTypeDeclaration (in CXType T) pure;
+CXCursor clang_getTypeDeclaration (const CXType T) pure;
 
 /**
  * Returns the Objective-C type encoding for the specified declaration.
  */
-CXString clang_getDeclObjCTypeEncoding (in CXCursor C);
+CXString clang_getDeclObjCTypeEncoding (const CXCursor C);
 
 /**
  * Returns the Objective-C type encoding for the specified CXType.
  */
-CXString clang_Type_getObjCEncoding (in CXType type);
+CXString clang_Type_getObjCEncoding (const CXType type);
 
 /**
  * Retrieve the spelling of a given CXTypeKind.
  */
-CXString clang_getTypeKindSpelling (in CXTypeKind K);
+CXString clang_getTypeKindSpelling (const CXTypeKind K);
 
 /**
  * Retrieve the calling convention associated with a function type.
  *
  * If a non-function type is passed in, CXCallingConv_Invalid is returned.
  */
-CXCallingConv clang_getFunctionTypeCallingConv (in CXType T);
+CXCallingConv clang_getFunctionTypeCallingConv (const CXType T);
 
 /**
  * Retrieve the return type associated with a function type.
  *
  * If a non-function type is passed in, an invalid type is returned.
  */
-CXType clang_getResultType (in CXType T) pure;
+CXType clang_getResultType (const CXType T) pure;
 
 /**
  * Retrieve the exception specification type associated with a function type.
@@ -4436,7 +4436,7 @@ CXType clang_getResultType (in CXType T) pure;
  *
  * If a non-function type is passed in, an error code of -1 is returned.
  */
-int clang_getExceptionSpecificationType (in CXType T);
+int clang_getExceptionSpecificationType (const CXType T);
 
 /**
  * Retrieve the number of non-variadic parameters associated with a
@@ -4444,7 +4444,7 @@ int clang_getExceptionSpecificationType (in CXType T);
  *
  * If a non-function type is passed in, -1 is returned.
  */
-int clang_getNumArgTypes (in CXType T);
+int clang_getNumArgTypes (const CXType T);
 
 /**
  * Retrieve the type of a parameter of a function type.
@@ -4452,21 +4452,21 @@ int clang_getNumArgTypes (in CXType T);
  * If a non-function type is passed in or the function does not have enough
  * parameters, an invalid type is returned.
  */
-CXType clang_getArgType (in CXType T, uint i);
+CXType clang_getArgType (const CXType T, uint i);
 
 /**
  * Retrieves the base type of the ObjCObjectType.
  *
  * If the type is not an ObjC object, an invalid type is returned.
  */
-CXType clang_Type_getObjCObjectBaseType (in CXType T);
+CXType clang_Type_getObjCObjectBaseType (const CXType T);
 
 /**
  * Retrieve the number of protocol references associated with an ObjC object/id.
  *
  * If the type is not an ObjC object, 0 is returned.
  */
-uint clang_Type_getNumObjCProtocolRefs (in CXType T);
+uint clang_Type_getNumObjCProtocolRefs (const CXType T);
 
 /**
  * Retrieve the decl for a protocol reference for an ObjC object/id.
@@ -4474,14 +4474,14 @@ uint clang_Type_getNumObjCProtocolRefs (in CXType T);
  * If the type is not an ObjC object or there are not enough protocol
  * references, an invalid cursor is returned.
  */
-CXCursor clang_Type_getObjCProtocolDecl (in CXType T, uint i);
+CXCursor clang_Type_getObjCProtocolDecl (const CXType T, uint i);
 
 /**
  * Retrieve the number of type arguments associated with an ObjC object.
  *
  * If the type is not an ObjC object, 0 is returned.
  */
-uint clang_Type_getNumObjCTypeArgs (in CXType T);
+uint clang_Type_getNumObjCTypeArgs (const CXType T);
 
 /**
  * Retrieve a type argument associated with an ObjC object.
@@ -4489,19 +4489,19 @@ uint clang_Type_getNumObjCTypeArgs (in CXType T);
  * If the type is not an ObjC or the index is not valid,
  * an invalid type is returned.
  */
-CXType clang_Type_getObjCTypeArg (in CXType T, uint i);
+CXType clang_Type_getObjCTypeArg (const CXType T, uint i);
 
 /**
  * Return 1 if the CXType is a variadic function type, and 0 otherwise.
  */
-uint clang_isFunctionTypeVariadic (in CXType T) pure;
+uint clang_isFunctionTypeVariadic (const CXType T) pure;
 
 /**
  * Retrieve the return type associated with a given cursor.
  *
  * This only returns a valid type if the cursor refers to a function or method.
  */
-CXType clang_getCursorResultType (in CXCursor C) pure;
+CXType clang_getCursorResultType (const CXCursor C) pure;
 
 /**
  * Retrieve the exception specification type associated with a given cursor.
@@ -4510,13 +4510,13 @@ CXType clang_getCursorResultType (in CXCursor C) pure;
  * This only returns a valid result if the cursor refers to a function or
  * method.
  */
-int clang_getCursorExceptionSpecificationType (in CXCursor C);
+int clang_getCursorExceptionSpecificationType (const CXCursor C);
 
 /**
  * Return 1 if the CXType is a POD (plain old data) type, and 0
  *  otherwise.
  */
-uint clang_isPODType (in CXType T);
+uint clang_isPODType (const CXType T);
 
 /**
  * Return the element type of an array, complex, or vector type.
@@ -4524,7 +4524,7 @@ uint clang_isPODType (in CXType T);
  * If a type is passed in that is not an array, complex, or vector type,
  * an invalid type is returned.
  */
-CXType clang_getElementType (in CXType T) pure;
+CXType clang_getElementType (const CXType T) pure;
 
 /**
  * Return the number of elements of an array or vector type.
@@ -4532,28 +4532,28 @@ CXType clang_getElementType (in CXType T) pure;
  * If a type is passed in that is not an array or vector type,
  * -1 is returned.
  */
-long clang_getNumElements (in CXType T) pure;
+long clang_getNumElements (const CXType T) pure;
 
 /**
  * Return the element type of an array type.
  *
  * If a non-array type is passed in, an invalid type is returned.
  */
-CXType clang_getArrayElementType (in CXType T);
+CXType clang_getArrayElementType (const CXType T);
 
 /**
  * Return the array size of a constant array.
  *
  * If a non-array type is passed in, -1 is returned.
  */
-long clang_getArraySize (in CXType T) pure;
+long clang_getArraySize (const CXType T) pure;
 
 /**
  * Retrieve the type named by the qualified-id.
  *
  * If a non-elaborated type is passed in, an invalid type is returned.
  */
-CXType clang_Type_getNamedType (in CXType T) pure;
+CXType clang_Type_getNamedType (const CXType T) pure;
 
 /**
  * Determine if a typedef is 'transparent' tag.
@@ -4563,7 +4563,7 @@ CXType clang_Type_getNamedType (in CXType T) pure;
  *
  * \returns non-zero if transparent and zero otherwise.
  */
-uint clang_Type_isTransparentTagTypedef (in CXType T);
+uint clang_Type_isTransparentTagTypedef (const CXType T);
 
 enum CXTypeNullabilityKind
 {
@@ -4605,7 +4605,7 @@ alias CXTypeNullability_NullableResult = CXTypeNullabilityKind.CXTypeNullability
 /**
  * Retrieve the nullability kind of a pointer type.
  */
-CXTypeNullabilityKind clang_Type_getNullability (in CXType T);
+CXTypeNullabilityKind clang_Type_getNullability (const CXType T);
 
 /**
  * List the possible error codes for \c clang_Type_getSizeOf,
@@ -4662,14 +4662,14 @@ alias CXTypeLayoutError_Undeduced = CXTypeLayoutError.CXTypeLayoutError_Undeduce
  * If the type declaration is not a constant size type,
  *   CXTypeLayoutError_NotConstantSize is returned.
  */
-long clang_Type_getAlignOf (in CXType T);
+long clang_Type_getAlignOf (const CXType T);
 
 /**
  * Return the class type of an member pointer type.
  *
  * If a non-member-pointer type is passed in, an invalid type is returned.
  */
-CXType clang_Type_getClassType (in CXType T);
+CXType clang_Type_getClassType (const CXType T);
 
 /**
  * Return the size of a type in bytes as per C++[expr.sizeof] standard.
@@ -4680,7 +4680,7 @@ CXType clang_Type_getClassType (in CXType T);
  * If the type declaration is a dependent type, CXTypeLayoutError_Dependent is
  *   returned.
  */
-long clang_Type_getSizeOf (in CXType T);
+long clang_Type_getSizeOf (const CXType T);
 
 /**
  * Return the offset of a field named S in a record of type T in bits
@@ -4695,21 +4695,21 @@ long clang_Type_getSizeOf (in CXType T);
  * If the field's name S is not found,
  *   CXTypeLayoutError_InvalidFieldName is returned.
  */
-long clang_Type_getOffsetOf (in CXType T, const(char)* S);
+long clang_Type_getOffsetOf (const CXType T, const(char)* S);
 
 /**
  * Return the type that was modified by this attributed type.
  *
  * If the type is not an attributed type, an invalid type is returned.
  */
-CXType clang_Type_getModifiedType (in CXType T);
+CXType clang_Type_getModifiedType (const CXType T);
 
 /**
  * Gets the type contained by this atomic type.
  *
  * If a non-atomic type is passed in, an invalid type is returned.
  */
-CXType clang_Type_getValueType (in CXType CT);
+CXType clang_Type_getValueType (const CXType CT);
 
 /**
  * Return the offset of the field represented by the Cursor.
@@ -4724,25 +4724,25 @@ CXType clang_Type_getValueType (in CXType CT);
  * If the field's name S is not found,
  *   CXTypeLayoutError_InvalidFieldName is returned.
  */
-long clang_Cursor_getOffsetOfField (in CXCursor C);
+long clang_Cursor_getOffsetOfField (const CXCursor C);
 
 /**
  * Determine whether the given cursor represents an anonymous
  * tag or namespace
  */
-uint clang_Cursor_isAnonymous (in CXCursor C) pure;
+uint clang_Cursor_isAnonymous (const CXCursor C) pure;
 
 /**
  * Determine whether the given cursor represents an anonymous record
  * declaration.
  */
-uint clang_Cursor_isAnonymousRecordDecl (in CXCursor C);
+uint clang_Cursor_isAnonymousRecordDecl (const CXCursor C);
 
 /**
  * Determine whether the given cursor represents an inline namespace
  * declaration.
  */
-uint clang_Cursor_isInlineNamespace (in CXCursor C);
+uint clang_Cursor_isInlineNamespace (const CXCursor C);
 
 enum CXRefQualifierKind
 {
@@ -4762,7 +4762,7 @@ alias CXRefQualifier_RValue = CXRefQualifierKind.CXRefQualifier_RValue;
  * Returns the number of template arguments for given template
  * specialization, or -1 if type \c T is not a template specialization.
  */
-int clang_Type_getNumTemplateArguments (in CXType T);
+int clang_Type_getNumTemplateArguments (const CXType T);
 
 /**
  * Returns the type template argument of a template class specialization
@@ -4771,7 +4771,7 @@ int clang_Type_getNumTemplateArguments (in CXType T);
  * This function only returns template type arguments and does not handle
  * template template arguments or variadic packs.
  */
-CXType clang_Type_getTemplateArgumentAsType (in CXType T, uint i);
+CXType clang_Type_getTemplateArgumentAsType (const CXType T, uint i);
 
 /**
  * Retrieve the ref-qualifier kind of a function or method.
@@ -4779,19 +4779,19 @@ CXType clang_Type_getTemplateArgumentAsType (in CXType T, uint i);
  * The ref-qualifier is returned for C++ functions or methods. For other types
  * or non-C++ declarations, CXRefQualifier_None is returned.
  */
-CXRefQualifierKind clang_Type_getCXXRefQualifier (in CXType T);
+CXRefQualifierKind clang_Type_getCXXRefQualifier (const CXType T);
 
 /**
  * Returns non-zero if the cursor specifies a Record member that is a
  *   bitfield.
  */
-uint clang_Cursor_isBitField (in CXCursor C) pure;
+uint clang_Cursor_isBitField (const CXCursor C) pure;
 
 /**
  * Returns 1 if the base class specified by the cursor with kind
  *   CX_CXXBaseSpecifier is virtual.
  */
-uint clang_isVirtualBase (in CXCursor);
+uint clang_isVirtualBase (const CXCursor);
 
 /**
  * Represents the C++ access control level to a base class for a
@@ -4817,7 +4817,7 @@ alias CX_CXXPrivate = CX_CXXAccessSpecifier.CX_CXXPrivate;
  * its parent scope is returned. Otherwise, if the cursor refers to a base
  * specifier or access specifier, the specifier itself is returned.
  */
-CX_CXXAccessSpecifier clang_getCXXAccessSpecifier (in CXCursor) pure;
+CX_CXXAccessSpecifier clang_getCXXAccessSpecifier (const CXCursor) pure;
 
 /**
  * Represents the storage classes as declared in the source. CX_SC_Invalid
@@ -4850,7 +4850,7 @@ alias CX_SC_Register = CX_StorageClass.CX_SC_Register;
  * If the passed in Cursor is not a function or variable declaration,
  * CX_SC_Invalid is returned else the storage class.
  */
-CX_StorageClass clang_Cursor_getStorageClass (in CXCursor) pure;
+CX_StorageClass clang_Cursor_getStorageClass (const CXCursor) pure;
 
 /**
  * Determine the number of overloaded declarations referenced by a
@@ -4861,7 +4861,7 @@ CX_StorageClass clang_Cursor_getStorageClass (in CXCursor) pure;
  * \returns The number of overloaded declarations referenced by \c cursor. If it
  * is not a \c CXCursor_OverloadedDeclRef cursor, returns 0.
  */
-uint clang_getNumOverloadedDecls (in CXCursor cursor) pure;
+uint clang_getNumOverloadedDecls (const CXCursor cursor) pure;
 
 /**
  * Retrieve a cursor for one of the overloaded declarations referenced
@@ -4877,7 +4877,7 @@ uint clang_getNumOverloadedDecls (in CXCursor cursor) pure;
  * associated set of overloaded declarations, or if the index is out of bounds,
  * returns \c clang_getNullCursor();
  */
-CXCursor clang_getOverloadedDecl (in CXCursor cursor, uint index);
+CXCursor clang_getOverloadedDecl (const CXCursor cursor, uint index);
 
 /**
  * @}
@@ -4894,7 +4894,7 @@ CXCursor clang_getOverloadedDecl (in CXCursor cursor, uint index);
  *  this function returns the collection element type.
  *
  */
-CXType clang_getIBOutletCollectionType (in CXCursor);
+CXType clang_getIBOutletCollectionType (const CXCursor);
 
 /**
  * @}
@@ -4978,7 +4978,7 @@ alias CXChildVisit_Recurse = CXChildVisitResult.CXChildVisit_Recurse;
  * compared across translation units to determine, e.g., when references in
  * one translation refer to an entity defined in another translation unit.
  */
-CXString clang_getCursorUSR (in CXCursor);
+CXString clang_getCursorUSR (const CXCursor);
 
 /**
  * Construct a USR for a specified Objective-C class.
@@ -5023,7 +5023,7 @@ CXString clang_constructUSR_ObjCProperty (
 /**
  * Retrieve a name for the entity referenced by this cursor.
  */
-CXString clang_getCursorSpelling (in CXCursor) pure;
+CXString clang_getCursorSpelling (const CXCursor) pure;
 
 /**
  * Retrieve a range for a piece that forms the cursors spelling name.
@@ -5133,12 +5133,12 @@ void clang_PrintingPolicy_setProperty (
  * The policy should be released after use with \c
  * clang_PrintingPolicy_dispose.
  */
-CXPrintingPolicy clang_getCursorPrintingPolicy (in CXCursor);
+CXPrintingPolicy clang_getCursorPrintingPolicy (const CXCursor);
 
 /**
  * Release a printing policy.
  */
-void clang_PrintingPolicy_dispose (in CXPrintingPolicy Policy);
+void clang_PrintingPolicy_dispose (const CXPrintingPolicy Policy);
 
 /**
  * Pretty print declarations.
@@ -5162,7 +5162,7 @@ CXString clang_getCursorPrettyPrinted (
  * such as the parameters of a function or template or the arguments of a
  * class template specialization.
  */
-CXString clang_getCursorDisplayName (in CXCursor) pure;
+CXString clang_getCursorDisplayName (const CXCursor) pure;
 
 /** For a cursor that is a reference, retrieve a cursor representing the
  * entity that it references.
@@ -5174,7 +5174,7 @@ CXString clang_getCursorDisplayName (in CXCursor) pure;
  * definition, it returns that declaration or definition unchanged.
  * Otherwise, returns the NULL cursor.
  */
-CXCursor clang_getCursorReferenced (in CXCursor);
+CXCursor clang_getCursorReferenced (const CXCursor);
 
 /**
  *  For a cursor that is either a reference to or a declaration
@@ -5204,13 +5204,13 @@ CXCursor clang_getCursorReferenced (in CXCursor);
  *  e.g., because there is no definition of that entity within this
  *  translation unit, returns a NULL cursor.
  */
-CXCursor clang_getCursorDefinition (in CXCursor);
+CXCursor clang_getCursorDefinition (const CXCursor);
 
 /**
  * Determine whether the declaration pointed to by this cursor
  * is also a definition of that entity.
  */
-uint clang_isCursorDefinition (in CXCursor) pure;
+uint clang_isCursorDefinition (const CXCursor) pure;
 
 /**
  * Retrieve the canonical cursor corresponding to the given cursor.
@@ -5236,7 +5236,7 @@ uint clang_isCursorDefinition (in CXCursor) pure;
  *
  * \returns The canonical cursor for the entity referred to by the given cursor.
  */
-CXCursor clang_getCanonicalCursor (in CXCursor) pure;
+CXCursor clang_getCanonicalCursor (const CXCursor) pure;
 
 /**
  * If the cursor points to a selector identifier in an Objective-C
@@ -5249,7 +5249,7 @@ CXCursor clang_getCanonicalCursor (in CXCursor) pure;
  * expression and the cursor is pointing to a selector identifier, or -1
  * otherwise.
  */
-int clang_Cursor_getObjCSelectorIndex (in CXCursor);
+int clang_Cursor_getObjCSelectorIndex (const CXCursor);
 
 /**
  * Given a cursor pointing to a C++ method call or an Objective-C
@@ -5262,13 +5262,13 @@ int clang_Cursor_getObjCSelectorIndex (in CXCursor);
  * If the method/message is "static" or the cursor does not point to a
  * method/message, it will return zero.
  */
-int clang_Cursor_isDynamicCall (in CXCursor C);
+int clang_Cursor_isDynamicCall (const CXCursor C);
 
 /**
  * Given a cursor pointing to an Objective-C message or property
  * reference, or C++ method call, returns the CXType of the receiver.
  */
-CXType clang_Cursor_getReceiverType (in CXCursor C);
+CXType clang_Cursor_getReceiverType (const CXCursor C);
 
 /**
  * Property attributes for a \c CXCursor_ObjCPropertyDecl.
@@ -5314,19 +5314,19 @@ mixin EnumC!CXObjCPropertyAttrKind;
  *
  * \param reserved Reserved for future use, pass 0.
  */
-uint clang_Cursor_getObjCPropertyAttributes (in CXCursor C, uint reserved);
+uint clang_Cursor_getObjCPropertyAttributes (const CXCursor C, uint reserved);
 
 /**
  * Given a cursor that represents a property declaration, return the
  * name of the method that implements the getter.
  */
-CXString clang_Cursor_getObjCPropertyGetterName (in CXCursor C);
+CXString clang_Cursor_getObjCPropertyGetterName (const CXCursor C);
 
 /**
  * Given a cursor that represents a property declaration, return the
  * name of the method that implements the setter, if any.
  */
-CXString clang_Cursor_getObjCPropertySetterName (in CXCursor C);
+CXString clang_Cursor_getObjCPropertySetterName (const CXCursor C);
 
 /**
  * 'Qualifiers' written next to the return and parameter types in
@@ -5358,19 +5358,19 @@ mixin EnumC!CXObjCDeclQualifierKind;
  * type or the parameter respectively. The bits are formed from
  * CXObjCDeclQualifierKind.
  */
-uint clang_Cursor_getObjCDeclQualifiers (in CXCursor C);
+uint clang_Cursor_getObjCDeclQualifiers (const CXCursor C);
 
 /**
  * Given a cursor that represents an Objective-C method or property
  * declaration, return non-zero if the declaration was affected by "\@optional".
  * Returns zero if the cursor is not such a declaration or it is "\@required".
  */
-uint clang_Cursor_isObjCOptional (in CXCursor C);
+uint clang_Cursor_isObjCOptional (const CXCursor C);
 
 /**
  * Returns non-zero if the given cursor is a variadic function or method.
  */
-uint clang_Cursor_isVariadic (in CXCursor C);
+uint clang_Cursor_isVariadic (const CXCursor C);
 
 /**
  * Returns non-zero if the given cursor points to a symbol marked with
@@ -5396,20 +5396,20 @@ uint clang_Cursor_isExternalSymbol (
  * comment's source range.  The range may include multiple consecutive comments
  * with whitespace in between.
  */
-CXSourceRange clang_Cursor_getCommentRange (in CXCursor C);
+CXSourceRange clang_Cursor_getCommentRange (const CXCursor C);
 
 /**
  * Given a cursor that represents a declaration, return the associated
  * comment text, including comment markers.
  */
-CXString clang_Cursor_getRawCommentText (in CXCursor C) pure;
+CXString clang_Cursor_getRawCommentText (const CXCursor C) pure;
 
 /**
  * Given a cursor that represents a documentable entity (e.g.,
  * declaration), return the associated \paragraph; otherwise return the
  * first paragraph.
  */
-CXString clang_Cursor_getBriefCommentText (in CXCursor C);
+CXString clang_Cursor_getBriefCommentText (const CXCursor C);
 
 /**
  * @}
@@ -5423,19 +5423,19 @@ CXString clang_Cursor_getBriefCommentText (in CXCursor C);
 /**
  * Retrieve the CXString representing the mangled name of the cursor.
  */
-CXString clang_Cursor_getMangling (in CXCursor) pure;
+CXString clang_Cursor_getMangling (const CXCursor) pure;
 
 /**
  * Retrieve the CXStrings representing the mangled symbols of the C++
  * constructor or destructor at the cursor.
  */
-CXStringSet* clang_Cursor_getCXXManglings (in CXCursor) pure;
+CXStringSet* clang_Cursor_getCXXManglings (const CXCursor) pure;
 
 /**
  * Retrieve the CXStrings representing the mangled symbols of the ObjC
  * class interface or implementation at the cursor.
  */
-CXStringSet* clang_Cursor_getObjCManglings (in CXCursor);
+CXStringSet* clang_Cursor_getObjCManglings (const CXCursor);
 
 /**
  * @}
@@ -5454,20 +5454,20 @@ alias CXModule = void*;
 /**
  * Given a CXCursor_ModuleImportDecl cursor, return the associated module.
  */
-CXModule clang_Cursor_getModule (in CXCursor C);
+CXModule clang_Cursor_getModule (const CXCursor C);
 
 /**
  * Given a CXFile header file, return the module that contains it, if one
  * exists.
  */
-CXModule clang_getModuleForFile (in CXTranslationUnit, CXFile);
+CXModule clang_getModuleForFile (const CXTranslationUnit, CXFile);
 
 /**
  * \param Module a module object.
  *
  * \returns the module file where the provided module object came from.
  */
-CXFile clang_Module_getASTFile (in CXModule Module);
+CXFile clang_Module_getASTFile (const CXModule Module);
 
 /**
  * \param Module a module object.
@@ -5475,7 +5475,7 @@ CXFile clang_Module_getASTFile (in CXModule Module);
  * \returns the parent of a sub-module or NULL if the given module is top-level,
  * e.g. for 'std.vector' it will return the 'std' module.
  */
-CXModule clang_Module_getParent (in CXModule Module);
+CXModule clang_Module_getParent (const CXModule Module);
 
 /**
  * \param Module a module object.
@@ -5483,28 +5483,28 @@ CXModule clang_Module_getParent (in CXModule Module);
  * \returns the name of the module, e.g. for the 'std.vector' sub-module it
  * will return "vector".
  */
-CXString clang_Module_getName (in CXModule Module);
+CXString clang_Module_getName (const CXModule Module);
 
 /**
  * \param Module a module object.
  *
  * \returns the full name of the module, e.g. "std.vector".
  */
-CXString clang_Module_getFullName (in CXModule Module);
+CXString clang_Module_getFullName (const CXModule Module);
 
 /**
  * \param Module a module object.
  *
  * \returns non-zero if the module is a system one.
  */
-int clang_Module_isSystem (in CXModule Module);
+int clang_Module_isSystem (const CXModule Module);
 
 /**
  * \param Module a module object.
  *
  * \returns the number of top level headers associated with this module.
  */
-uint clang_Module_getNumTopLevelHeaders (in CXTranslationUnit, CXModule Module);
+uint clang_Module_getNumTopLevelHeaders (const CXTranslationUnit, CXModule Module);
 
 /**
  * \param Module a module object.
@@ -5534,68 +5534,68 @@ CXFile clang_Module_getTopLevelHeader (
 /**
  * Determine if a C++ constructor is a converting constructor.
  */
-uint clang_CXXConstructor_isConvertingConstructor (in CXCursor C);
+uint clang_CXXConstructor_isConvertingConstructor (const CXCursor C);
 
 /**
  * Determine if a C++ constructor is a copy constructor.
  */
-uint clang_CXXConstructor_isCopyConstructor (in CXCursor C) pure;
+uint clang_CXXConstructor_isCopyConstructor (const CXCursor C) pure;
 
 /**
  * Determine if a C++ constructor is the default constructor.
  */
-uint clang_CXXConstructor_isDefaultConstructor (in CXCursor C);
+uint clang_CXXConstructor_isDefaultConstructor (const CXCursor C);
 
 /**
  * Determine if a C++ constructor is a move constructor.
  */
-uint clang_CXXConstructor_isMoveConstructor (in CXCursor C) pure;
+uint clang_CXXConstructor_isMoveConstructor (const CXCursor C) pure;
 
 /**
  * Determine if a C++ field is declared 'mutable'.
  */
-uint clang_CXXField_isMutable (in CXCursor C);
+uint clang_CXXField_isMutable (const CXCursor C);
 
 /**
  * Determine if a C++ method is declared '= default'.
  */
-uint clang_CXXMethod_isDefaulted (in CXCursor C);
+uint clang_CXXMethod_isDefaulted (const CXCursor C);
 
 /**
  * Determine if a C++ member function or member function template is
  * pure virtual.
  */
-uint clang_CXXMethod_isPureVirtual (in CXCursor C) pure;
+uint clang_CXXMethod_isPureVirtual (const CXCursor C) pure;
 
 /**
  * Determine if a C++ member function or member function template is
  * declared 'static'.
  */
-uint clang_CXXMethod_isStatic (in CXCursor C);
+uint clang_CXXMethod_isStatic (const CXCursor C);
 
 /**
  * Determine if a C++ member function or member function template is
  * explicitly declared 'virtual' or if it overrides a virtual method from
  * one of the base classes.
  */
-uint clang_CXXMethod_isVirtual (in CXCursor C) pure;
+uint clang_CXXMethod_isVirtual (const CXCursor C) pure;
 
 /**
  * Determine if a C++ record is abstract, i.e. whether a class or struct
  * has a pure virtual member function.
  */
-uint clang_CXXRecord_isAbstract (in CXCursor C);
+uint clang_CXXRecord_isAbstract (const CXCursor C);
 
 /**
  * Determine if an enum declaration refers to a scoped enum.
  */
-uint clang_EnumDecl_isScoped (in CXCursor C);
+uint clang_EnumDecl_isScoped (const CXCursor C);
 
 /**
  * Determine if a C++ member function or member function template is
  * declared 'const'.
  */
-uint clang_CXXMethod_isConst (in CXCursor C) pure;
+uint clang_CXXMethod_isConst (const CXCursor C) pure;
 
 /**
  * Given a cursor that represents a template, determine
@@ -5614,7 +5614,7 @@ uint clang_CXXMethod_isConst (in CXCursor C) pure;
  * by instantiating the template \p C. If \p C is not a template, returns
  * \c CXCursor_NoDeclFound.
  */
-CXCursorKind clang_getTemplateCursorKind (in CXCursor C);
+CXCursorKind clang_getTemplateCursorKind (const CXCursor C);
 
 /**
  * Given a cursor that may represent a specialization or instantiation
@@ -5644,7 +5644,7 @@ CXCursorKind clang_getTemplateCursorKind (in CXCursor C);
  * template or a member thereof, the template or member that it specializes or
  * from which it was instantiated. Otherwise, returns a NULL cursor.
  */
-CXCursor clang_getSpecializedCursorTemplate (in CXCursor C) pure;
+CXCursor clang_getSpecializedCursorTemplate (const CXCursor C) pure;
 
 /**
  * Given a cursor that references something else, return the source range
@@ -5771,12 +5771,12 @@ struct CXToken
  * exist. The returned pointer must be freed with clang_disposeTokens before the
  * translation unit is destroyed.
  */
-CXToken* clang_getToken (in CXTranslationUnit TU, CXSourceLocation Location);
+CXToken* clang_getToken (const CXTranslationUnit TU, CXSourceLocation Location);
 
 /**
  * Determine the kind of the given token.
  */
-CXTokenKind clang_getTokenKind (in CXToken);
+CXTokenKind clang_getTokenKind (const CXToken);
 
 /**
  * Determine the spelling of the given token.
@@ -5784,17 +5784,17 @@ CXTokenKind clang_getTokenKind (in CXToken);
  * The spelling of a token is the textual representation of that token, e.g.,
  * the text of an identifier or keyword.
  */
-CXString clang_getTokenSpelling (in CXTranslationUnit, CXToken);
+CXString clang_getTokenSpelling (const CXTranslationUnit, CXToken);
 
 /**
  * Retrieve the source location of the given token.
  */
-CXSourceLocation clang_getTokenLocation (in CXTranslationUnit, CXToken);
+CXSourceLocation clang_getTokenLocation (const CXTranslationUnit, CXToken);
 
 /**
  * Retrieve a source range that covers the given token.
  */
-CXSourceRange clang_getTokenExtent (in CXTranslationUnit, CXToken);
+CXSourceRange clang_getTokenExtent (const CXTranslationUnit, CXToken);
 
 /**
  * Tokenize the source code described by the given range into raw
@@ -5877,7 +5877,7 @@ void clang_disposeTokens (
  */
 
 /* for debug/testing */
-CXString clang_getCursorKindSpelling (in CXCursorKind Kind);
+CXString clang_getCursorKindSpelling (const CXCursorKind Kind);
 void clang_getDefinitionSpellingAndExtent (
     CXCursor,
     const(char*)* startBuf,
@@ -6186,7 +6186,7 @@ CXCompletionString clang_getCompletionChunkCompletionString (
 /**
  * Retrieve the number of chunks in the given code-completion string.
  */
-uint clang_getNumCompletionChunks (in CXCompletionString completion_string);
+uint clang_getNumCompletionChunks (const CXCompletionString completion_string);
 
 /**
  * Determine the priority of this code completion.
@@ -6200,7 +6200,7 @@ uint clang_getNumCompletionChunks (in CXCompletionString completion_string);
  * \returns The priority of this completion string. Smaller values indicate
  * higher-priority (more likely) completions.
  */
-uint clang_getCompletionPriority (in CXCompletionString completion_string);
+uint clang_getCompletionPriority (const CXCompletionString completion_string);
 
 /**
  * Determine the availability of the entity that this code-completion
@@ -6222,7 +6222,7 @@ CXAvailabilityKind clang_getCompletionAvailability (
  * \returns the number of annotations associated with the given completion
  * string.
  */
-uint clang_getCompletionNumAnnotations (in CXCompletionString completion_string);
+uint clang_getCompletionNumAnnotations (const CXCompletionString completion_string);
 
 /**
  * Retrieve the annotation associated with the given completion string.
@@ -6263,7 +6263,7 @@ CXString clang_getCompletionParent (
  * Retrieve the brief documentation comment attached to the declaration
  * that corresponds to the given completion string.
  */
-CXString clang_getCompletionBriefComment (in CXCompletionString completion_string);
+CXString clang_getCompletionBriefComment (const CXCompletionString completion_string);
 
 /**
  * Retrieve a completion string for an arbitrary declaration or macro
@@ -6274,7 +6274,7 @@ CXString clang_getCompletionBriefComment (in CXCompletionString completion_strin
  * \returns A non-context-sensitive completion string for declaration and macro
  * definition cursors, or NULL for other kinds of cursors.
  */
-CXCompletionString clang_getCursorCompletionString (in CXCursor cursor);
+CXCompletionString clang_getCursorCompletionString (const CXCursor cursor);
 
 /**
  * Contains the results of code-completion.
@@ -6670,13 +6670,13 @@ void clang_sortCodeCompletionResults (
 /**
  * Free the given set of code-completion results.
  */
-void clang_disposeCodeCompleteResults (in CXCodeCompleteResults* Results);
+void clang_disposeCodeCompleteResults (const CXCodeCompleteResults* Results);
 
 /**
  * Determine the number of diagnostics produced prior to the
  * location where code completion was performed.
  */
-uint clang_codeCompleteGetNumDiagnostics (in CXCodeCompleteResults* Results);
+uint clang_codeCompleteGetNumDiagnostics (const CXCodeCompleteResults* Results);
 
 /**
  * Retrieve a diagnostic associated with the given code completion.
@@ -6700,7 +6700,7 @@ CXDiagnostic clang_codeCompleteGetDiagnostic (
  * \returns the kinds of completions that are appropriate for use
  * along with the given code completion results.
  */
-ulong clang_codeCompleteGetContexts (in CXCodeCompleteResults* Results);
+ulong clang_codeCompleteGetContexts (const CXCodeCompleteResults* Results);
 
 /**
  * Returns the cursor kind for the container for the current code
@@ -6731,7 +6731,7 @@ CXCursorKind clang_codeCompleteGetContainerKind (
  *
  * \returns the USR for the container
  */
-CXString clang_codeCompleteGetContainerUSR (in CXCodeCompleteResults* Results);
+CXString clang_codeCompleteGetContainerUSR (const CXCodeCompleteResults* Results);
 
 /**
  * Returns the currently-entered selector for an Objective-C message
@@ -6744,7 +6744,7 @@ CXString clang_codeCompleteGetContainerUSR (in CXCodeCompleteResults* Results);
  * \returns the selector (or partial selector) that has been entered thus far
  * for an Objective-C message send.
  */
-CXString clang_codeCompleteGetObjCSelector (in CXCodeCompleteResults* Results);
+CXString clang_codeCompleteGetObjCSelector (const CXCodeCompleteResults* Results);
 
 /**
  * @}
@@ -6830,43 +6830,43 @@ alias CXEvalResult = void*;
  * into its corresponding type.
  * If it's an expression, tries to evaluate the expression.
  */
-CXEvalResult clang_Cursor_Evaluate (in CXCursor C);
+CXEvalResult clang_Cursor_Evaluate (const CXCursor C);
 
 /**
  * Returns the kind of the evaluated result.
  */
-CXEvalResultKind clang_EvalResult_getKind (in CXEvalResult E);
+CXEvalResultKind clang_EvalResult_getKind (const CXEvalResult E);
 
 /**
  * Returns the evaluation result as integer if the
  * kind is Int.
  */
-int clang_EvalResult_getAsInt (in CXEvalResult E);
+int clang_EvalResult_getAsInt (const CXEvalResult E);
 
 /**
  * Returns the evaluation result as a long long integer if the
  * kind is Int. This prevents overflows that may happen if the result is
  * returned with clang_EvalResult_getAsInt.
  */
-long clang_EvalResult_getAsLongLong (in CXEvalResult E);
+long clang_EvalResult_getAsLongLong (const CXEvalResult E);
 
 /**
  * Returns a non-zero value if the kind is Int and the evaluation
  * result resulted in an unsigned integer.
  */
-uint clang_EvalResult_isUnsignedInt (in CXEvalResult E);
+uint clang_EvalResult_isUnsignedInt (const CXEvalResult E);
 
 /**
  * Returns the evaluation result as an unsigned integer if
  * the kind is Int and clang_EvalResult_isUnsignedInt is non-zero.
  */
-ulong clang_EvalResult_getAsUnsigned (in CXEvalResult E);
+ulong clang_EvalResult_getAsUnsigned (const CXEvalResult E);
 
 /**
  * Returns the evaluation result as double if the
  * kind is double.
  */
-double clang_EvalResult_getAsDouble (in CXEvalResult E);
+double clang_EvalResult_getAsDouble (const CXEvalResult E);
 
 /**
  * Returns the evaluation result as a constant string if the
@@ -6874,12 +6874,12 @@ double clang_EvalResult_getAsDouble (in CXEvalResult E);
  * instead call clang_EvalResult_dispose on the CXEvalResult returned
  * by clang_Cursor_Evaluate.
  */
-const(char)* clang_EvalResult_getAsStr (in CXEvalResult E);
+const(char)* clang_EvalResult_getAsStr (const CXEvalResult E);
 
 /**
  * Disposes the created Eval memory.
  */
-void clang_EvalResult_dispose (in CXEvalResult E);
+void clang_EvalResult_dispose (const CXEvalResult E);
 /**
  * @}
  */
@@ -6921,7 +6921,7 @@ CXRemapping clang_getRemappingsFromFileList (
 /**
  * Determine the number of remappings.
  */
-uint clang_remap_getNumFiles (in CXRemapping);
+uint clang_remap_getNumFiles (const CXRemapping);
 
 /**
  * Get the original and the associated filename from the remapping.
@@ -6940,7 +6940,7 @@ void clang_remap_getFilenames (
 /**
  * Dispose the remapping.
  */
-void clang_remap_dispose (in CXRemapping);
+void clang_remap_dispose (const CXRemapping);
 
 /**
  * @}
@@ -7460,12 +7460,12 @@ struct IndexerCallbacks
      * Called periodically to check whether indexing should be aborted.
      * Should return 0 to continue, and non-zero to abort.
      */
-    int function (in CXClientData client_data, void* reserved) abortQuery;
+    int function (const CXClientData client_data, void* reserved) abortQuery;
 
     /**
      * Called at the end of indexing; passes the complete diagnostic set.
      */
-    void function (in CXClientData client_data, CXDiagnosticSet, void* reserved) diagnostic;
+    void function (const CXClientData client_data, CXDiagnosticSet, void* reserved) diagnostic;
 
     CXIdxClientFile function (
         CXClientData client_data,
@@ -7498,7 +7498,7 @@ struct IndexerCallbacks
         CXClientData client_data,
         void* reserved) startedTranslationUnit;
 
-    void function (in CXClientData client_data, const(CXIdxDeclInfo)*) indexDeclaration;
+    void function (const CXClientData client_data, const(CXIdxDeclInfo)*) indexDeclaration;
 
     /**
      * Called to index a reference of an entity.
@@ -7508,7 +7508,7 @@ struct IndexerCallbacks
         const(CXIdxEntityRefInfo)*) indexEntityReference;
 }
 
-int clang_index_isEntityObjCContainerKind (in CXIdxEntityKind);
+int clang_index_isEntityObjCContainerKind (const CXIdxEntityKind);
 const(CXIdxObjCContainerDeclInfo)* clang_index_getObjCContainerDeclInfo (
     const(CXIdxDeclInfo)*);
 
@@ -7567,7 +7567,7 @@ alias CXIndexAction = void*;
  *
  * \param CIdx The index object with which the index action will be associated.
  */
-CXIndexAction clang_IndexAction_create (in CXIndex CIdx);
+CXIndexAction clang_IndexAction_create (const CXIndex CIdx);
 
 /**
  * Destroy the given index action.
@@ -7575,7 +7575,7 @@ CXIndexAction clang_IndexAction_create (in CXIndex CIdx);
  * The index action must not be destroyed until all of the translation units
  * created within that index action have been destroyed.
  */
-void clang_IndexAction_dispose (in CXIndexAction);
+void clang_IndexAction_dispose (const CXIndexAction);
 
 enum CXIndexOptFlags
 {
@@ -7725,7 +7725,7 @@ void clang_indexLoc_getFileLocation (
 /**
  * Retrieve the CXSourceLocation represented by the given CXIdxLoc.
  */
-CXSourceLocation clang_indexLoc_getCXSourceLocation (in CXIdxLoc loc);
+CXSourceLocation clang_indexLoc_getCXSourceLocation (const CXIdxLoc loc);
 
 /**
  * Visitor invoked for each field found by a traversal.
