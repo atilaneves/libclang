@@ -28,7 +28,7 @@ configuration "unittest" {
     sourcePaths "source" "tests"
     importPaths "source" "tests"
 
-    dflags "-dip25" "-dip1000"
+    dflags "-preview=dip1000"
 
     dependency "unit-threaded" version="*"
 }
