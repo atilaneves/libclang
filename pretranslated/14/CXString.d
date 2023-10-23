@@ -32,17 +32,17 @@ struct CXStringSet
 /**
  * \brief Retrieve the character data associated with the given string.
  */
-const(char)* clang_getCString(CXString string) @safe @nogc pure nothrow;
+const(char)* clang_getCString(CXString string) @trusted @nogc pure nothrow;
 
 /**
  * \brief Free the given string.
  */
-void clang_disposeString(CXString string) @safe @nogc pure nothrow;
+void clang_disposeString(CXString string) @trusted @nogc pure nothrow;
 
 /**
  * \brief Free the given string set.
  */
-void clang_disposeStringSet(CXStringSet* set) @safe @nogc pure nothrow;
+void clang_disposeStringSet(CXStringSet* set) @trusted @nogc pure nothrow;
 
 /**
  * @}
